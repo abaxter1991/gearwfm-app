@@ -15,7 +15,8 @@ export default function MainLayout({ children }: Readonly<{ children: ReactNode 
                 }}
             >
                 <NavbarBrand>
-                    <AcmeLogo />
+                    <img alt="Logo" src="/images/logos/gear-wfm-icon.png" className="size-12" />
+                    {/*<AcmeLogo/>*/}
                     <p className="font-bold text-inherit">ACME</p>
                 </NavbarBrand>
                 <NavbarContent justify="end">

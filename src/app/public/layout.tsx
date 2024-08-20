@@ -19,11 +19,12 @@ export default function PublicLayout({ children }: Readonly<{ children: ReactNod
                         }}
                     >
                         <NavbarBrand>
-                            <AcmeLogo />
-                            <p className="font-bold text-inherit">ACME</p>
+                            <img alt="Logo" src="/images/logos/gear-wfm-icon.png" className="size-12" />
+                            {/*<AcmeLogo/>*/}
+                            <p className="font-bold text-inherit text-2xl italic align-bottom pl-2 self-end">GEAR</p>
                         </NavbarBrand>
                         <NavbarContent justify="end">
-                            <NavbarItem>
+                        <NavbarItem>
                                 <ThemeSwitcher/>
                             </NavbarItem>
                             <NavbarItem>
