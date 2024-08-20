@@ -20,6 +20,7 @@ CREATE TABLE "SalesOrders" (
     "email_address" TEXT,
     "shipping_address" TEXT,
     "billing_address" TEXT,
+    "notes" TEXT,
     "shipping_price" DOUBLE PRECISION NOT NULL,
     "grand_total" DOUBLE PRECISION NOT NULL,
 

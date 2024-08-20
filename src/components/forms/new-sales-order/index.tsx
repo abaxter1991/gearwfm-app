@@ -31,6 +31,7 @@ export type SalesOrder = {
     emailAddress?: string
     shippingAddress?: string
     billingAddress?: string
+    notes?: string
     shippingPrice: number
     grandTotal: number
     products: Product[]
@@ -69,6 +70,7 @@ const defaultSalesOrder: SalesOrder = {
     emailAddress: '',
     shippingAddress: '',
     billingAddress: '',
+    notes: '',
     shippingPrice: 0.00,
     grandTotal: 0.00,
     products: []
@@ -262,6 +264,7 @@ export function NewSalesOrder() {
                                         label="COMPANY NAME"
                                         name="companyName"
                                         placeholder="Acme"
+                                        isRequired={true}
                                         variant="bordered"
                                         size="sm"
                                     />
@@ -306,6 +309,16 @@ export function NewSalesOrder() {
                                         placeholder="Enter billing address"
                                         variant="bordered"
                                         size="sm"
+                                    />
+                                    <TextAreaField
+                                        form={form}
+                                        label="NOTES"
+                                        name="notes"
+                                        placeholder=" "
+                                        variant="bordered"
+                                        size="sm"
+                                        labelPlacement="outside"
+                                        maxRows={1}
                                     />
                                 </div>
                             </div>

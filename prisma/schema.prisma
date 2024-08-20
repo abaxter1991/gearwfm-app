@@ -25,6 +25,7 @@ model SalesOrder {
     emailAddress    String?             @map("email_address")
     shippingAddress String?             @map("shipping_address")
     billingAddress  String?             @map("billing_address")
+    notes           String?
     shippingPrice   Float               @map("shipping_price")
     grandTotal      Float               @map("grand_total")
     //
