@@ -1,0 +1,67 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model SalesOrder {
+    id              String              @id @default(cuid())
+    createdAt       DateTime            @default(now()) @map("created_at")
+    updatedAt       DateTime            @updatedAt @map("updated_at")
+    orderDate       DateTime?           @map("order_date")
+    dueDate         DateTime?           @map("due_date")
+    userId          String?             @map("user_id")
+    status          SalesOrderStatus    @default(NEW_ORDER)
+    isDraft         Boolean             @default(true) @map("is_draft")
+    isNewCustomer   Boolean             @default(false) @map("is_new_customer")
+    externalId      String?             @map("external_id")
+    salesRepName    String?             @map("sales_rep_name")
+    companyName     String?             @map("company_name")
+    contactName     String?             @map("contact_name")
+    phoneNumber     String?             @map("phone_number")
+    emailAddress    String?             @map("email_address")
+    shippingAddress String?             @map("shipping_address")
+    billingAddress  String?             @map("billing_address")
+    shippingPrice   Float               @map("shipping_price")
+    grandTotal      Float               @map("grand_total")
+    //
+    products        SalesOrderProduct[]
+
+    @@map("SalesOrders")
+}
+
+model SalesOrderProduct {
+    id            String      @id @default(cuid())
+    createdAt     DateTime    @default(now()) @map("created_at")
+    updatedAt     DateTime    @updatedAt @map("updated_at")
+    item          String?
+    fileName      String?     @map("file_name")
+    style         String?
+    color         String?
+    notes         String?
+    quantityOfXS  Int         @map("quantity_of_xs")
+    quantityOfSM  Int         @map("quantity_of_sm")
+    quantityOfMD  Int         @map("quantity_of_md")
+    quantityOfLG  Int         @map("quantity_of_lg")
+    quantityOfXL  Int         @map("quantity_of_xl")
+    quantityOf2XL Int         @map("quantity_of_2xl")
+    quantityOf3XL Int         @map("quantity_of_3xl")
+    quantityOf4XL Int         @map("quantity_of_4xl")
+    totalQuantity Int         @map("total_quantity")
+    unitPrice     Float       @map("unit_price")
+    subtotal      Float
+    //
+    salesOrder    SalesOrder? @relation(fields: [salesOrderId], references: [id])
+    salesOrderId  String?     @map("sales_order_id")
+
+    @@map("SalesOrderProducts")
+}
+
+enum SalesOrderStatus {
+    NEW_ORDER
+    DESIGN
+    PRODUCTION
+}

@@ -1,0 +1,45 @@
+import { Input } from '@nextui-org/react'
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { cn } from '@/lib/utils'
+import type { InputProps } from '@nextui-org/react'
+import type { UseFormReturn } from 'react-hook-form'
+
+type InputFieldProps = Omit<InputProps, 'form'> & {
+    form: UseFormReturn<any, undefined>
+}
+
+export default function InputField(fieldProps: InputFieldProps) {
+    const { form, className, classNames, ...props } = fieldProps
+    const name = props.name || ''
+
+    let readOnlyClassNames = {
+        ...classNames,
+        inputWrapper: [
+            // 'border-0 shadow-none',
+        ],
+    }
+
+    return (
+        <div className={cn(className)}>
+            <FormField
+                control={form.control}
+                name={name}
+                render={({ field, fieldState }) => (
+                    <FormItem>
+                        <FormControl>
+                            <Input
+                                {...field}
+                                {...form.register(name, { valueAsNumber: props.type === 'number' })}
+                                {...props}
+                                classNames={props.isReadOnly ? readOnlyClassNames : classNames}
+                                isInvalid={fieldState.invalid}
+                                errorMessage={fieldState.error?.message}
+                            />
+                        </FormControl>
+                        <FormMessage/>
+                    </FormItem>
+                )}
+            />
+        </div>
+    )
+}
