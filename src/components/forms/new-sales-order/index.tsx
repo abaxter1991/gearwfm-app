@@ -232,7 +232,7 @@ export function NewSalesOrder() {
                                         form={form}
                                         name="salesRepName"
                                         label="SALES REP NAME"
-                                        placeholder="John Doe"
+                                        placeholder=" "
                                         isRequired={true}
                                         variant="bordered"
                                         size="sm"
@@ -241,7 +241,7 @@ export function NewSalesOrder() {
                                         form={form}
                                         name="externalId"
                                         label="SO#"
-                                        placeholder="SO-123456789"
+                                        placeholder=" "
                                         variant="bordered"
                                         size="sm"
                                     />
@@ -263,7 +263,7 @@ export function NewSalesOrder() {
                                         form={form}
                                         label="COMPANY NAME"
                                         name="companyName"
-                                        placeholder="Acme"
+                                        placeholder=" "
                                         isRequired={true}
                                         variant="bordered"
                                         size="sm"
@@ -272,7 +272,7 @@ export function NewSalesOrder() {
                                         form={form}
                                         label="CONTACT NAME"
                                         name="contactName"
-                                        placeholder="Jane Doe"
+                                        placeholder=" "
                                         variant="bordered"
                                         size="sm"
                                     />
@@ -280,7 +280,7 @@ export function NewSalesOrder() {
                                         form={form}
                                         label="PHONE NUMBER"
                                         name="phoneNumber"
-                                        placeholder="555-555-5555"
+                                        placeholder=" "
                                         variant="bordered"
                                         size="sm"
                                     />
@@ -288,7 +288,7 @@ export function NewSalesOrder() {
                                         form={form}
                                         label="EMAIL ADDRESS"
                                         name="emailAddress"
-                                        placeholder="jane.doe@example.com"
+                                        placeholder=" "
                                         variant="bordered"
                                         size="sm"
                                     />
@@ -298,7 +298,7 @@ export function NewSalesOrder() {
                                         form={form}
                                         label="SHIPPING ADDRESS"
                                         name="shippingAddress"
-                                        placeholder="Enter shipping address"
+                                        placeholder=" "
                                         variant="bordered"
                                         size="sm"
                                     />
@@ -306,7 +306,7 @@ export function NewSalesOrder() {
                                         form={form}
                                         label="BILLING ADDRESS"
                                         name="billingAddress"
-                                        placeholder="Enter billing address"
+                                        placeholder=" "
                                         variant="bordered"
                                         size="sm"
                                     />
@@ -318,7 +318,7 @@ export function NewSalesOrder() {
                                         variant="bordered"
                                         size="sm"
                                         labelPlacement="outside"
-                                        maxRows={1}
+                                        maxRows={3}
                                     />
                                 </div>
                             </div>
