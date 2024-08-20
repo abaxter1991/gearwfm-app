@@ -328,9 +328,11 @@ export function NewSalesOrder() {
                         <Card>
                             <CardBody className="gap-4">
                                 {products.map((product, index) => (
-                                    <div key={product.id}
-                                         className="flex w-full gap-4 border-b-zinc-300 dark:border-b-black">
-                                        <div className="flex-shrink-0 w-[100px]">
+                                    <div
+                                        key={product.id}
+                                        className="flex w-full gap-4 border-b-zinc-300 dark:border-b-black"
+                                    >
+                                        <div className="flex-none w-[100px]">
                                             <InputField
                                                 isReadOnly
                                                 form={form}
@@ -342,7 +344,7 @@ export function NewSalesOrder() {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-shrink-0 w-[150px]">
+                                        <div className="flex-auto min-w-[100px] max-w-[150px]">
                                             <InputField
                                                 form={form}
                                                 label="FILE NAME"
@@ -353,7 +355,7 @@ export function NewSalesOrder() {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-shrink-0 w-[150px]">
+                                        <div className="flex-auto min-w-[100px] max-w-[150px]">
                                             <InputField
                                                 form={form}
                                                 label="STYLE"
@@ -364,7 +366,7 @@ export function NewSalesOrder() {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-shrink-0 w-[150px]">
+                                        <div className="flex-auto min-w-[100px] max-w-[150px]">
                                             <InputField
                                                 form={form}
                                                 label="COLOR"
@@ -375,7 +377,7 @@ export function NewSalesOrder() {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="w-full">
+                                        <div className="flex-auto w-full min-w-[150px]">
                                             {/*<TextAreaField*/}
                                             {/*    form={form}*/}
                                             {/*    label="NOTES"*/}
@@ -398,7 +400,7 @@ export function NewSalesOrder() {
                                         </div>
                                         {product.item && getFieldLayout(product.item) === 'Tees' && (
                                             <div className="flex gap-4">
-                                                <div className="flex-shrink-0 w-[75px]">
+                                                <div className="flex-auto w-[75px]">
                                                     <InputField
                                                         form={form}
                                                         label="XS"
@@ -410,7 +412,7 @@ export function NewSalesOrder() {
                                                         labelPlacement="outside"
                                                     />
                                                 </div>
-                                                <div className="flex-shrink-0 w-[75px]">
+                                                <div className="flex-auto w-[75px]">
                                                     <InputField
                                                         form={form}
                                                         label="SM"
@@ -422,7 +424,7 @@ export function NewSalesOrder() {
                                                         labelPlacement="outside"
                                                     />
                                                 </div>
-                                                <div className="flex-shrink-0 w-[75px]">
+                                                <div className="flex-auto w-[75px]">
                                                     <InputField
                                                         form={form}
                                                         label="MD"
@@ -434,7 +436,7 @@ export function NewSalesOrder() {
                                                         labelPlacement="outside"
                                                     />
                                                 </div>
-                                                <div className="flex-shrink-0 w-[75px]">
+                                                <div className="flex-auto w-[75px]">
                                                     <InputField
                                                         form={form}
                                                         label="LG"
@@ -446,7 +448,7 @@ export function NewSalesOrder() {
                                                         labelPlacement="outside"
                                                     />
                                                 </div>
-                                                <div className="flex-shrink-0 w-[75px]">
+                                                <div className="flex-auto w-[75px]">
                                                     <InputField
                                                         form={form}
                                                         label="XL"
@@ -458,7 +460,7 @@ export function NewSalesOrder() {
                                                         labelPlacement="outside"
                                                     />
                                                 </div>
-                                                <div className="flex-shrink-0 w-[75px]">
+                                                <div className="flex-auto w-[75px]">
                                                     <InputField
                                                         form={form}
                                                         label="2XL"
@@ -470,7 +472,7 @@ export function NewSalesOrder() {
                                                         labelPlacement="outside"
                                                     />
                                                 </div>
-                                                <div className="flex-shrink-0 w-[75px]">
+                                                <div className="flex-auto w-[75px]">
                                                     <InputField
                                                         form={form}
                                                         label="3XL"
@@ -482,7 +484,7 @@ export function NewSalesOrder() {
                                                         labelPlacement="outside"
                                                     />
                                                 </div>
-                                                <div className="flex-shrink-0 w-[75px]">
+                                                <div className="flex-auto w-[75px]">
                                                     <InputField
                                                         form={form}
                                                         label="4XL"
