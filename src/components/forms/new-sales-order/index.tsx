@@ -131,7 +131,7 @@ export function NewSalesOrder() {
     const onSubmit = handleSubmit(async (data) => {
         console.log(data)
 
-        await axios.post('http://localhost:3000/api/v1/forms/new-sales-order', data)
+        await axios.post('https://www.gearwfm.com/api/v1/forms/new-sales-order', data)
 
         toast('New sales order has been submitted!')
     })
