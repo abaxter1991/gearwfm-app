@@ -317,8 +317,11 @@ export function NewSalesOrder() {
                                         placeholder=" "
                                         variant="bordered"
                                         size="sm"
-                                        labelPlacement="outside"
                                         maxRows={3}
+                                        // disableAutosize={true}
+                                        // classNames={{
+                                        //     input: 'min-h-full',
+                                        // }}
                                     />
                                 </div>
                             </div>
