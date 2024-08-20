@@ -335,7 +335,7 @@ export function NewSalesOrder() {
                                         key={product.id}
                                         className="flex w-full gap-4 border-b-zinc-300 dark:border-b-black"
                                     >
-                                        <div className="flex-none w-[100px]">
+                                        <div className="flex-none w-[75px]">
                                             <InputField
                                                 isReadOnly
                                                 form={form}
@@ -347,7 +347,7 @@ export function NewSalesOrder() {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-auto min-w-[100px] max-w-[150px]">
+                                        <div className="flex-none w-[150px]">
                                             <InputField
                                                 form={form}
                                                 label="FILE NAME"
