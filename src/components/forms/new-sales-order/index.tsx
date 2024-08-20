@@ -501,7 +501,7 @@ export function NewSalesOrder() {
                                                 </div>
                                             </div>
                                         )}
-                                        <div className="flex-shrink-0 w-[100px]">
+                                        <div className="flex-shrink-0 w-[75px]">
                                             <InputField
                                                 isReadOnly={product.item !== 'HAT'}
                                                 form={form}
@@ -513,7 +513,7 @@ export function NewSalesOrder() {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-shrink-0 w-[100px]">
+                                        <div className="flex-shrink-0 w-[75px]">
                                             <InputField
                                                 form={form}
                                                 label="UNIT PRICE"
@@ -531,7 +531,7 @@ export function NewSalesOrder() {
                                                 }
                                             />
                                         </div>
-                                        <div className="flex-shrink-0 w-[100px]">
+                                        <div className="flex-shrink-0 w-[75px]">
                                             <InputField
                                                 isReadOnly
                                                 form={form}
