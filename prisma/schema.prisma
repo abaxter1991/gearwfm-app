@@ -26,6 +26,7 @@ model SalesOrder {
     shippingAddress String?             @map("shipping_address")
     billingAddress  String?             @map("billing_address")
     notes           String?
+    discount        Int
     shippingPrice   Float               @map("shipping_price")
     grandTotal      Float               @map("grand_total")
     //
@@ -35,28 +36,29 @@ model SalesOrder {
 }
 
 model SalesOrderProduct {
-    id            String      @id @default(cuid())
-    createdAt     DateTime    @default(now()) @map("created_at")
-    updatedAt     DateTime    @updatedAt @map("updated_at")
-    item          String?
-    fileName      String?     @map("file_name")
-    style         String?
-    color         String?
-    notes         String?
-    quantityOfXS  Int         @map("quantity_of_xs")
-    quantityOfSM  Int         @map("quantity_of_sm")
-    quantityOfMD  Int         @map("quantity_of_md")
-    quantityOfLG  Int         @map("quantity_of_lg")
-    quantityOfXL  Int         @map("quantity_of_xl")
-    quantityOf2XL Int         @map("quantity_of_2xl")
-    quantityOf3XL Int         @map("quantity_of_3xl")
-    quantityOf4XL Int         @map("quantity_of_4xl")
-    totalQuantity Int         @map("total_quantity")
-    unitPrice     Float       @map("unit_price")
-    subtotal      Float
+    id             String      @id @default(cuid())
+    createdAt      DateTime    @default(now()) @map("created_at")
+    updatedAt      DateTime    @updatedAt @map("updated_at")
+    item           String?
+    fileName       String?     @map("file_name")
+    style          String?
+    color          String?
+    mockupImageUrl String?     @map("mockup_image_url")
+    notes          String?
+    quantityOfXS   Int         @map("quantity_of_xs")
+    quantityOfSM   Int         @map("quantity_of_sm")
+    quantityOfMD   Int         @map("quantity_of_md")
+    quantityOfLG   Int         @map("quantity_of_lg")
+    quantityOfXL   Int         @map("quantity_of_xl")
+    quantityOf2XL  Int         @map("quantity_of_2xl")
+    quantityOf3XL  Int         @map("quantity_of_3xl")
+    quantityOf4XL  Int         @map("quantity_of_4xl")
+    totalQuantity  Int         @map("total_quantity")
+    unitPrice      Float       @map("unit_price")
+    subtotal       Float
     //
-    salesOrder    SalesOrder? @relation(fields: [salesOrderId], references: [id])
-    salesOrderId  String?     @map("sales_order_id")
+    salesOrder     SalesOrder? @relation(fields: [salesOrderId], references: [id])
+    salesOrderId   String?     @map("sales_order_id")
 
     @@map("SalesOrderProducts")
 }

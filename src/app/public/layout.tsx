@@ -3,7 +3,6 @@ import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from '@c
 import { dark } from '@clerk/themes'
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react'
 import { ThemeSwitcher } from '@/components/theme-switcher'
-import { AcmeLogo } from '@/components/logos/acme-logo'
 
 export default function PublicLayout({ children }: Readonly<{ children: ReactNode }>) {
     return (
@@ -20,7 +19,6 @@ export default function PublicLayout({ children }: Readonly<{ children: ReactNod
                     >
                         <NavbarBrand>
                             <img alt="Logo" src="/images/logos/gear-wfm-icon.png" className="size-12" />
-                            {/*<AcmeLogo/>*/}
                             <p className="font-bold text-inherit text-2xl italic align-bottom pl-2 self-end">GearWFM</p>
                         </NavbarBrand>
                         <NavbarContent justify="end">

@@ -1,6 +1,6 @@
 import { NewSalesOrder } from '@/components/forms/new-sales-order'
 
-export default function NewSalesOrderPage() {
+export default async function NewSalesOrderPage() {
     return (
         <NewSalesOrder />
     )

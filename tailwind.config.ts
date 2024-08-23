@@ -18,6 +18,11 @@ const config: Config = {
                 '2xl': '1400px',
             },
         },
+        extend: {
+            colors: {
+                'brand-primary': '#3F9FD8',
+            },
+        },
     },
     plugins: [
         nextui(),

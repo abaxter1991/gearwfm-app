@@ -29,7 +29,7 @@ export default function CheckboxField(fieldProps: CheckboxFieldProps) {
                                 isSelected={field.value}
                                 onValueChange={field.onChange}
                                 isInvalid={fieldState.invalid}
-                                errorMessage={fieldState.error?.message}
+                                // errorMessage={fieldState.error?.message}
                             >
                                 {children}
                             </Checkbox>

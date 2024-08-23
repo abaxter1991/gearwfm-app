@@ -13,11 +13,15 @@ import {
     DropdownMenu,
     DropdownTrigger,
 } from '@nextui-org/react'
-import { Form } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { FileUpload } from '@/components/common/file-upload-v2'
 import { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { DevTool } from '@hookform/devtools'
 import type { DateValue } from '@internationalized/date'
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 export type SalesOrder = {
     orderDate: DateValue
@@ -32,6 +36,7 @@ export type SalesOrder = {
     shippingAddress?: string
     billingAddress?: string
     notes?: string
+    discount: number
     shippingPrice: number
     grandTotal: number
     products: Product[]
@@ -42,6 +47,7 @@ export type Product = {
     fileName?: string
     style?: string
     color?: string
+    mockupImageUrl?: string
     notes?: string
     quantityOfXS: number
     quantityOfSM: number
@@ -71,6 +77,7 @@ const defaultSalesOrder: SalesOrder = {
     shippingAddress: '',
     billingAddress: '',
     notes: '',
+    discount: 0,
     shippingPrice: 0.00,
     grandTotal: 0.00,
     products: []
@@ -81,6 +88,7 @@ const defaultProduct: Product = {
     fileName: '',
     style: '',
     color: '',
+    mockupImageUrl: '',
     notes: '',
     quantityOfXS: 0,
     quantityOfSM: 0,
@@ -131,7 +139,7 @@ export function NewSalesOrder() {
     const onSubmit = handleSubmit(async (data) => {
         console.log(data)
 
-        await axios.post('https://www.gearwfm.com/api/v1/forms/new-sales-order', data)
+        await axios.post(`${baseUrl}/api/v1/forms/new-sales-order`, data)
 
         toast('New sales order has been submitted!')
     })
@@ -154,9 +162,10 @@ export function NewSalesOrder() {
 
     function updateGrandTotal() {
         const formValues = form.getValues()
-        const { shippingPrice, products } = formValues
+        const { discount, shippingPrice, products } = formValues
         const subtotalSum = products.reduce((total, product) => total + product.subtotal, 0)
-        const grandTotal = Number(subtotalSum) + Number(shippingPrice)
+        const discountAmount = subtotalSum * (discount / 100)
+        const grandTotal = (subtotalSum - discountAmount) + Number(shippingPrice)
         form.setValue('grandTotal', grandTotal)
     }
 
@@ -164,7 +173,7 @@ export function NewSalesOrder() {
         const subscription = watch((value, { name, type }) => {
             if (name) {
                 // Update value of the grandTotal field when the shippingPrice field has been updated.
-                if (name.includes('shippingPrice')) {
+                if (name.includes('discount') || name.includes('shippingPrice')) {
                     updateGrandTotal()
                 }
 
@@ -196,7 +205,7 @@ export function NewSalesOrder() {
             <form onSubmit={onSubmit}>
                 <div className="flex flex-col gap-4 h-full w-full">
                     <Card className="shrink-0">
-                        <CardHeader className="bg-[#0072ce] text-white justify-center w-full">
+                        <CardHeader className="bg-brand-primary text-white justify-center w-full">
                             <h1 className="text-2xl font-bold">
                                 New Sales Order
                             </h1>
@@ -318,10 +327,6 @@ export function NewSalesOrder() {
                                         variant="bordered"
                                         size="sm"
                                         maxRows={3}
-                                        // disableAutosize={true}
-                                        // classNames={{
-                                        //     input: 'min-h-full',
-                                        // }}
                                     />
                                 </div>
                             </div>
@@ -378,6 +383,25 @@ export function NewSalesOrder() {
                                                 variant="bordered"
                                                 size="sm"
                                                 labelPlacement="outside"
+                                            />
+                                        </div>
+                                        <div className="flex-none w-[100px]">
+                                            <FormField
+                                                disabled={form.formState.isSubmitting}
+                                                control={form.control}
+                                                name={`products.${index}.mockupImageUrl` as const}
+                                                render={({field}) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <FileUpload
+                                                                endpoint={'mockups'}
+                                                                onChange={field.onChange}
+                                                                value={field.value}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage/>
+                                                    </FormItem>
+                                                )}
                                             />
                                         </div>
                                         <div className="flex-auto w-full min-w-[150px]">
@@ -499,6 +523,18 @@ export function NewSalesOrder() {
                                                         labelPlacement="outside"
                                                     />
                                                 </div>
+                                                <div className="flex-auto w-[75px]">
+                                                    <InputField
+                                                        form={form}
+                                                        label="4XL"
+                                                        name={`products.${index}.quantityOf4XL` as const}
+                                                        type="number"
+                                                        defaultValue="0"
+                                                        variant="bordered"
+                                                        size="sm"
+                                                        labelPlacement="outside"
+                                                    />
+                                                </div>
                                             </div>
                                         )}
                                         <div className="flex-shrink-0 w-[75px]">
@@ -561,6 +597,7 @@ export function NewSalesOrder() {
                                 <Button
                                     variant="solid"
                                     color="primary"
+                                    className="bg-brand-primary"
                                 >
                                     Add Product
                                 </Button>
@@ -583,6 +620,27 @@ export function NewSalesOrder() {
                     <Card className="shrink-0">
                         <CardBody className="flex-row justify-end w-full">
                             <div className="flex flex-col gap-4">
+                                <div className="flex items-center justify-between gap-4">
+                                    <p className="text-sm font-medium">
+                                        DISCOUNT
+                                    </p>
+                                    <InputField
+                                        form={form}
+                                        // label="DISCOUNT"
+                                        name="discount"
+                                        type="number"
+                                        variant="bordered"
+                                        size="sm"
+                                        labelPlacement="outside-left"
+                                        endContent={
+                                            <div className="pointer-events-none flex items-center">
+                                                <p className="text-small">
+                                                    %
+                                                </p>
+                                            </div>
+                                        }
+                                    />
+                                </div>
                                 <div className="flex items-center justify-between gap-4">
                                     <p className="text-sm font-medium">
                                         SHIPPING COST
@@ -630,6 +688,7 @@ export function NewSalesOrder() {
                                     type="submit"
                                     variant="solid"
                                     color="primary"
+                                    className="bg-brand-primary"
                                 >
                                     Submit
                                 </Button>
@@ -638,6 +697,7 @@ export function NewSalesOrder() {
                     </Card>
                 </div>
             </form>
+            {/*<DevTool control={control} />*/}
         </Form>
     )
 }
