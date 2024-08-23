@@ -14,13 +14,14 @@ import {
     DropdownTrigger,
 } from '@nextui-org/react'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { FileUpload } from '@/components/common/file-upload-v2'
+import { FileUpload } from '@/components/common/file-upload'
 import { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { DevTool } from '@hookform/devtools'
 import type { DateValue } from '@internationalized/date'
 
+const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 export type SalesOrder = {
@@ -394,7 +395,7 @@ export function NewSalesOrder() {
                                                     <FormItem>
                                                         <FormControl>
                                                             <FileUpload
-                                                                endpoint={'mockups'}
+                                                                endpoint={isProduction ? 'mockups' : 'devMockups'}
                                                                 onChange={field.onChange}
                                                                 value={field.value}
                                                             />

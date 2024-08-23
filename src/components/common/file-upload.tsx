@@ -1,25 +1,36 @@
 'use client'
 
-import { FileIcon } from 'lucide-react'
+import axios from 'axios'
 import { HiTrash } from 'react-icons/hi2'
 import Image from 'next/image'
-import React from 'react'
 import { Button } from '@nextui-org/react'
-import { UploadButton, UploadDropzone, Uploader } from '@/lib/uploadthing'
+import { UploadDropzone } from '@/lib/uploadthing'
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 type FileUploadProps = {
-    endpoint: 'mockups'
+    endpoint: 'mockups' | 'devMockups'
     onChange: (url?: string) => void
     value?: string
 }
 
 export function FileUpload({ endpoint, onChange, value }: FileUploadProps) {
-    const type = value?.split('.').pop()
+    const handleDeleteImage = async () => {
+        if (value) {
+            const fileKey = value.replace('https://utfs.io/f/', '')
+            await axios.delete(`${baseUrl}/api/uploadthing/delete/${fileKey}`)
+        }
+
+        onChange('')
+    }
 
     if (value) {
         return (
-            <div className="group relative flex justify-center items-center">
-                {type !== 'pdf' ? (
+            <div className="w-full">
+                <p className="text-tiny pb-1.5">
+                    MOCK UP
+                </p>
+                <div className="group relative flex items-center justify-center w-full">
                     <div className="relative size-8">
                         <Image
                             src={value}
@@ -28,52 +39,44 @@ export function FileUpload({ endpoint, onChange, value }: FileUploadProps) {
                             fill
                         />
                     </div>
-                ) : (
-                    <div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10">
-                        <FileIcon/>
-                        <a
-                            href={value}
-                            target="_blank"
-                            rel="noopener_noreferrer"
-                            className="ml-2 text-sm text-indigo-500 dark:text-indigo-400 hover:underline"
-                        >
-                            View PDF
-                        </a>
+                    <div className="absolute inset-0 hidden h-full w-full items-center justify-center rounded-lg backdrop-blur-[2px] group-hover:flex">
+                            <Button
+                                isIconOnly
+                                type="button"
+                                variant="bordered"
+                                color="danger"
+                                size="sm"
+                                className="text-danger bg-transparent"
+                                onClick={handleDeleteImage}
+                            >
+                                <HiTrash className="size-6"/>
+                            </Button>
+                        </div>
                     </div>
-                )}
-                <div className="absolute inset-0 hidden h-full w-full items-center justify-center rounded-lg bg-default/75 backdrop-blur-lg group-hover:flex">
-                    <Button
-                        isIconOnly
-                        type="button"
-                        variant="light"
-                        color="danger"
-                        size="sm"
-                        className="text-danger"
-                        onClick={() => onChange('')}
-                    >
-                        <HiTrash className="h-6 w-6" />
-                    </Button>
                 </div>
-            </div>
-        )
-    }
+                )
+                }
 
-    return (
-        <div className="w-full bg-muted/30">
+                return (
+                <div className="w-full">
+                    <p className="text-tiny pb-1.5">
+                        MOCKUP
+            </p>
             <UploadDropzone
                 endpoint={endpoint}
                 config={{
-                    mode: 'manual',
-                    appendOnPaste: true,
+                    mode: 'auto',
                 }}
-                onDrop={(acceptedFiles) => {
-                    const droppedFile = acceptedFiles[0]
-
-                    if (droppedFile) {
-                        const previewUrl = URL.createObjectURL(droppedFile)
-                        onChange(previewUrl)
-                    }
+                onClientUploadComplete={(res) => {
+                    onChange(res?.[0].url)
                 }}
+                onUploadError={(error: Error) => {
+                    console.log(error)
+                }}
+                className="border-2 border-brand-primary border-solid p-0 m-0 w-full ut-label:hidden ut-upload-icon:hidden ut-allowed-content:hidden ut-button:m-0 ut-button:h-7 ut-button:text-tiny ut-button:rounded-medium ut-button:bg-transparent"
+                // appearance={{
+                //     container:
+                // }}
             />
         </div>
     )
