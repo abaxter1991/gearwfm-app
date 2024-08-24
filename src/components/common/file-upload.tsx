@@ -40,27 +40,27 @@ export function FileUpload({ endpoint, onChange, value }: FileUploadProps) {
                         />
                     </div>
                     <div className="absolute inset-0 hidden h-full w-full items-center justify-center rounded-lg backdrop-blur-[2px] group-hover:flex">
-                            <Button
-                                isIconOnly
-                                type="button"
-                                variant="bordered"
-                                color="danger"
-                                size="sm"
-                                className="text-danger bg-transparent"
-                                onClick={handleDeleteImage}
-                            >
-                                <HiTrash className="size-6"/>
-                            </Button>
-                        </div>
+                        <Button
+                            isIconOnly
+                            type="button"
+                            variant="bordered"
+                            color="danger"
+                            size="sm"
+                            className="text-danger bg-transparent"
+                            onClick={handleDeleteImage}
+                        >
+                            <HiTrash className="size-6"/>
+                        </Button>
                     </div>
                 </div>
-                )
-                }
+            </div>
+        )
+    }
 
-                return (
-                <div className="w-full">
-                    <p className="text-tiny pb-1.5">
-                        MOCKUP
+    return (
+        <div className="w-full">
+            <p className="text-tiny pb-1.5">
+                MOCKUP
             </p>
             <UploadDropzone
                 endpoint={endpoint}

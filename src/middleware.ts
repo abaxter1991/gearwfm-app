@@ -6,6 +6,7 @@ const isPublicRoute = createRouteMatcher([
     '/public(.*)',
     '/api/v1/forms/new-sales-order',
     '/api/uploadthing',
+    '/api/uploadthing/delete(.*)',
 ])
 
 export default clerkMiddleware((auth, request) => {
