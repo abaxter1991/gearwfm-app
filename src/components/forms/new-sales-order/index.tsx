@@ -18,7 +18,7 @@ import { FileUpload } from '@/components/common/file-upload'
 import { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { DevTool } from '@hookform/devtools'
+// import { DevTool } from '@hookform/devtools'
 import type { DateValue } from '@internationalized/date'
 
 const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
