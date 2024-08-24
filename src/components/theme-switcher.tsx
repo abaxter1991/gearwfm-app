@@ -6,11 +6,11 @@ import { useEffect, useState } from 'react'
 import { HiComputerDesktop as SystemModeIcon, HiMoon as DarkModeIcon, HiSun as LightModeIcon } from 'react-icons/hi2'
 import { cn } from '@/lib/utils'
 
-type ThemeSwitcherProps = {
+type Props = {
     iconClasses?: string
 }
 
-export const ThemeSwitcher = (props: ThemeSwitcherProps) => {
+export const ThemeSwitcher = (props: Props) => {
     const {
         iconClasses = 'pointer-events-none flex-shrink-0 text-xl text-default-500'
     } = props

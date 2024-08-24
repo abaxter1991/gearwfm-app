@@ -524,18 +524,6 @@ export function NewSalesOrder() {
                                                         labelPlacement="outside"
                                                     />
                                                 </div>
-                                                <div className="flex-auto w-[75px]">
-                                                    <InputField
-                                                        form={form}
-                                                        label="4XL"
-                                                        name={`products.${index}.quantityOf4XL` as const}
-                                                        type="number"
-                                                        defaultValue="0"
-                                                        variant="bordered"
-                                                        size="sm"
-                                                        labelPlacement="outside"
-                                                    />
-                                                </div>
                                             </div>
                                         )}
                                         <div className="flex-shrink-0 w-[75px]">

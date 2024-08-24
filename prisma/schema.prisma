@@ -8,29 +8,35 @@ datasource db {
 }
 
 model SalesOrder {
-    id              String              @id @default(cuid())
-    createdAt       DateTime            @default(now()) @map("created_at")
-    updatedAt       DateTime            @updatedAt @map("updated_at")
-    orderDate       DateTime?           @map("order_date")
-    dueDate         DateTime?           @map("due_date")
-    userId          String?             @map("user_id")
-    status          SalesOrderStatus    @default(NEW_ORDER)
-    isDraft         Boolean             @default(true) @map("is_draft")
-    isNewCustomer   Boolean             @default(false) @map("is_new_customer")
-    externalId      String?             @map("external_id")
-    salesRepName    String?             @map("sales_rep_name")
-    companyName     String?             @map("company_name")
-    contactName     String?             @map("contact_name")
-    phoneNumber     String?             @map("phone_number")
-    emailAddress    String?             @map("email_address")
-    shippingAddress String?             @map("shipping_address")
-    billingAddress  String?             @map("billing_address")
-    notes           String?
-    discount        Int
-    shippingPrice   Float               @map("shipping_price")
-    grandTotal      Float               @map("grand_total")
+    id                     String                       @id @default(cuid())
+    createdAt              DateTime                     @default(now()) @map("created_at")
+    updatedAt              DateTime                     @updatedAt @map("updated_at")
+    orderDate              DateTime                     @map("order_date")
+    dueDate                DateTime                     @map("due_date")
+    userId                 String?                      @map("user_id")
+    status                 SalesOrderStatus             @default(NEW_ORDER)
+    isDraft                Boolean                      @default(true) @map("is_draft")
+    isNewCustomer          Boolean                      @default(false) @map("is_new_customer")
+    externalId             String?                      @map("external_id")
+    salesRepName           String?                      @map("sales_rep_name")
+    customerServiceRepName String?                      @map("customer_service_rep_name")
+    companyName            String?                      @map("company_name")
+    contactName            String?                      @map("contact_name")
+    phoneNumber            String?                      @map("phone_number")
+    emailAddress           String?                      @map("email_address")
+    shippingAddress        String?                      @map("shipping_address")
+    billingAddress         String?                      @map("billing_address")
+    notes                  String?
+    discount               Int
+    shippingPrice          Float                        @map("shipping_price")
+    grandTotal             Float                        @map("grand_total")
+    approvedProof          Boolean                      @default(false) @map("approved_proof")
+    partsOrdered           Boolean                      @default(false) @map("parts_ordered")
+    partsReceived          Boolean                      @default(false) @map("parts_received")
     //
-    products        SalesOrderProduct[]
+    products               SalesOrderProduct[]
+    //
+    assembledProducts      SalesOrderAssembledProduct[]
 
     @@map("SalesOrders")
 }
@@ -39,6 +45,7 @@ model SalesOrderProduct {
     id             String      @id @default(cuid())
     createdAt      DateTime    @default(now()) @map("created_at")
     updatedAt      DateTime    @updatedAt @map("updated_at")
+    // TODO: Rename item to category and create a Category enum.
     item           String?
     fileName       String?     @map("file_name")
     style          String?
@@ -61,6 +68,20 @@ model SalesOrderProduct {
     salesOrderId   String?     @map("sales_order_id")
 
     @@map("SalesOrderProducts")
+}
+
+model SalesOrderAssembledProduct {
+    id           String      @id @default(cuid())
+    createdAt    DateTime    @default(now()) @map("created_at")
+    updatedAt    DateTime    @updatedAt @map("updated_at")
+    // TODO: Rename item to category and create a Category enum.
+    item         String
+    allAssembled Boolean     @default(false) @map("all_assembled")
+    //
+    salesOrder   SalesOrder? @relation(fields: [salesOrderId], references: [id])
+    salesOrderId String?     @map("sales_order_id")
+
+    @@map("SalesOrderAssembledProducts")
 }
 
 enum SalesOrderStatus {

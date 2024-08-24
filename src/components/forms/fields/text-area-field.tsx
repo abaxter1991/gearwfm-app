@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils'
 import type { TextAreaProps } from '@nextui-org/react'
 import type { UseFormReturn } from 'react-hook-form'
 
-type TextAreaFieldProps = Omit<TextAreaProps, 'form'> & {
+type Props = Omit<TextAreaProps, 'form'> & {
     form: UseFormReturn<any, undefined>
 }
 
-export default function TextAreaField(fieldProps: TextAreaFieldProps) {
+export default function TextAreaField(fieldProps: Props) {
     const { form, className, ...props } = fieldProps
     const name = props.name || ''
 

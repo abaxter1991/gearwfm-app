@@ -5,11 +5,11 @@ import type { InputProps } from '@nextui-org/react'
 import type { UseFormReturn } from 'react-hook-form'
 import { HiPhoto } from 'react-icons/hi2'
 
-type ImageFieldProps = Omit<InputProps, 'form' | 'type'> & {
+type Props = Omit<InputProps, 'form' | 'type'> & {
     form: UseFormReturn<any, undefined>
 }
 
-export default function ImageField(fieldProps: ImageFieldProps) {
+export default function ImageField(fieldProps: Props) {
     const { form, className, classNames, ...props } = fieldProps
     const name = props.name || ''
 
@@ -64,11 +64,11 @@ export default function ImageField(fieldProps: ImageFieldProps) {
 // import { HiPhoto } from 'react-icons/hi2'
 // import type { InputHTMLAttributes } from 'react'
 //
-// type ImageFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, | 'type'> & {
+// type Props = Omit<InputHTMLAttributes<HTMLInputElement>, | 'type'> & {
 //     form: UseFormReturn<any, undefined>
 // }
 //
-// export default function ImageField(fieldProps: ImageFieldProps) {
+// export default function ImageField(fieldProps: Props) {
 //     const { form, className, ...props } = fieldProps
 //     const name = props.name || ''
 //

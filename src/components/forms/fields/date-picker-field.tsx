@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils'
 import type { DatePickerProps } from '@nextui-org/react'
 import type { UseFormReturn } from 'react-hook-form'
 
-type DatePickerFieldProps = Omit<DatePickerProps, 'form' | 'value' | 'onChange'> & {
+type Props = Omit<DatePickerProps, 'form' | 'value' | 'onChange'> & {
     form: UseFormReturn<any, undefined>
 }
 
-export default function DatePickerField(fieldProps: DatePickerFieldProps) {
+export default function DatePickerField(fieldProps: Props) {
     const { form, className, ...props } = fieldProps
     const name = props.name || ''
 

@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils'
 import type { InputProps } from '@nextui-org/react'
 import type { UseFormReturn } from 'react-hook-form'
 
-type InputFieldProps = Omit<InputProps, 'form'> & {
+type Props = Omit<InputProps, 'form'> & {
     form: UseFormReturn<any, undefined>
 }
 
-export default function InputField(fieldProps: InputFieldProps) {
+export default function InputField(fieldProps: Props) {
     const { form, className, classNames, ...props } = fieldProps
     const name = props.name || ''
 

@@ -6,14 +6,15 @@ CREATE TABLE "SalesOrders" (
     "id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "order_date" TIMESTAMP(3),
-    "due_date" TIMESTAMP(3),
+    "order_date" TIMESTAMP(3) NOT NULL,
+    "due_date" TIMESTAMP(3) NOT NULL,
     "user_id" TEXT,
     "status" "SalesOrderStatus" NOT NULL DEFAULT 'NEW_ORDER',
     "is_draft" BOOLEAN NOT NULL DEFAULT true,
     "is_new_customer" BOOLEAN NOT NULL DEFAULT false,
     "external_id" TEXT,
     "sales_rep_name" TEXT,
+    "customer_service_rep_name" TEXT,
     "company_name" TEXT,
     "contact_name" TEXT,
     "phone_number" TEXT,
@@ -24,6 +25,9 @@ CREATE TABLE "SalesOrders" (
     "discount" INTEGER NOT NULL,
     "shipping_price" DOUBLE PRECISION NOT NULL,
     "grand_total" DOUBLE PRECISION NOT NULL,
+    "approved_proof" BOOLEAN NOT NULL DEFAULT false,
+    "parts_ordered" BOOLEAN NOT NULL DEFAULT false,
+    "parts_received" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "SalesOrders_pkey" PRIMARY KEY ("id")
 );
@@ -55,5 +59,20 @@ CREATE TABLE "SalesOrderProducts" (
     CONSTRAINT "SalesOrderProducts_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "SalesOrderAssembledProducts" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "item" TEXT NOT NULL,
+    "all_assembled" BOOLEAN NOT NULL DEFAULT false,
+    "sales_order_id" TEXT,
+
+    CONSTRAINT "SalesOrderAssembledProducts_pkey" PRIMARY KEY ("id")
+);
+
 -- AddForeignKey
 ALTER TABLE "SalesOrderProducts" ADD CONSTRAINT "SalesOrderProducts_sales_order_id_fkey" FOREIGN KEY ("sales_order_id") REFERENCES "SalesOrders"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SalesOrderAssembledProducts" ADD CONSTRAINT "SalesOrderAssembledProducts_sales_order_id_fkey" FOREIGN KEY ("sales_order_id") REFERENCES "SalesOrders"("id") ON DELETE SET NULL ON UPDATE CASCADE;

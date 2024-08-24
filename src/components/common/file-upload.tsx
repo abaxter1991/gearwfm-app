@@ -9,13 +9,13 @@ import { cn } from '@/lib/utils'
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
-type FileUploadProps = {
+type Props = {
     endpoint: 'mockups' | 'devMockups'
     onChange: (url?: string) => void
     value?: string
 }
 
-export function FileUpload({ endpoint, onChange, value }: FileUploadProps) {
+export function FileUpload({ endpoint, onChange, value }: Props) {
     const handleDeleteImage = async () => {
         if (value) {
             const fileKey = value.replace('https://utfs.io/f/', '')
@@ -35,7 +35,7 @@ export function FileUpload({ endpoint, onChange, value }: FileUploadProps) {
                     <div className="relative size-8">
                         <Image
                             src={value}
-                            alt="uploaded image"
+                            alt="Mockup Image"
                             className="object-contain"
                             fill
                         />

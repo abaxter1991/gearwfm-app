@@ -5,12 +5,12 @@ import { cn } from '@/lib/utils'
 import type { CheckboxProps } from '@nextui-org/react'
 import type { UseFormReturn } from 'react-hook-form'
 
-type CheckboxFieldProps = Omit<CheckboxProps, 'form'> & {
+type Props = Omit<CheckboxProps, 'form'> & {
     form: UseFormReturn<any, undefined>
     children?: ReactNode
 }
 
-export default function CheckboxField(fieldProps: CheckboxFieldProps) {
+export default function CheckboxField(fieldProps: Props) {
     const { form, className, children, ...props } = fieldProps
     const name = props.name || ''
 

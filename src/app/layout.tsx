@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import { DM_Sans } from 'next/font/google'
-import { ThemeProvider } from '@/providers/theme-provider'
+import { AppProvider } from '@/providers/app-provider'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
 import { Toaster as SonnerToaster } from '@/components/ui/sonner'
@@ -20,16 +20,11 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
             suppressHydrationWarning
         >
             <body className={font.className}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
+                <AppProvider>
                     {children}
                     <Toaster />
                     <SonnerToaster position="top-right" />
-                </ThemeProvider>
+                </AppProvider>
             </body>
         </html>
     )
