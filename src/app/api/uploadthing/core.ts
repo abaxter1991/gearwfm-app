@@ -8,9 +8,9 @@ const f = createUploadthing()
 const authenticateUser = () => {
     const user = auth()
 
-    if (!user.userId) {
-        throw new UploadThingError('Unauthorized')
-    }
+    // if (!user.userId) {
+    //     throw new UploadThingError('Unauthorized')
+    // }
 
     return user
 }
@@ -24,7 +24,7 @@ export const ourFileRouter = {
             console.log("file url", file.url)
 
             // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-            return {uploadedBy: metadata.userId}
+            return { uploadedBy: metadata.userId }
         }),
     devMockups: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
         .middleware(authenticateUser)
@@ -34,7 +34,7 @@ export const ourFileRouter = {
             console.log("file url", file.url)
 
             // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-            return {uploadedBy: metadata.userId}
+            return { uploadedBy: metadata.userId }
         }),
 } satisfies FileRouter
 

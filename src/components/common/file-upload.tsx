@@ -5,6 +5,7 @@ import { HiTrash } from 'react-icons/hi2'
 import Image from 'next/image'
 import { Button } from '@nextui-org/react'
 import { UploadDropzone } from '@/lib/uploadthing'
+import { cn } from '@/lib/utils'
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
@@ -67,16 +68,36 @@ export function FileUpload({ endpoint, onChange, value }: FileUploadProps) {
                 config={{
                     mode: 'auto',
                 }}
+                appearance={{
+                    container: 'w-full m-0 p-0 rounded-small border-2 border-brand-primary border-solid',
+                    uploadIcon: 'hidden',
+                    label: 'hidden',
+                    allowedContent: 'hidden',
+                    button: cn(
+                        'h-7 w-auto m-0',
+                        'text-primary-foreground text-tiny bg-transparent',
+                        'ut-uploading:w-full ut-uploading:cursor-not-allowed',
+                        'focus-within:ring-brand-primary',
+                        'after:bg-brand-primary',
+                    ),
+                }}
+                content={{
+                    button({ ready }) {
+                        if (ready) return 'Find Image'
+                        // TODO: Replace with an animated loader.
+                        return 'Loading...'
+                    },
+                }}
                 onClientUploadComplete={(res) => {
                     onChange(res?.[0].url)
                 }}
-                onUploadError={(error: Error) => {
-                    console.log(error)
+                onUploadAborted={() => {
+                    alert('Upload aborted!')
                 }}
-                className="border-2 border-brand-primary border-solid p-0 m-0 w-full ut-label:hidden ut-upload-icon:hidden ut-allowed-content:hidden ut-button:m-0 ut-button:h-7 ut-button:text-tiny ut-button:rounded-medium ut-button:bg-transparent"
-                // appearance={{
-                //     container:
-                // }}
+                onUploadError={(error: Error) => {
+                    console.error(error, error.cause)
+                    alert('Upload failed!')
+                }}
             />
         </div>
     )
