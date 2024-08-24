@@ -528,9 +528,9 @@ export function NewSalesOrder() {
                                         )}
                                         <div className="flex-shrink-0 w-[75px]">
                                             <InputField
-                                                isReadOnly={product.item !== 'HAT'}
+                                                isReadOnly={product.item ? getFieldLayout(product.item) !== 'Gear' : true}
                                                 form={form}
-                                                label={product.item !== 'HAT' ? 'TOTAL' : 'QUANTITY'}
+                                                label={product.item && getFieldLayout(product.item) !== 'Gear' ? 'TOTAL' : 'QUANTITY'}
                                                 name={`products.${index}.totalQuantity` as const}
                                                 type="number"
                                                 variant="bordered"
