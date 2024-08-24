@@ -6,6 +6,7 @@ const isPublicRoute = createRouteMatcher([
     '/public(.*)',
     '/api/v1/forms/new-sales-order',
     '/api/uploadthing',
+    // TODO: Verify if this delete route is needed.
     '/api/uploadthing/delete(.*)',
 ])
 
