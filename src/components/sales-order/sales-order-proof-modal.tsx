@@ -1,20 +1,20 @@
 'use client'
 
-import Image from 'next/image'
-import { useEffect } from 'react'
 import {
     Button,
-    Checkbox,
-    CheckboxGroup, Divider,
+    Divider,
     Modal,
     ModalBody,
     ModalContent,
     ModalFooter,
     ModalHeader,
-    Textarea,
+    Pagination,
     useDisclosure,
 } from '@nextui-org/react'
 import { SalesOrder, SalesOrderProduct, SalesOrderAssembledProduct } from '@prisma/client'
+import { useEffect, useState } from 'react'
+import { ProductProofDetail } from './product-proof-detail'
+import { HiArrowDownTray } from 'react-icons/hi2'
 
 export type SalesOrderAndRelations = SalesOrder & {
     products: SalesOrderProduct[]
@@ -27,6 +27,18 @@ type Props = {
 
 export function SalesOrderProofModal({ salesOrder }: Props) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
+
+    const [currentPage, setCurrentPage] = useState(1)
+    // const [productsInGroup, setProductsInGroup] = useState<SalesOrderProduct[]>([])
+    const [productsInView, setProductsInView] = useState<SalesOrderProduct[]>([])
+
+    const itemsPerPage = 6
+
+    useEffect(() => {
+        const start = (currentPage * itemsPerPage) - itemsPerPage
+        const end = currentPage * itemsPerPage
+        setProductsInView(salesOrder.products.slice(start, end))
+    }, [currentPage])
 
     return (
         <>
@@ -41,35 +53,50 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
                 onOpenChange={onOpenChange}
                 size="5xl"
                 backdrop="blur"
+                className="max-w-7xl"
             >
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">
-                                <h1 className="text-2xl">
-                                    {salesOrder.companyName}
-                                </h1>
-                                <p className="text-sm">
-                                    Due Date: {salesOrder.dueDate.toLocaleDateString()}
-                                </p>
+                            <ModalHeader className="flex gap-1 items-center justify-between">
+                                <div className="flex flex-col gap-1">
+                                    <h1 className="text-2xl">
+                                        {salesOrder.companyName}
+                                    </h1>
+                                    <p className="text-sm">
+                                        Due Date: {salesOrder.dueDate.toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <Button
+                                    isIconOnly
+                                    variant="light"
+                                    size="sm"
+                                    color="primary"
+                                    className="border-brand-primary text-brand-primary"
+                                >
+                                    <HiArrowDownTray className="size-6" />
+                                </Button>
                             </ModalHeader>
                             <Divider />
                             <ModalBody>
                                 <div className="grid grid-cols-3 grid-rows-2 h-full w-full place-content-between">
-                                    {salesOrder.products.map((product) => (
-                                        <div key={product.id} className="relative size-48 m-4 justify-self-center">
-                                            <Image
-                                                src={product.mockupImageUrl!}
-                                                alt="Mockup Image"
-                                                className="object-contain"
-                                                fill
-                                            />
-                                        </div>
+                                    {productsInView.map((product) => (
+                                        <ProductProofDetail key={product.id} product={product} />
                                     ))}
                                 </div>
                             </ModalBody>
-                            <ModalFooter className="justify-center bg-success-500 text-black">
-                                IN PROGRESS
+                            <Divider />
+                            <ModalFooter className="justify-center">
+                                <Pagination
+                                    isCompact
+                                    showControls
+                                    total={Math.ceil(salesOrder.products.length / itemsPerPage)}
+                                    page={currentPage}
+                                    onChange={setCurrentPage}
+                                    classNames={{
+                                        cursor: 'bg-brand-primary',
+                                    }}
+                                />
                             </ModalFooter>
                         </>
                     )}

@@ -18,11 +18,13 @@ import { FileUpload } from '@/components/common/file-upload'
 import { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-// import { DevTool } from '@hookform/devtools'
+import { HiTrash } from 'react-icons/hi2'
 import type { DateValue } from '@internationalized/date'
 
 const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+
+const today = now(getLocalTimeZone())
 
 export type SalesOrder = {
     orderDate: DateValue
@@ -62,8 +64,6 @@ export type Product = {
     unitPrice: number
     subtotal: number
 }
-
-const today = now(getLocalTimeZone())
 
 const defaultSalesOrder: SalesOrder = {
     orderDate: today,
@@ -132,14 +132,12 @@ export function NewSalesOrder() {
     const { control, handleSubmit, formState, watch } = form
     const { errors } = formState
 
-    const { fields: products, append } = useFieldArray({
+    const { fields: products, append, remove } = useFieldArray({
         control: control,
         name: 'products',
     })
 
     const onSubmit = handleSubmit(async (data) => {
-        console.log(data)
-
         await axios.post(`${baseUrl}/api/v1/forms/new-sales-order`, data)
 
         toast('New sales order has been submitted!')
@@ -575,6 +573,18 @@ export function NewSalesOrder() {
                                                 }
                                             />
                                         </div>
+                                        <div className="flex-shrink-0 self-end">
+                                            <Button
+                                                isIconOnly
+                                                variant="light"
+                                                size="sm"
+                                                color="danger"
+                                                className="text-danger"
+                                                onPress={() => remove(index)}
+                                            >
+                                                <HiTrash className="size-4" />
+                                            </Button>
+                                        </div>
                                     </div>
                                 ))}
                             </CardBody>
@@ -686,7 +696,6 @@ export function NewSalesOrder() {
                     </Card>
                 </div>
             </form>
-            {/*<DevTool control={control} />*/}
         </Form>
     )
 }

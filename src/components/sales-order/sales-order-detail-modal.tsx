@@ -89,6 +89,7 @@ export function SalesOrderDetailModal({ salesOrder }: Props) {
                                 >
                                     <Checkbox
                                         value="approvedProof"
+                                        color="success"
                                         onChange={(event) => {
                                             updateSalesOrderApprovedProof(salesOrder.id, event.target.checked)
                                         }}
@@ -102,6 +103,7 @@ export function SalesOrderDetailModal({ salesOrder }: Props) {
                                 >
                                     <Checkbox
                                         value="partsOrdered"
+                                        color="success"
                                         onChange={(event) => {
                                             updateSalesOrderPartsOrdered(salesOrder.id, event.target.checked)
                                         }}
@@ -110,6 +112,7 @@ export function SalesOrderDetailModal({ salesOrder }: Props) {
                                     </Checkbox>
                                     <Checkbox
                                         value="partsReceived"
+                                        color="success"
                                         onChange={(event) => {
                                             updateSalesOrderPartsReceived(salesOrder.id, event.target.checked)
                                         }}
@@ -125,6 +128,7 @@ export function SalesOrderDetailModal({ salesOrder }: Props) {
                                         <Checkbox
                                             key={assembledProduct.id}
                                             value={assembledProduct.item.toLowerCase()}
+                                            color="success"
                                             onChange={(event) => {
                                                 updateSalesOrderAssembledProduct(assembledProduct.id, event.target.checked)
                                             }}
@@ -139,8 +143,8 @@ export function SalesOrderDetailModal({ salesOrder }: Props) {
                                     value={salesOrder.notes || ''}
                                 />
                             </ModalBody>
-                            <ModalFooter className="justify-center bg-success-500 text-black">
-                                IN PROGRESS
+                            <ModalFooter className="justify-center bg-warning text-black font-bold">
+                                NEW
                             </ModalFooter>
                         </>
                     )}
