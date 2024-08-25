@@ -51,7 +51,6 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
             <Modal
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
-                size="5xl"
                 backdrop="blur"
                 className="max-w-7xl"
             >
