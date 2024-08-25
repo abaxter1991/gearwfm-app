@@ -143,7 +143,7 @@ export function SalesOrderDetailModal({ salesOrder }: Props) {
                                     value={salesOrder.notes || ''}
                                 />
                             </ModalBody>
-                            <ModalFooter className="justify-center bg-warning text-black font-bold">
+                            <ModalFooter className="justify-center bg-brand-primary text-black font-bold">
                                 NEW
                             </ModalFooter>
                         </>
