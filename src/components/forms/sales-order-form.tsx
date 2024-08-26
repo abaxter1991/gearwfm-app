@@ -243,14 +243,25 @@ export function SalesOrderForm({ salesOrder }: Props) {
             <form onSubmit={onSubmit}>
                 <div className="flex flex-col gap-4 h-full w-full">
                     <Card className="shrink-0">
-                        <CardHeader className="bg-brand-primary text-black justify-center w-full">
+                        <CardHeader className="bg-brand-primary text-black justify-between w-full">
+                            <div/>
                             <h1 className="text-2xl font-bold">
                                 Sales Order Form
                             </h1>
                             {salesOrder && (
-                                <h1 className="text-2xl font-bold self-end">
-                                    SO#: {salesOrder.externalId}
-                                </h1>
+                                // <h1 className="text-2xl font-bold">
+                                //     SO#: {salesOrder.externalId}
+                                // </h1>
+                                <InputField
+                                    form={form}
+                                    name="externalId"
+                                    label="SO#"
+                                    labelPlacement="outside-left"
+                                    placeholder=" "
+                                    variant="bordered"
+                                    size="sm"
+                                    defaultValue={salesOrder.externalId}
+                                />
                             )}
                         </CardHeader>
                         <CardBody className="gap-4">

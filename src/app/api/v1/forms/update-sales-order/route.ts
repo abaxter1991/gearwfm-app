@@ -22,9 +22,9 @@ export async function POST(request: Request) {
         }
     })
 
-    // const assembledProducts = productsToAssemble.map((item) => {
-    //     return { item, allAssembled: false }
-    // })
+    const newAssembledProducts = productsToAssemble.map((item) => {
+        return { item, allAssembled: false }
+    })
 
     const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
@@ -38,8 +38,6 @@ export async function POST(request: Request) {
             approvedProof: false,
             partsOrdered: false,
             partsReceived: false,
-            // products: { create: products },
-            // assembledProducts: { create: assembledProducts },
         },
     })
 
@@ -48,6 +46,26 @@ export async function POST(request: Request) {
         await prisma.salesOrderProduct.update({
             where: { id: productId },
             data: { ...restProduct },
+        })
+    }
+
+    for (const assembledProduct of assembledProducts) {
+        await prisma.salesOrderAssembledProduct.delete({
+            where: { id: assembledProduct.id },
+        })
+    }
+
+    for (const newAssembledProduct of newAssembledProducts) {
+        await prisma.salesOrderAssembledProduct.create({
+            data: {
+                item: newAssembledProduct.item,
+                allAssembled: newAssembledProduct.allAssembled,
+                salesOrder: {
+                    connect: {
+                        id: salesOrderId,
+                    },
+                },
+            },
         })
     }
 
