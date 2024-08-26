@@ -143,16 +143,10 @@ export function SalesOrderForm({ salesOrder }: Props) {
         const orderDate = new CalendarDateTime(salesOrder.orderDate.getUTCFullYear(), salesOrder.orderDate.getUTCMonth() + 1, salesOrder.orderDate.getUTCDate())
         const dueDate = new CalendarDateTime(salesOrder.dueDate.getUTCFullYear(), salesOrder.dueDate.getUTCMonth() + 1, salesOrder.dueDate.getUTCDate())
 
-        console.log({ orderDate, dueDate })
-
         defaultSalesOrder = {
             ...salesOrder,
-            orderDate: orderDate,
-            dueDate: dueDate,
-            // orderDate: parseDate(`${salesOrder.orderDate.getUTCFullYear()}-${salesOrder.orderDate.getUTCMonth() + 1}-${salesOrder.orderDate.getUTCDate()}`),
-            // dueDate: parseDate(`${salesOrder.dueDate.getUTCFullYear()}-${salesOrder.dueDate.getUTCMonth() + 1}-${salesOrder.dueDate.getUTCDate()}`),
-            // orderDate: new CalendarDate(salesOrder.orderDate.getUTCFullYear(), salesOrder.orderDate.getUTCMonth() + 1, salesOrder.orderDate.getUTCDate()),
-            // dueDate: new CalendarDate(salesOrder.dueDate.getUTCFullYear(), salesOrder.dueDate.getUTCMonth() + 1, salesOrder.dueDate.getUTCDate()),
+            orderDate,
+            dueDate,
         }
     }
 

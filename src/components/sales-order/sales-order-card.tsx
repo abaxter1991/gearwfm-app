@@ -48,7 +48,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                 <div className="flex flex-col gap-1">
                     <div className="flex justify-between">
                         <p className="font-bold">Due Date</p>
-                        <p>{salesOrder.dueDate.toLocaleDateString()}</p>
+                        <p>{`${salesOrder.dueDate.getUTCMonth() + 1}/${salesOrder.dueDate.getUTCDate()}/${salesOrder.dueDate.getUTCFullYear()}`}</p>
                     </div>
                     <div className="flex justify-between">
                         <p className="font-bold">Sales Rep</p>
