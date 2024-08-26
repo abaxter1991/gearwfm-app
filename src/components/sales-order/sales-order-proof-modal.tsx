@@ -11,10 +11,10 @@ import {
     Pagination,
     useDisclosure,
 } from '@nextui-org/react'
-import { SalesOrder, SalesOrderProduct, SalesOrderAssembledProduct } from '@prisma/client'
 import { useEffect, useState } from 'react'
 import { ProductProofDetail } from './product-proof-detail'
 import { HiArrowDownTray } from 'react-icons/hi2'
+import type { SalesOrder, SalesOrderProduct, SalesOrderAssembledProduct } from '@prisma/client'
 
 export type SalesOrderAndRelations = SalesOrder & {
     products: SalesOrderProduct[]
@@ -44,7 +44,7 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
         <>
             <Button
                 onPress={onOpen}
-                className="bg-brand-primary text-white"
+                className="bg-brand-primary text-black"
             >
                 View Proof
             </Button>

@@ -1,4 +1,4 @@
-import { NewSalesOrder } from '@/components/forms/new-sales-order'
+import { NewSalesOrder } from '@/components/forms/sales-order-form'
 import Link from 'next/link'
 import prisma from '@/prisma/client'
 

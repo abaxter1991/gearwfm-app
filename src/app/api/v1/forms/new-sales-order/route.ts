@@ -1,12 +1,17 @@
 import prisma from '@/prisma/client'
-import type { SalesOrder } from '@/components/forms/new-sales-order'
+import type { SalesOrderType } from '@/components/forms/sales-order-form'
 
 export async function POST(request: Request) {
-    const data: SalesOrder = await request.json()
-    const { isNewCustomer, orderDate, dueDate, products, ...salesOrder } = data
+    const data: SalesOrderType = await request.json()
+    const { id, isNewCustomer, orderDate, dueDate, products, ...salesOrder } = data
     const productsToAssemble: string[] = []
 
-    products.forEach((product) => {
+    const cleanedProducts = products.map((product) => {
+        const { id, ...restProduct } = product
+        return restProduct
+    })
+
+    cleanedProducts.forEach((product) => {
         if (product.item && !productsToAssemble.includes(product.item)) {
             productsToAssemble.push(product.item)
         }
@@ -27,7 +32,7 @@ export async function POST(request: Request) {
             approvedProof: false,
             partsOrdered: false,
             partsReceived: false,
-            products: { create: products },
+            products: { create: cleanedProducts },
             assembledProducts: { create: assembledProducts },
         },
     })

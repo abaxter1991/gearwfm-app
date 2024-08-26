@@ -1,7 +1,8 @@
 'use client'
 
+import { useUser } from '@clerk/nextjs'
 import axios from 'axios'
-import { now, getLocalTimeZone } from '@internationalized/date'
+import { now, getLocalTimeZone, parseDate, CalendarDate } from '@internationalized/date'
 import { CheckboxField, DatePickerField, InputField, TextAreaField } from '@/components/forms/fields'
 import {
     Button,
@@ -20,38 +21,48 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { HiTrash } from 'react-icons/hi2'
 import type { DateValue } from '@internationalized/date'
+import type { SalesOrder, SalesOrderProduct, SalesOrderAssembledProduct } from '@prisma/client'
 
 const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 const today = now(getLocalTimeZone())
 
-export type SalesOrder = {
+export type SalesOrderAndRelations = SalesOrder & {
+    products: SalesOrderProduct[]
+    assembledProducts: SalesOrderAssembledProduct[]
+}
+
+export type SalesOrderType = {
+    id: string
     orderDate: DateValue
     dueDate: DateValue
     salesRepName: string
-    externalId?: string
-    isNewCustomer?: boolean
-    companyName?: string
-    contactName?: string
-    phoneNumber?: string
-    emailAddress?: string
-    shippingAddress?: string
-    billingAddress?: string
-    notes?: string
+    externalId: string
+    referenceId: string
+    isNewCustomer: boolean
+    companyName: string
+    contactName: string
+    phoneNumber: string
+    emailAddress: string
+    shippingAddress: string
+    billingAddress: string
+    notes: string
     discount: number
     shippingPrice: number
     grandTotal: number
-    products: Product[]
+    products: ProductType[]
+    assembledProducts: AssembledProductType[]
 }
 
-export type Product = {
-    item?: string
-    fileName?: string
-    style?: string
-    color?: string
-    mockupImageUrl?: string
-    notes?: string
+export type ProductType = {
+    id: string
+    item: string
+    fileName: string
+    style: string
+    color: string
+    mockupImageUrl: string
+    notes: string
     quantityOfXS: number
     quantityOfSM: number
     quantityOfMD: number
@@ -65,43 +76,10 @@ export type Product = {
     subtotal: number
 }
 
-const defaultSalesOrder: SalesOrder = {
-    orderDate: today,
-    dueDate: today.add({ weeks: 3 }),
-    salesRepName: '',
-    externalId: '',
-    isNewCustomer: false,
-    companyName: '',
-    contactName: '',
-    phoneNumber: '',
-    emailAddress: '',
-    shippingAddress: '',
-    billingAddress: '',
-    notes: '',
-    discount: 0,
-    shippingPrice: 0.00,
-    grandTotal: 0.00,
-    products: []
-}
-
-const defaultProduct: Product = {
-    item: '',
-    fileName: '',
-    style: '',
-    color: '',
-    mockupImageUrl: '',
-    notes: '',
-    quantityOfXS: 0,
-    quantityOfSM: 0,
-    quantityOfMD: 0,
-    quantityOfLG: 0,
-    quantityOfXL: 0,
-    quantityOf2XL: 0,
-    quantityOf3XL: 0,
-    quantityOf4XL: 0,
-    totalQuantity: 0,
-    unitPrice: 0.00,
-    subtotal: 0.00,
+export type AssembledProductType = {
+    id: string
+    item: string
+    allAssembled: boolean
 }
 
 const productCategories = [
@@ -126,8 +104,65 @@ const getFieldLayout = (key: string) => {
     return productCategories.find((productCategory) => productCategory.key === key)?.fieldLayout
 }
 
-export function NewSalesOrder() {
-    const form = useForm<SalesOrder>({ defaultValues: defaultSalesOrder })
+type Props = {
+    salesOrder?: SalesOrderAndRelations
+}
+
+export function SalesOrderForm({ salesOrder }: Props) {
+    const { user } = useUser()
+
+    let defaultSalesOrder: SalesOrderType = {
+        id: '',
+        orderDate: today,
+        dueDate: today.add({ weeks: 3 }),
+        salesRepName: user ? `${user.firstName} ${user.lastName}` : '',
+        externalId: '',
+        referenceId: '',
+        isNewCustomer: false,
+        companyName: '',
+        contactName: '',
+        phoneNumber: '',
+        emailAddress: '',
+        shippingAddress: '',
+        billingAddress: '',
+        notes: '',
+        discount: 0,
+        shippingPrice: 0.00,
+        grandTotal: 0.00,
+        products: [],
+        assembledProducts: [],
+    }
+
+    if (salesOrder) {
+        defaultSalesOrder = {
+            ...salesOrder,
+            orderDate: new CalendarDate(salesOrder.orderDate.getFullYear(), salesOrder.orderDate.getMonth(), salesOrder.orderDate.getDay()),
+            dueDate: new CalendarDate(salesOrder.dueDate.getFullYear(), salesOrder.dueDate.getMonth(), salesOrder.dueDate.getDay()),
+        }
+    }
+
+    const defaultProduct: ProductType = {
+        id: '',
+        item: '',
+        fileName: '',
+        style: '',
+        color: '',
+        mockupImageUrl: '',
+        notes: '',
+        quantityOfXS: 0,
+        quantityOfSM: 0,
+        quantityOfMD: 0,
+        quantityOfLG: 0,
+        quantityOfXL: 0,
+        quantityOf2XL: 0,
+        quantityOf3XL: 0,
+        quantityOf4XL: 0,
+        totalQuantity: 0,
+        unitPrice: 0.00,
+        subtotal: 0.00,
+    }
+
+    const form = useForm<SalesOrderType>({ defaultValues: defaultSalesOrder })
 
     const { control, handleSubmit, formState, watch } = form
     const { errors } = formState
@@ -138,9 +173,13 @@ export function NewSalesOrder() {
     })
 
     const onSubmit = handleSubmit(async (data) => {
-        await axios.post(`${baseUrl}/api/v1/forms/new-sales-order`, data)
-
-        toast('New sales order has been submitted!')
+        if (salesOrder) {
+            await axios.post(`${baseUrl}/api/v1/forms/update-sales-order`, data)
+            toast('Sales order has been updated!')
+        } else {
+            await axios.post(`${baseUrl}/api/v1/forms/new-sales-order`, data)
+            toast('New sales order has been submitted!')
+        }
     })
 
     function updateTotalQuantity(productIndex: number) {
@@ -204,10 +243,15 @@ export function NewSalesOrder() {
             <form onSubmit={onSubmit}>
                 <div className="flex flex-col gap-4 h-full w-full">
                     <Card className="shrink-0">
-                        <CardHeader className="bg-brand-primary text-white justify-center w-full">
+                        <CardHeader className="bg-brand-primary text-black justify-center w-full">
                             <h1 className="text-2xl font-bold">
-                                New Sales Order
+                                Sales Order Form
                             </h1>
+                            {salesOrder && (
+                                <h1 className="text-2xl font-bold self-end">
+                                    SO#: {salesOrder.externalId}
+                                </h1>
+                            )}
                         </CardHeader>
                         <CardBody className="gap-4">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -247,8 +291,8 @@ export function NewSalesOrder() {
                                     />
                                     <InputField
                                         form={form}
-                                        name="externalId"
-                                        label="SO#"
+                                        name="referenceId"
+                                        label="REFERENCE #"
                                         placeholder=" "
                                         variant="bordered"
                                         size="sm"
@@ -595,8 +639,7 @@ export function NewSalesOrder() {
                             <DropdownTrigger>
                                 <Button
                                     variant="solid"
-                                    color="primary"
-                                    className="bg-brand-primary"
+                                    className="bg-brand-primary text-black"
                                 >
                                     Add Product
                                 </Button>
@@ -686,10 +729,9 @@ export function NewSalesOrder() {
                                 <Button
                                     type="submit"
                                     variant="solid"
-                                    color="primary"
-                                    className="bg-brand-primary"
+                                    className="bg-brand-primary text-black"
                                 >
-                                    Submit
+                                    {salesOrder ? 'Save' : 'Submit'}
                                 </Button>
                             </div>
                         </CardBody>

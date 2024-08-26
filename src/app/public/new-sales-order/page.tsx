@@ -1,7 +1,18 @@
-import { NewSalesOrder } from '@/components/forms/new-sales-order'
+'use client'
 
-export default async function NewSalesOrderPage() {
+import { useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
+import { SalesOrderForm } from '@/components/forms/sales-order-form'
+
+export default function PublicNewSalesOrderPage() {
+    const { isSignedIn } = useUser()
+    const router = useRouter()
+
+    if (isSignedIn) {
+        router.push('/sales-orders/new-sales-order')
+    }
+
     return (
-        <NewSalesOrder />
+        <SalesOrderForm />
     )
 }
