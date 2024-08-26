@@ -2,7 +2,7 @@
 
 import { useUser } from '@clerk/nextjs'
 import axios from 'axios'
-import { now, getLocalTimeZone, parseDate, CalendarDate } from '@internationalized/date'
+import { now, getLocalTimeZone, parseDate, CalendarDate, ZonedDateTime, CalendarDateTime,  } from '@internationalized/date'
 import { CheckboxField, DatePickerField, InputField, TextAreaField } from '@/components/forms/fields'
 import {
     Button,
@@ -26,7 +26,11 @@ import type { SalesOrder, SalesOrderProduct, SalesOrderAssembledProduct } from '
 const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
+const localTimeZone = getLocalTimeZone()
 const today = now(getLocalTimeZone())
+
+console.log({ localTimeZone })
+
 
 export type SalesOrderAndRelations = SalesOrder & {
     products: SalesOrderProduct[]
@@ -38,6 +42,7 @@ export type SalesOrderType = {
     orderDate: DateValue
     dueDate: DateValue
     salesRepName: string
+    salesRepEmailAddress: string
     externalId: string
     referenceId: string
     isNewCustomer: boolean
@@ -116,6 +121,7 @@ export function SalesOrderForm({ salesOrder }: Props) {
         orderDate: today,
         dueDate: today.add({ weeks: 3 }),
         salesRepName: user ? `${user.firstName} ${user.lastName}` : '',
+        salesRepEmailAddress: '',
         externalId: '',
         referenceId: '',
         isNewCustomer: false,
@@ -134,10 +140,19 @@ export function SalesOrderForm({ salesOrder }: Props) {
     }
 
     if (salesOrder) {
+        const orderDate = new CalendarDateTime(salesOrder.orderDate.getUTCFullYear(), salesOrder.orderDate.getUTCMonth() + 1, salesOrder.orderDate.getUTCDate())
+        const dueDate = new CalendarDateTime(salesOrder.dueDate.getUTCFullYear(), salesOrder.dueDate.getUTCMonth() + 1, salesOrder.dueDate.getUTCDate())
+
+        console.log({ orderDate, dueDate })
+
         defaultSalesOrder = {
             ...salesOrder,
-            orderDate: new CalendarDate(salesOrder.orderDate.getFullYear(), salesOrder.orderDate.getMonth(), salesOrder.orderDate.getDay()),
-            dueDate: new CalendarDate(salesOrder.dueDate.getFullYear(), salesOrder.dueDate.getMonth(), salesOrder.dueDate.getDay()),
+            orderDate: orderDate,
+            dueDate: dueDate,
+            // orderDate: parseDate(`${salesOrder.orderDate.getUTCFullYear()}-${salesOrder.orderDate.getUTCMonth() + 1}-${salesOrder.orderDate.getUTCDate()}`),
+            // dueDate: parseDate(`${salesOrder.dueDate.getUTCFullYear()}-${salesOrder.dueDate.getUTCMonth() + 1}-${salesOrder.dueDate.getUTCDate()}`),
+            // orderDate: new CalendarDate(salesOrder.orderDate.getUTCFullYear(), salesOrder.orderDate.getUTCMonth() + 1, salesOrder.orderDate.getUTCDate()),
+            // dueDate: new CalendarDate(salesOrder.dueDate.getUTCFullYear(), salesOrder.dueDate.getUTCMonth() + 1, salesOrder.dueDate.getUTCDate()),
         }
     }
 
@@ -290,6 +305,15 @@ export function SalesOrderForm({ salesOrder }: Props) {
                                             variant="bordered"
                                             size="sm"
                                         />
+                                        <InputField
+                                            form={form}
+                                            name="referenceId"
+                                            label="REFERENCE #"
+                                            placeholder=" "
+                                            variant="bordered"
+                                            size="sm"
+                                            className="w-full"
+                                        />
                                     </div>
                                     <InputField
                                         form={form}
@@ -302,8 +326,8 @@ export function SalesOrderForm({ salesOrder }: Props) {
                                     />
                                     <InputField
                                         form={form}
-                                        name="referenceId"
-                                        label="REFERENCE #"
+                                        name="salesRepEmailAddress"
+                                        label="SALES REP EMAIL ADDRESS"
                                         placeholder=" "
                                         variant="bordered"
                                         size="sm"

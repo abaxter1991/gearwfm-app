@@ -20,6 +20,7 @@ model SalesOrder {
     externalId             String                       @default("") @map("external_id")
     referenceId            String                       @default("") @map("reference_id")
     salesRepName           String                       @default("") @map("sales_rep_name")
+    salesRepEmailAddress   String                       @default("") @map("sales_rep_email_address")
     customerServiceRepName String                       @default("") @map("customer_service_rep_name")
     companyName            String                       @default("") @map("company_name")
     contactName            String                       @default("") @map("contact_name")
