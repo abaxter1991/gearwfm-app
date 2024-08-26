@@ -21,7 +21,7 @@ export default function PublicLayout({ children }: Readonly<{ children: ReactNod
                             className="transform transition duration-500 ease-in-out hover:translate-y-2 hover:scale-110">
                             <Link href="/">
                                 <GearWFMCogIcon
-                                    className="h-10 w-10 fill-brand-primary drop-shadow-lg hover:animate-spin-5s"/>
+                                    className="size-12 fill-brand-primary drop-shadow-lg hover:animate-spin-5s"/>
                             </Link>
                         </div>
                         {/*<img alt="Logo" src="/images/logos/gear-wfm-icon.png" className="size-12" />*/}

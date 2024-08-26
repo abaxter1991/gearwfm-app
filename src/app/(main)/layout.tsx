@@ -18,7 +18,7 @@ export default function MainLayout({ children }: Readonly<{ children: ReactNode 
                 <NavbarBrand>
                     <div className="transform transition duration-500 ease-in-out hover:translate-y-2 hover:scale-110">
                         <Link href="/">
-                            <GearWFMCogIcon className="h-10 w-10 fill-brand-primary drop-shadow-lg hover:animate-spin-5s"/>
+                            <GearWFMCogIcon className="size-12 fill-brand-primary drop-shadow-lg hover:animate-spin-5s"/>
                         </Link>
                     </div>
                     <p className="font-bold text-inherit text-2xl italic align-bottom pl-2 self-end">
