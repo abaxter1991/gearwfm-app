@@ -1,5 +1,8 @@
 'use client'
 
+import { pusherClient } from '@/lib/pusher'
+import { useSalesOrder } from '@/lib/queries'
+import { useEffect } from 'react'
 import { SalesOrderDetailModal } from '@/components/sales-order/sales-order-detail-modal'
 import { SalesOrderProofModal } from '@/components/sales-order/sales-order-proof-modal'
 import {
@@ -7,130 +10,146 @@ import {
     updateSalesOrderPartsOrdered,
     updateSalesOrderPartsReceived,
 } from '@/lib/actions'
-import { Card, CardBody, CardFooter, CardHeader, Checkbox, CheckboxGroup, Divider, Textarea } from '@nextui-org/react'
+import { Card, CardBody, CardFooter, CardHeader, Checkbox, Divider, Textarea } from '@nextui-org/react'
 import { CustomCheckbox } from './custom-checkbox'
-import type { SalesOrder, SalesOrderProduct, SalesOrderAssembledProduct } from '@prisma/client'
-
-export type SalesOrderAndRelations = SalesOrder & {
-    products: SalesOrderProduct[]
-    assembledProducts: SalesOrderAssembledProduct[]
-}
 
 type Props = {
-    salesOrder: SalesOrderAndRelations
+    salesOrderId: string
 }
 
-export function SalesOrderCard({ salesOrder }: Props) {
-    const approvalDefaultValues: string[] = []
-    const partsDefaultValues: string[] = []
-    const assembledDefaultValues: string[] = []
+export function SalesOrderCard({ salesOrderId }: Props) {
+    const { data: salesOrder, mutate } = useSalesOrder(salesOrderId)
 
-    if (salesOrder.approvedProof) approvalDefaultValues.push('approvedProof')
-    if (salesOrder.partsOrdered) partsDefaultValues.push('partsOrdered')
-    if (salesOrder.partsReceived) partsDefaultValues.push('partsReceived')
+    function formatDateString(dateString: string) {
+        const date = new Date(dateString)
+        return `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`
+    }
 
-    salesOrder.assembledProducts.forEach((product) => {
-        if (product.allAssembled) assembledDefaultValues.push(product.item.toLowerCase())
-    })
+    useEffect(() => {
+        pusherClient
+            .subscribe(salesOrderId)
+            .bind('sales-order-updated', async (data: any) => {
+                mutate(data.salesOrder)
+            })
+
+        return () => {
+            pusherClient.unsubscribe(salesOrderId)
+        }
+    }, [])
 
     return (
-        <Card className="w-[500px] aspect-square justify-self-center">
-            <CardHeader className="flex flex-col gap-1">
-                <h1 className="text-2xl">
-                    {salesOrder.companyName}
-                </h1>
-                <p className="text-sm">
-                    SO#: {salesOrder.externalId}
-                </p>
-            </CardHeader>
-            <Divider />
-            <CardBody className="gap-1.5">
-                <div className="flex flex-col gap-1">
-                    <div className="flex justify-between">
-                        <p className="font-bold">Due Date</p>
-                        <p>{`${salesOrder.dueDate.getUTCMonth() + 1}/${salesOrder.dueDate.getUTCDate()}/${salesOrder.dueDate.getUTCFullYear()}`}</p>
+        salesOrder && (
+            <Card className="w-[500px] aspect-square justify-self-center">
+                <CardHeader className="flex flex-col gap-1">
+                    <h1 className="text-2xl">
+                        {salesOrder.companyName}
+                    </h1>
+                    <p className="text-sm">
+                        SO#: {salesOrder.externalId}
+                    </p>
+                </CardHeader>
+                <Divider />
+                <CardBody className="gap-1.5">
+                    <div className="flex flex-col gap-1">
+                        <div className="flex justify-between">
+                            <p className="font-bold">
+                                Due Date
+                            </p>
+                            <p>
+                                {formatDateString(String(salesOrder.dueDate))}
+                            </p>
+                        </div>
+                        <div className="flex justify-between">
+                            <p className="font-bold">
+                                Sales Rep
+                            </p>
+                            <p>
+                                {salesOrder.salesRepName}
+                            </p>
+                        </div>
                     </div>
                     <div className="flex justify-between">
-                        <p className="font-bold">Sales Rep</p>
-                        <p>{salesOrder.salesRepName}</p>
+                        <div className="flex flex-col gap-1 w-1/2">
+                            <div className="flex flex-col gap-1">
+                                <p className="text-medium text-default-500">
+                                    Approvals
+                                </p>
+                                <Checkbox
+                                    value="approvedProof"
+                                    color="success"
+                                    size="sm"
+                                    isSelected={salesOrder.approvedProof}
+                                    onValueChange={(isSelected) => {
+                                        updateSalesOrderApprovedProof(salesOrder.id, isSelected)
+                                    }}
+                                >
+                                    Proof
+                                </Checkbox>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <p className="text-medium text-default-500">
+                                    Inventory & Parts
+                                </p>
+                                <Checkbox
+                                    value="partsOrdered"
+                                    color="success"
+                                    size="sm"
+                                    isSelected={salesOrder.partsOrdered}
+                                    onValueChange={(isSelected) => {
+                                        updateSalesOrderPartsOrdered(salesOrder.id, isSelected)
+                                    }}
+                                >
+                                    Ordered
+                                </Checkbox>
+                                <Checkbox
+                                    value="partsReceived"
+                                    color="success"
+                                    size="sm"
+                                    isSelected={salesOrder.partsReceived}
+                                    onValueChange={(isSelected) => {
+                                        updateSalesOrderPartsReceived(salesOrder.id, isSelected)
+                                    }}
+                                >
+                                    Received
+                                </Checkbox>
+                            </div>
+                        </div>
+                        <Textarea
+                            isReadOnly
+                            label="Notes"
+                            value={salesOrder.notes || ''}
+                            maxRows={5}
+                            className="w-1/2"
+                        />
                     </div>
-                </div>
-                <div className="flex justify-between">
-                    <div className="flex flex-col gap-1 w-1/2">
-                        <CheckboxGroup
-                            label="Approvals"
-                            size="sm"
-                            defaultValue={approvalDefaultValues}
-                        >
-                            <Checkbox
-                                value="approvedProof"
-                                color="success"
-                                onChange={(event) => {
-                                    updateSalesOrderApprovedProof(salesOrder.id, event.target.checked)
-                                }}
-                            >
-                                Proof
-                            </Checkbox>
-                        </CheckboxGroup>
-                        <CheckboxGroup
-                            label="Inventory & Parts"
-                            size="sm"
-                            defaultValue={partsDefaultValues}
-                        >
-                            <Checkbox
-                                value="partsOrdered"
-                                color="success"
-                                onChange={(event) => {
-                                    updateSalesOrderPartsOrdered(salesOrder.id, event.target.checked)
-                                }}
-                            >
-                                Ordered
-                            </Checkbox>
-                            <Checkbox
-                                value="partsReceived"
-                                color="success"
-                                onChange={(event) => {
-                                    updateSalesOrderPartsReceived(salesOrder.id, event.target.checked)
-                                }}
-                            >
-                                Received
-                            </Checkbox>
-                        </CheckboxGroup>
+                    <div className="flex flex-col gap-1">
+                        <p className="text-medium text-default-500">
+                            Assembled Products
+                        </p>
+                        <div className="flex gap-2">
+                            {salesOrder.assembledProducts.map((assembledProduct) => (
+                                <CustomCheckbox
+                                    key={assembledProduct.id}
+                                    value={assembledProduct.item.toLowerCase()}
+                                    color="success"
+                                    size="sm"
+                                    isSelected={assembledProduct.allAssembled}
+                                    onValueChange={(isSelected) => {
+                                        updateSalesOrderAssembledProduct(salesOrder.id, assembledProduct.id, isSelected)
+                                    }}
+                                >
+                                    {assembledProduct.item}
+                                </CustomCheckbox>
+                            ))}
+                        </div>
                     </div>
-                    <Textarea
-                        isReadOnly
-                        label="Notes"
-                        value={salesOrder.notes || ''}
-                        maxRows={5}
-                        className="w-1/2"
-                    />
-                </div>
-                <CheckboxGroup
-                    label="Assembled Products"
-                    orientation="horizontal"
-                    size="sm"
-                    defaultValue={assembledDefaultValues}
-                    className="gap-1"
-                >
-                    {salesOrder.assembledProducts.map((assembledProduct) => (
-                        <CustomCheckbox
-                            key={assembledProduct.id}
-                            value={assembledProduct.item.toLowerCase()}
-                            color="success"
-                            onChange={(event) => {
-                                updateSalesOrderAssembledProduct(assembledProduct.id, event.target.checked)
-                            }}
-                        >
-                            {assembledProduct.item}
-                        </CustomCheckbox>
-                    ))}
-                </CheckboxGroup>
-            </CardBody>
-            <Divider/>
-            <CardFooter className="justify-around">
-                <SalesOrderDetailModal salesOrder={salesOrder}/>
-                <SalesOrderProofModal salesOrder={salesOrder}/>
-            </CardFooter>
-        </Card>
+                </CardBody>
+                <Divider/>
+                <CardFooter className="justify-around">
+                    <SalesOrderDetailModal salesOrder={salesOrder} mutate={mutate} />
+                    <SalesOrderProofModal salesOrder={salesOrder} />
+                </CardFooter>
+            </Card>
+        )
     )
 }

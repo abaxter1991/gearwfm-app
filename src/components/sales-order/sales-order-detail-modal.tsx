@@ -2,18 +2,14 @@
 
 import { SalesOrderForm } from '@/components/forms/sales-order-form'
 import { Button, Modal, ModalBody, ModalContent, useDisclosure } from '@nextui-org/react'
-import type { SalesOrder, SalesOrderProduct, SalesOrderAssembledProduct } from '@prisma/client'
-
-export type SalesOrderAndRelations = SalesOrder & {
-    products: SalesOrderProduct[]
-    assembledProducts: SalesOrderAssembledProduct[]
-}
+import type { SalesOrderAndRelations } from '@/types'
 
 type Props = {
     salesOrder: SalesOrderAndRelations
+    mutate?: any
 }
 
-export function SalesOrderDetailModal({ salesOrder }: Props) {
+export function SalesOrderDetailModal({ salesOrder, mutate }: Props) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
 
     return (
@@ -34,7 +30,7 @@ export function SalesOrderDetailModal({ salesOrder }: Props) {
                     {(onClose) => (
                         <>
                             <ModalBody className="p-6">
-                                <SalesOrderForm salesOrder={salesOrder} />
+                                <SalesOrderForm salesOrder={salesOrder} mutate={mutate} />
                             </ModalBody>
                         </>
                     )}

@@ -28,7 +28,7 @@ export function ProductProofDetail({ product }: Props) {
                 </div>
                 <div className="row-start-6 col-span-3 flex items-center justify-center border-t">
                     <p className="font-bold">
-                        {product.item}
+                        {product.item}-{product.fileName}-{product.style}-{product.color}
                     </p>
                 </div>
                 <div className="relative col-start-2 col-span-2 row-span-5">

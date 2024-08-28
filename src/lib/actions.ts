@@ -1,6 +1,7 @@
 'use server'
 
 import prisma from '@/prisma/client'
+import { pusherServer } from '@/lib/pusher'
 
 export async function updateSalesOrderApprovedProof(salesOrderId: string, approvedProof: boolean) {
     await prisma.salesOrder.update({
@@ -11,6 +12,18 @@ export async function updateSalesOrderApprovedProof(salesOrderId: string, approv
             approvedProof: approvedProof,
         },
     })
+
+    const salesOrder = await prisma.salesOrder.findUnique({
+        where: {
+            id: salesOrderId,
+        },
+        include: {
+            products: true,
+            assembledProducts: true,
+        }
+    })
+
+    pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrder })
 }
 
 export async function updateSalesOrderPartsOrdered(salesOrderId: string, partsOrdered: boolean) {
@@ -22,6 +35,18 @@ export async function updateSalesOrderPartsOrdered(salesOrderId: string, partsOr
             partsOrdered: partsOrdered,
         },
     })
+
+    const salesOrder = await prisma.salesOrder.findUnique({
+        where: {
+            id: salesOrderId,
+        },
+        include: {
+            products: true,
+            assembledProducts: true,
+        }
+    })
+
+    pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrder })
 }
 
 export async function updateSalesOrderPartsReceived(salesOrderId: string, partsReceived: boolean) {
@@ -33,9 +58,21 @@ export async function updateSalesOrderPartsReceived(salesOrderId: string, partsR
             partsReceived: partsReceived,
         },
     })
+
+    const salesOrder = await prisma.salesOrder.findUnique({
+        where: {
+            id: salesOrderId,
+        },
+        include: {
+            products: true,
+            assembledProducts: true,
+        }
+    })
+
+    pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrder })
 }
 
-export async function updateSalesOrderAssembledProduct(assembledProductId: string, allAssembled: boolean) {
+export async function updateSalesOrderAssembledProduct(salesOrderId: string, assembledProductId: string, allAssembled: boolean) {
     await prisma.salesOrderAssembledProduct.update({
         where: {
             id: assembledProductId,
@@ -44,4 +81,16 @@ export async function updateSalesOrderAssembledProduct(assembledProductId: strin
             allAssembled: allAssembled,
         },
     })
+
+    const salesOrder = await prisma.salesOrder.findUnique({
+        where: {
+            id: salesOrderId,
+        },
+        include: {
+            products: true,
+            assembledProducts: true,
+        }
+    })
+
+    pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrder })
 }

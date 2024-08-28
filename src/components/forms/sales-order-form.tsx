@@ -2,7 +2,7 @@
 
 import { useUser } from '@clerk/nextjs'
 import axios from 'axios'
-import { now, getLocalTimeZone, parseDate, CalendarDate, ZonedDateTime, CalendarDateTime,  } from '@internationalized/date'
+import { now, getLocalTimeZone, CalendarDateTime,  } from '@internationalized/date'
 import { CheckboxField, DatePickerField, InputField, TextAreaField } from '@/components/forms/fields'
 import {
     Button,
@@ -21,21 +21,12 @@ import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { HiTrash } from 'react-icons/hi2'
 import type { DateValue } from '@internationalized/date'
-import type { SalesOrder, SalesOrderProduct, SalesOrderAssembledProduct } from '@prisma/client'
+import type { SalesOrderAndRelations } from '@/types'
 
 const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
-const localTimeZone = getLocalTimeZone()
 const today = now(getLocalTimeZone())
-
-console.log({ localTimeZone })
-
-
-export type SalesOrderAndRelations = SalesOrder & {
-    products: SalesOrderProduct[]
-    assembledProducts: SalesOrderAssembledProduct[]
-}
 
 export type SalesOrderType = {
     id: string
@@ -111,9 +102,10 @@ const getFieldLayout = (key: string) => {
 
 type Props = {
     salesOrder?: SalesOrderAndRelations
+    mutate?: any
 }
 
-export function SalesOrderForm({ salesOrder }: Props) {
+export function SalesOrderForm({ salesOrder, mutate }: Props) {
     const { user } = useUser()
 
     let defaultSalesOrder: SalesOrderType = {
@@ -140,13 +132,15 @@ export function SalesOrderForm({ salesOrder }: Props) {
     }
 
     if (salesOrder) {
-        const orderDate = new CalendarDateTime(salesOrder.orderDate.getUTCFullYear(), salesOrder.orderDate.getUTCMonth() + 1, salesOrder.orderDate.getUTCDate())
-        const dueDate = new CalendarDateTime(salesOrder.dueDate.getUTCFullYear(), salesOrder.dueDate.getUTCMonth() + 1, salesOrder.dueDate.getUTCDate())
+        const orderDate = new Date(salesOrder.orderDate)
+        const dueDate = new Date(salesOrder.dueDate)
+        const formattedOrderDate = new CalendarDateTime(orderDate.getUTCFullYear(), orderDate.getUTCMonth() + 1, orderDate.getUTCDate())
+        const formattedDueDate = new CalendarDateTime(dueDate.getUTCFullYear(), dueDate.getUTCMonth() + 1, dueDate.getUTCDate())
 
         defaultSalesOrder = {
             ...salesOrder,
-            orderDate,
-            dueDate,
+            orderDate: formattedOrderDate,
+            dueDate: formattedDueDate,
         }
     }
 
@@ -183,10 +177,15 @@ export function SalesOrderForm({ salesOrder }: Props) {
 
     const onSubmit = handleSubmit(async (data) => {
         if (salesOrder) {
-            await axios.post(`${baseUrl}/api/v1/forms/update-sales-order`, data)
+            await axios.post(`${apiBaseUrl}/forms/update-sales-order`, data)
+
+            if (mutate) {
+                mutate()
+            }
+
             toast('Sales order has been updated!')
         } else {
-            await axios.post(`${baseUrl}/api/v1/forms/new-sales-order`, data)
+            await axios.post(`${apiBaseUrl}/forms/new-sales-order`, data)
             toast('New sales order has been submitted!')
         }
     })

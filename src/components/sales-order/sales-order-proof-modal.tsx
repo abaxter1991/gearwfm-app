@@ -14,12 +14,8 @@ import {
 import { useEffect, useState } from 'react'
 import { ProductProofDetail } from './product-proof-detail'
 import { HiArrowDownTray } from 'react-icons/hi2'
-import type { SalesOrder, SalesOrderProduct, SalesOrderAssembledProduct } from '@prisma/client'
-
-export type SalesOrderAndRelations = SalesOrder & {
-    products: SalesOrderProduct[]
-    assembledProducts: SalesOrderAssembledProduct[]
-}
+import type { SalesOrderProduct } from '@prisma/client'
+import type { SalesOrderAndRelations } from '@/types'
 
 type Props = {
     salesOrder: SalesOrderAndRelations
@@ -63,7 +59,7 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
                                         {salesOrder.companyName}
                                     </h1>
                                     <p className="text-sm">
-                                        Due Date: {salesOrder.dueDate.toLocaleDateString()}
+                                        Due Date: {new Date(String(salesOrder.dueDate)).toLocaleDateString()}
                                     </p>
                                 </div>
                                 <Button
