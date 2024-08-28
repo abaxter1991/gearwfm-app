@@ -118,6 +118,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                             isReadOnly
                             label="Notes"
                             value={salesOrder.notes || ''}
+                            minRows={5}
                             maxRows={5}
                             className="w-1/2"
                         />
