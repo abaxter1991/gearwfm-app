@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 const email = 'sales@gearwfm.com'
 const pass = ''
 
-export const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     pool: true,
     host: 'gearwfm.com',
     port: 465,
