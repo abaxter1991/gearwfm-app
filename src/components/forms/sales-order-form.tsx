@@ -3,7 +3,7 @@
 import { useUser } from '@clerk/nextjs'
 import axios from 'axios'
 import { now, getLocalTimeZone, CalendarDateTime,  } from '@internationalized/date'
-import { CheckboxField, DatePickerField, InputField, TextAreaField } from '@/components/forms/fields'
+import { CheckboxField, DatePickerField, InputField, TextAreaField, UsdInputField } from '@/components/forms/fields'
 import {
     Button,
     Card,
@@ -16,10 +16,12 @@ import {
 } from '@nextui-org/react'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { FileUpload } from '@/components/common/file-upload'
+import { SalesOrderImportModal } from '@/components/sales-order/sales-order-import-modal'
 import { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { HiTrash } from 'react-icons/hi2'
+import { productCategories } from '@/lib/constants/product-categories'
 import type { DateValue } from '@internationalized/date'
 import type { SalesOrderAndRelations } from '@/types'
 
@@ -78,34 +80,13 @@ export type AssembledProductType = {
     allAssembled: boolean
 }
 
-const productCategories = [
-    { key: 'TEE', label: 'T-Shirt', fieldLayout: 'Tees' },
-    { key: 'HDE', label: 'Hoodie', fieldLayout: 'Tees' },
-    { key: 'HAT', label: 'Hat', fieldLayout: 'Gear' },
-    { key: 'SCK', label: 'Socks', fieldLayout: 'Gear' },
-    { key: 'GTR', label: 'Gaiter', fieldLayout: 'Gear' },
-    { key: 'SWC', label: 'Sweatshirt Crew', fieldLayout: 'Tees' },
-    { key: 'LTEE', label: 'Long Sleeve T-Shirt', fieldLayout: 'Tees' },
-    { key: 'VSR', label: 'Visor', fieldLayout: 'Gear' },
-    { key: 'STK', label: 'Sticker', fieldLayout: 'Gear' },
-    { key: 'YTEE', label: 'Youth T-Shirt', fieldLayout: 'Tees' },
-    { key: 'YHDE', label: 'Youth Hoodie', fieldLayout: 'Tees' },
-    { key: 'YHAT', label: 'Youth Hat', fieldLayout: 'Gear' },
-    { key: 'YSCK', label: 'Youth Socks', fieldLayout: 'Gear' },
-    { key: 'YSWC', label: 'Youth Sweatshirt Crew', fieldLayout: 'Tees' },
-    { key: 'YLTEE', label: 'Youth Long Sleeve T-Shirt', fieldLayout: 'Tees' },
-]
-
-const getFieldLayout = (key: string) => {
-    return productCategories.find((productCategory) => productCategory.key === key)?.fieldLayout
-}
-
 type Props = {
     salesOrder?: SalesOrderAndRelations
     mutate?: any
+    showImportButton?: boolean
 }
 
-export function SalesOrderForm({ salesOrder, mutate }: Props) {
+export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }: Props) {
     const { user } = useUser()
 
     let defaultSalesOrder: SalesOrderType = {
@@ -166,7 +147,6 @@ export function SalesOrderForm({ salesOrder, mutate }: Props) {
     }
 
     const form = useForm<SalesOrderType>({ defaultValues: defaultSalesOrder })
-
     const { control, handleSubmit, formState, watch } = form
     const { errors } = formState
 
@@ -189,6 +169,29 @@ export function SalesOrderForm({ salesOrder, mutate }: Props) {
             toast('New sales order has been submitted!')
         }
     })
+
+    function getSizeFields(key: string) {
+        const productCategory = productCategories.find((category) => category.key === key)
+        return productCategory ? productCategory.sizeFields : []
+    }
+
+    function isOneSizeFitsAll(key: string) {
+        const sizeFields = productCategories.find((category) => category.key === key)?.sizeFields
+
+        if (sizeFields) {
+            let response = true
+
+            Object.values(sizeFields).forEach((sizeField) => {
+                if (sizeField.show) {
+                    response = false
+                }
+            })
+
+            return response
+        }
+
+        return true
+    }
 
     function updateTotalQuantity(productIndex: number) {
         const formValues = form.getValues()
@@ -218,7 +221,7 @@ export function SalesOrderForm({ salesOrder, mutate }: Props) {
     useEffect(() => {
         const subscription = watch((value, { name, type }) => {
             if (name) {
-                // Update value of the grandTotal field when the shippingPrice field has been updated.
+                // Update value of the grandTotal field when the discount or shippingPrice field has been updated.
                 if (name.includes('discount') || name.includes('shippingPrice')) {
                     updateGrandTotal()
                 }
@@ -252,14 +255,15 @@ export function SalesOrderForm({ salesOrder, mutate }: Props) {
                 <div className="flex flex-col gap-4 h-full w-full">
                     <Card className="shrink-0">
                         <CardHeader className="bg-brand-primary text-black justify-between w-full">
-                            <div/>
-                            <h1 className="text-2xl font-bold">
+                            {showImportButton ? (
+                                <SalesOrderImportModal onImport={(data) => {
+                                    form.setValue('products', data)
+                                }} />
+                            ) : <div />}
+                            <h1 className="flex-none self-center text-2xl font-bold">
                                 Sales Order Form
                             </h1>
-                            {salesOrder && (
-                                // <h1 className="text-2xl font-bold">
-                                //     SO#: {salesOrder.externalId}
-                                // </h1>
+                            {salesOrder ? (
                                 <InputField
                                     form={form}
                                     name="externalId"
@@ -270,7 +274,7 @@ export function SalesOrderForm({ salesOrder, mutate }: Props) {
                                     size="sm"
                                     defaultValue={salesOrder.externalId}
                                 />
-                            )}
+                            ) : <div />}
                         </CardHeader>
                         <CardBody className="gap-4">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -476,16 +480,6 @@ export function SalesOrderForm({ salesOrder, mutate }: Props) {
                                             />
                                         </div>
                                         <div className="flex-auto w-full min-w-[150px]">
-                                            {/*<TextAreaField*/}
-                                            {/*    form={form}*/}
-                                            {/*    label="NOTES"*/}
-                                            {/*    name={`products.${index}.notes` as const}*/}
-                                            {/*    placeholder=" "*/}
-                                            {/*    variant="bordered"*/}
-                                            {/*    size="sm"*/}
-                                            {/*    labelPlacement="outside"*/}
-                                            {/*    maxRows={1}*/}
-                                            {/*/>*/}
                                             <InputField
                                                 form={form}
                                                 label="NOTES"
@@ -496,119 +490,44 @@ export function SalesOrderForm({ salesOrder, mutate }: Props) {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        {product.item && getFieldLayout(product.item) === 'Tees' && (
-                                            <div className="flex gap-4">
-                                                <div className="flex-auto w-[75px]">
-                                                    <InputField
-                                                        form={form}
-                                                        label="XS"
-                                                        name={`products.${index}.quantityOfXS` as const}
-                                                        type="number"
-                                                        defaultValue="0"
-                                                        variant="bordered"
-                                                        size="sm"
-                                                        labelPlacement="outside"
-                                                    />
-                                                </div>
-                                                <div className="flex-auto w-[75px]">
-                                                    <InputField
-                                                        form={form}
-                                                        label="SM"
-                                                        name={`products.${index}.quantityOfSM` as const}
-                                                        type="number"
-                                                        defaultValue="0"
-                                                        variant="bordered"
-                                                        size="sm"
-                                                        labelPlacement="outside"
-                                                    />
-                                                </div>
-                                                <div className="flex-auto w-[75px]">
-                                                    <InputField
-                                                        form={form}
-                                                        label="MD"
-                                                        name={`products.${index}.quantityOfMD` as const}
-                                                        type="number"
-                                                        defaultValue="0"
-                                                        variant="bordered"
-                                                        size="sm"
-                                                        labelPlacement="outside"
-                                                    />
-                                                </div>
-                                                <div className="flex-auto w-[75px]">
-                                                    <InputField
-                                                        form={form}
-                                                        label="LG"
-                                                        name={`products.${index}.quantityOfLG` as const}
-                                                        type="number"
-                                                        defaultValue="0"
-                                                        variant="bordered"
-                                                        size="sm"
-                                                        labelPlacement="outside"
-                                                    />
-                                                </div>
-                                                <div className="flex-auto w-[75px]">
-                                                    <InputField
-                                                        form={form}
-                                                        label="XL"
-                                                        name={`products.${index}.quantityOfXL` as const}
-                                                        type="number"
-                                                        defaultValue="0"
-                                                        variant="bordered"
-                                                        size="sm"
-                                                        labelPlacement="outside"
-                                                    />
-                                                </div>
-                                                <div className="flex-auto w-[75px]">
-                                                    <InputField
-                                                        form={form}
-                                                        label="2XL"
-                                                        name={`products.${index}.quantityOf2XL` as const}
-                                                        type="number"
-                                                        defaultValue="0"
-                                                        variant="bordered"
-                                                        size="sm"
-                                                        labelPlacement="outside"
-                                                    />
-                                                </div>
-                                                <div className="flex-auto w-[75px]">
-                                                    <InputField
-                                                        form={form}
-                                                        label="3XL"
-                                                        name={`products.${index}.quantityOf3XL` as const}
-                                                        type="number"
-                                                        defaultValue="0"
-                                                        variant="bordered"
-                                                        size="sm"
-                                                        labelPlacement="outside"
-                                                    />
-                                                </div>
-                                                <div className="flex-auto w-[75px]">
-                                                    <InputField
-                                                        form={form}
-                                                        label="4XL"
-                                                        name={`products.${index}.quantityOf4XL` as const}
-                                                        type="number"
-                                                        defaultValue="0"
-                                                        variant="bordered"
-                                                        size="sm"
-                                                        labelPlacement="outside"
-                                                    />
-                                                </div>
-                                            </div>
-                                        )}
+                                        <div className="flex gap-4">
+                                            {Object.values(getSizeFields(product.item)).map((sizeField) => (
+                                                sizeField.show ? (
+                                                    <div key={`${index}-${sizeField.label}`} className="flex-auto w-[75px]">
+                                                        <InputField
+                                                            form={form}
+                                                            label={sizeField.label}
+                                                            name={`products.${index}.${sizeField.name}` as const}
+                                                            type="number"
+                                                            variant="bordered"
+                                                            size="sm"
+                                                            labelPlacement="outside"
+                                                            min={0}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div key={`${index}-${sizeField.label}`} className="flex-auto w-[75px] flex items-center justify-center">
+                                                        <p>
+                                                            -
+                                                        </p>
+                                                    </div>
+                                                )
+                                            ))}
+                                        </div>
                                         <div className="flex-shrink-0 w-[75px]">
                                             <InputField
-                                                isReadOnly={product.item ? getFieldLayout(product.item) !== 'Gear' : true}
+                                                isReadOnly={product.item ? !isOneSizeFitsAll(product.item) : false}
                                                 form={form}
-                                                label={product.item && getFieldLayout(product.item) !== 'Gear' ? 'TOTAL' : 'QUANTITY'}
+                                                label={product.item && isOneSizeFitsAll(product.item) ? 'QUANTITY' : 'TOTAL'}
                                                 name={`products.${index}.totalQuantity` as const}
                                                 type="number"
                                                 variant="bordered"
                                                 size="sm"
                                                 labelPlacement="outside"
+                                                min={0}
                                             />
                                         </div>
-                                        <div className="flex-shrink-0 w-[75px]">
+                                        <div className="flex-shrink-0 w-[125px]">
                                             <InputField
                                                 form={form}
                                                 label="UNIT PRICE"
@@ -626,7 +545,7 @@ export function SalesOrderForm({ salesOrder, mutate }: Props) {
                                                 }
                                             />
                                         </div>
-                                        <div className="flex-shrink-0 w-[75px]">
+                                        <div className="flex-shrink-0 w-[125px]">
                                             <InputField
                                                 isReadOnly
                                                 form={form}
@@ -654,7 +573,7 @@ export function SalesOrderForm({ salesOrder, mutate }: Props) {
                                                 className="text-danger"
                                                 onPress={() => remove(index)}
                                             >
-                                                <HiTrash className="size-4" />
+                                                <HiTrash className="size-4"/>
                                             </Button>
                                         </div>
                                     </div>
@@ -689,70 +608,84 @@ export function SalesOrderForm({ salesOrder, mutate }: Props) {
                     </div>
                     <Card className="shrink-0">
                         <CardBody className="flex-row justify-end w-full">
+                            {/* TODO: Display any errors here. */}
+                            {/*<div>*/}
+                            {/*    {errors}*/}
+                            {/*</div>*/}
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center justify-between gap-4">
                                     <p className="text-sm font-medium">
                                         DISCOUNT
                                     </p>
-                                    <InputField
-                                        form={form}
-                                        // label="DISCOUNT"
-                                        name="discount"
-                                        type="number"
-                                        variant="bordered"
-                                        size="sm"
-                                        labelPlacement="outside-left"
-                                        endContent={
-                                            <div className="pointer-events-none flex items-center">
-                                                <p className="text-small">
-                                                    %
-                                                </p>
-                                            </div>
-                                        }
-                                    />
+                                    <div className="flex-none w-[125px]">
+                                        <InputField
+                                            form={form}
+                                            name="discount"
+                                            type="number"
+                                            variant="bordered"
+                                            size="sm"
+                                            labelPlacement="outside-left"
+                                            min={0}
+                                            max={100}
+                                            classNames={{
+                                                inputWrapper: 'flex-none w-[125px]',
+                                            }}
+                                            endContent={
+                                                <div className="pointer-events-none flex items-center">
+                                                    <p className="text-small">
+                                                        %
+                                                    </p>
+                                                </div>
+                                            }
+                                        />
+                                    </div>
                                 </div>
                                 <div className="flex items-center justify-between gap-4">
                                     <p className="text-sm font-medium">
                                         SHIPPING COST
                                     </p>
-                                    <InputField
-                                        form={form}
-                                        // label="SHIPPING COST"
-                                        name="shippingPrice"
-                                        type="number"
-                                        variant="bordered"
-                                        size="sm"
-                                        labelPlacement="outside-left"
-                                        startContent={
-                                            <div className="pointer-events-none flex items-center">
-                                                <p className="text-small">
-                                                    $
-                                                </p>
-                                            </div>
-                                        }
-                                    />
+                                    <div className="flex-none w-[125px]">
+                                        <InputField
+                                            form={form}
+                                            // label="SHIPPING COST"
+                                            name="shippingPrice"
+                                            type="number"
+                                            variant="bordered"
+                                            size="sm"
+                                            labelPlacement="outside-left"
+                                            startContent={
+                                                <div className="pointer-events-none flex items-center">
+                                                    <p className="text-small">
+                                                        $
+                                                    </p>
+                                                </div>
+                                            }
+                                        />
+                                    </div>
                                 </div>
                                 <div className="flex items-center justify-between gap-4">
                                     <p className="text-sm font-medium">
                                         GRAND TOTAL
                                     </p>
-                                    <InputField
-                                        isReadOnly
-                                        form={form}
-                                        // label="GRAND TOTAL"
-                                        name="grandTotal"
-                                        type="number"
-                                        variant="bordered"
-                                        size="sm"
-                                        labelPlacement="outside-left"
-                                        startContent={
-                                            <div className="pointer-events-none flex items-center">
-                                                <p className="text-small">
-                                                    $
-                                                </p>
-                                            </div>
-                                        }
-                                    />
+                                    <div className="flex-none w-[125px]">
+                                        <InputField
+                                            isReadOnly
+                                            form={form}
+                                            // label="GRAND TOTAL"
+                                            name="grandTotal"
+                                            type="number"
+                                            variant="bordered"
+                                            size="sm"
+                                            labelPlacement="outside-left"
+                                            startContent={
+                                                <div className="pointer-events-none flex items-center">
+                                                    <p className="text-small">
+                                                        $
+                                                    </p>
+                                                </div>
+                                            }
+                                        />
+                                    </div>
                                 </div>
                                 <Button
                                     type="submit"

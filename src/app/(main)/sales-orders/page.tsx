@@ -6,9 +6,20 @@ export const dynamic = 'force-dynamic'
 export default async function SalesOrdersPage() {
     const salesOrders = await prisma.salesOrder.findMany({
         include: {
-            products: true,
-            assembledProducts: true,
-        }
+            products: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
+            assembledProducts: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
+        },
+        orderBy: {
+            createdAt: 'asc',
+        },
     })
 
     return (

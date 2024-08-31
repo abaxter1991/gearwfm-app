@@ -1,16 +1,20 @@
 import PusherServer from 'pusher'
 import PusherClient from 'pusher-js'
 
+const pusherAppId = process.env.PUSHER_APP_ID!
+const pusherAppKey = process.env.NEXT_PUBLIC_PUSHER_APP_KEY!
+const pusherAppSecret = process.env.PUSHER_APP_SECRET!
+
 export const pusherServer = new PusherServer({
-    appId: '1856321',
-    key: '241e52b95ca8162b8310',
-    secret: '25e234cd3371b40b0e3d',
+    appId: pusherAppId,
+    key: pusherAppKey,
+    secret: pusherAppSecret,
     cluster: 'us3',
     useTLS: true,
 })
 
 export const pusherClient = new PusherClient(
-    '241e52b95ca8162b8310',
+    pusherAppKey,
     {
         cluster: 'us3',
         // authEndpoint: '/api/pusher-auth',

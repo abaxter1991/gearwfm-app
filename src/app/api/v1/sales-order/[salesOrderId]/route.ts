@@ -15,8 +15,16 @@ export async function GET(request: NextRequest, { params }: Params) {
             id: salesOrderId,
         },
         include: {
-            products: true,
-            assembledProducts: true,
+            products: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
+            assembledProducts: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
         }
     })
 

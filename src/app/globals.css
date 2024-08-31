@@ -7,8 +7,14 @@ body {
     height: 100dvh;
 }
 
-/**,*/
-/**::before,*/
-/**::after {*/
-/*    box-sizing: border-box;*/
-/*}*/
+/* Remove number input spinners from Safari, Chrome, Edge, and Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Remove number input spinners from Firefox */
+input[type=number]{
+    -moz-appearance: textfield;
+}

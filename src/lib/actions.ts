@@ -18,8 +18,16 @@ export async function updateSalesOrderApprovedProof(salesOrderId: string, approv
             id: salesOrderId,
         },
         include: {
-            products: true,
-            assembledProducts: true,
+            products: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
+            assembledProducts: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
         }
     })
 
@@ -41,8 +49,16 @@ export async function updateSalesOrderPartsOrdered(salesOrderId: string, partsOr
             id: salesOrderId,
         },
         include: {
-            products: true,
-            assembledProducts: true,
+            products: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
+            assembledProducts: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
         }
     })
 
@@ -64,8 +80,16 @@ export async function updateSalesOrderPartsReceived(salesOrderId: string, partsR
             id: salesOrderId,
         },
         include: {
-            products: true,
-            assembledProducts: true,
+            products: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
+            assembledProducts: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
         }
     })
 
@@ -87,8 +111,16 @@ export async function updateSalesOrderAssembledProduct(salesOrderId: string, ass
             id: salesOrderId,
         },
         include: {
-            products: true,
-            assembledProducts: true,
+            products: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
+            assembledProducts: {
+                orderBy: {
+                    item: 'asc',
+                }
+            },
         }
     })
 
