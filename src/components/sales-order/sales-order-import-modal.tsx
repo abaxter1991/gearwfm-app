@@ -1,11 +1,20 @@
 'use client'
 
+import axios from 'axios'
 import { CSSProperties, useState } from 'react'
 import { CsvReader } from '@/components/common/csv-reader'
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, useDisclosure } from '@nextui-org/react'
 import { useCSVReader } from 'react-papaparse'
 import type { SalesOrderAndRelations } from '@/types'
 import type { ProductType } from '@/components/forms/sales-order-form'
+
+async function parseCsvData(csvData: any) {
+    const data = JSON.stringify(csvData)
+    // const response = await axios.post('http://127.0.0.1:8001/api/products/import/parse/', { data })
+    const response = await axios.post('https://api.gearwfm.com/api/products/import/parse/', { data })
+    console.log({ responseData: response.data })
+    return response.data
+}
 
 type Props = {
     onImport?: (data: any) => void,
@@ -34,8 +43,9 @@ export function SalesOrderImportModal({ onImport }: Props) {
                         <>
                             <ModalBody className="p-6">
                                 <CsvReader
-                                    onCsvLoaded={(csvData) => {
-                                        setImportedData(csvData)
+                                    onCsvLoaded={async (csvData) => {
+                                        const cleanedData = await parseCsvData(csvData)
+                                        setImportedData(cleanedData)
                                     }}
                                 />
                             </ModalBody>
@@ -48,6 +58,7 @@ export function SalesOrderImportModal({ onImport }: Props) {
                                     Cancel
                                 </Button>
                                 <Button
+                                    isDisabled={importedData.length === 0}
                                     color="primary"
                                     className="bg-brand-primary text-black"
                                     onPress={() => {
