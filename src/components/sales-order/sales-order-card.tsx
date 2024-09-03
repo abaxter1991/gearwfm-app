@@ -117,22 +117,24 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                 </Checkbox>
                             </div>
                         </div>
-                        <Textarea
-                            isReadOnly
-                            label="Notes"
-                            value={salesOrder.notes || ''}
-                            minRows={5}
-                            maxRows={5}
-                            className="w-1/2"
-                        />
-                        <Textarea
-                            isReadOnly
-                            label="Tracking Number"
-                            value={salesOrder.trackingNumber || ''}
-                            minRows={1}
-                            maxRows={1}
-                            className="w-1/2"
-                        />
+                        <div className="flex flex-col w-1/2 gap-4">
+                            <Textarea
+                                isReadOnly
+                                label="NOTES"
+                                value={salesOrder.notes || ''}
+                                minRows={5}
+                                maxRows={5}
+                                className="w-full"
+                            />
+                            <Textarea
+                                isReadOnly
+                                label="TRACKING #"
+                                value={salesOrder.trackingNumber || ''}
+                                minRows={1}
+                                maxRows={1}
+                                className="w-full"
+                            />
+                        </div>
                     </div>
                     <div className="flex flex-col gap-1">
                         <p className="text-medium text-default-500">

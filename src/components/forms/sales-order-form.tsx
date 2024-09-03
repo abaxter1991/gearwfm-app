@@ -448,7 +448,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                     />
                                     <TextAreaField
                                         form={form}
-                                        label="TRACKING NUMBER"
+                                        label="TRACKING #"
                                         name="trackingNumber"
                                         placeholder=" "
                                         variant="bordered"
