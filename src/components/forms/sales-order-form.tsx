@@ -51,6 +51,7 @@ export type SalesOrderType = {
     shippingAddress: string
     billingAddress: string
     notes: string
+    trackingNumber: string
     discount: number
     shippingPrice: number
     grandTotal: number
@@ -113,6 +114,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
         shippingAddress: '',
         billingAddress: '',
         notes: '',
+        trackingNumber: '',
         discount: 0,
         shippingPrice: 0.00,
         grandTotal: 0.00,
@@ -443,6 +445,15 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         variant="bordered"
                                         size="sm"
                                         maxRows={3}
+                                    />
+                                    <TextAreaField
+                                        form={form}
+                                        label="TRACKING NUMBER"
+                                        name="trackingNumber"
+                                        placeholder=" "
+                                        variant="bordered"
+                                        size="sm"
+                                        maxRows={1}
                                     />
                                 </div>
                             </div>
