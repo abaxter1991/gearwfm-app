@@ -162,7 +162,7 @@ export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }:
     const productsOutput = useWatch({
         name: 'products',
         control: control,
-        defaultValue: [],
+        defaultValue: products,
     })
 
     const onSubmit = handleSubmit(async (data) => {
@@ -425,61 +425,102 @@ export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }:
                                         key={product.id}
                                         className="flex w-full gap-4 border-b-zinc-300 dark:border-b-black"
                                     >
-                                        {showImportButton ? (
-                                            <div className="flex-none w-[150px]">
-                                                <FormField
-                                                    control={form.control}
-                                                    name={`products.${index}.item` as const}
-                                                    render={({field, fieldState}) => (
-                                                        <FormItem>
-                                                            <FormControl>
-                                                                <Select
-                                                                    {...field}
-                                                                    {...form.register(`products.${index}.item` as const)}
-                                                                    items={productCategories.filter((productCategory) => {
-                                                                        return {
-                                                                            key: productCategory.key,
-                                                                            label: productCategory.label,
-                                                                        }
-                                                                    })}
-                                                                    label="ITEM"
-                                                                    placeholder=" "
-                                                                    variant="bordered"
-                                                                    size="sm"
-                                                                    labelPlacement="outside"
-                                                                    isInvalid={fieldState.invalid}
-                                                                    errorMessage={fieldState.error?.message}
-                                                                    classNames={{
-                                                                        value: 'text-foreground',
-                                                                        listboxWrapper: 'overscroll-contain',
-                                                                    }}
-                                                                >
-                                                                    {(item) => (
-                                                                        <SelectItem key={item.key}>
-                                                                            {item.label}
-                                                                        </SelectItem>
-                                                                    )}
-                                                                </Select>
-                                                            </FormControl>
-                                                            <FormMessage/>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        ) : (
-                                            <div className="flex-none w-[75px]">
-                                                <InputField
-                                                    isReadOnly
-                                                    form={form}
-                                                    label="ITEM"
-                                                    name={`products.${index}.item` as const}
-                                                    placeholder=" "
-                                                    variant="bordered"
-                                                    size="sm"
-                                                    labelPlacement="outside"
-                                                />
-                                            </div>
-                                        )}
+                                        <div className="flex-none w-[75px]">
+                                            <FormField
+                                                control={form.control}
+                                                name={`products.${index}.item` as const}
+                                                render={({field, fieldState}) => (
+                                                    <FormItem>
+                                                        <FormControl>
+                                                            <Select
+                                                                {...field}
+                                                                {...form.register(`products.${index}.item` as const)}
+                                                                items={productCategories.filter((productCategory) => {
+                                                                    return {
+                                                                        key: productCategory.key,
+                                                                        label: productCategory.label,
+                                                                    }
+                                                                })}
+                                                                label="ITEM"
+                                                                placeholder=" "
+                                                                variant="bordered"
+                                                                size="sm"
+                                                                labelPlacement="outside"
+                                                                isInvalid={fieldState.invalid}
+                                                                errorMessage={fieldState.error?.message}
+                                                                classNames={{
+                                                                    value: 'text-foreground',
+                                                                    listboxWrapper: 'overscroll-contain',
+                                                                    popoverContent: 'w-auto',
+                                                                }}
+                                                            >
+                                                                {(item) => (
+                                                                    <SelectItem key={item.key} textValue={item.key}>
+                                                                        {item.label}
+                                                                    </SelectItem>
+                                                                )}
+                                                            </Select>
+                                                        </FormControl>
+                                                        <FormMessage/>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        {/*{showImportButton ? (*/}
+                                        {/*    <div className="flex-none w-[150px]">*/}
+                                        {/*        <FormField*/}
+                                        {/*            control={form.control}*/}
+                                        {/*            name={`products.${index}.item` as const}*/}
+                                        {/*            render={({field, fieldState}) => (*/}
+                                        {/*                <FormItem>*/}
+                                        {/*                    <FormControl>*/}
+                                        {/*                        <Select*/}
+                                        {/*                            {...field}*/}
+                                        {/*                            {...form.register(`products.${index}.item` as const)}*/}
+                                        {/*                            items={productCategories.filter((productCategory) => {*/}
+                                        {/*                                return {*/}
+                                        {/*                                    key: productCategory.key,*/}
+                                        {/*                                    label: productCategory.label,*/}
+                                        {/*                                }*/}
+                                        {/*                            })}*/}
+                                        {/*                            label="ITEM"*/}
+                                        {/*                            placeholder=" "*/}
+                                        {/*                            variant="bordered"*/}
+                                        {/*                            size="sm"*/}
+                                        {/*                            labelPlacement="outside"*/}
+                                        {/*                            isInvalid={fieldState.invalid}*/}
+                                        {/*                            errorMessage={fieldState.error?.message}*/}
+                                        {/*                            classNames={{*/}
+                                        {/*                                value: 'text-foreground',*/}
+                                        {/*                                listboxWrapper: 'overscroll-contain',*/}
+                                        {/*                            }}*/}
+                                        {/*                        >*/}
+                                        {/*                            {(item) => (*/}
+                                        {/*                                <SelectItem key={item.key}>*/}
+                                        {/*                                    {item.label}*/}
+                                        {/*                                </SelectItem>*/}
+                                        {/*                            )}*/}
+                                        {/*                        </Select>*/}
+                                        {/*                    </FormControl>*/}
+                                        {/*                    <FormMessage/>*/}
+                                        {/*                </FormItem>*/}
+                                        {/*            )}*/}
+                                        {/*        />*/}
+                                        {/*    </div>*/}
+                                        {/*) : (*/}
+                                        {/*    <div className="flex-none w-[75px]">*/}
+                                        {/*        <InputField*/}
+                                        {/*            isReadOnly*/}
+                                        {/*            form={form}*/}
+                                        {/*            label="ITEM"*/}
+                                        {/*            name={`products.${index}.item` as const}*/}
+                                        {/*            placeholder=" "*/}
+                                        {/*            variant="bordered"*/}
+                                        {/*            size="sm"*/}
+                                        {/*            labelPlacement="outside"*/}
+                                        {/*        />*/}
+                                        {/*    </div>*/}
+                                        {/*)}*/}
                                         <div className="flex-none w-[150px]">
                                             <InputField
                                                 form={form}
@@ -551,7 +592,8 @@ export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }:
                                             ) : (
                                                 Object.values(getSizeFields(productsOutput[index]?.item)).map((sizeField) => (
                                                     sizeField.show ? (
-                                                        <div key={`${index}-${sizeField.label}`} className="flex-auto w-[75px]">
+                                                        <div key={`${index}-${sizeField.label}`}
+                                                             className="flex-auto w-[75px]">
                                                             <InputField
                                                                 form={form}
                                                                 label={sizeField.label}
@@ -564,7 +606,8 @@ export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }:
                                                             />
                                                         </div>
                                                     ) : (
-                                                        <div key={`${index}-${sizeField.label}`} className="flex-auto w-[75px] flex items-center justify-center">
+                                                        <div key={`${index}-${sizeField.label}`}
+                                                             className="flex-auto w-[75px] flex items-center justify-center">
                                                             <p>
                                                                 -
                                                             </p>
@@ -657,7 +700,7 @@ export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }:
                                     item: String(key),
                                 })}
                                 classNames={{
-                                    list: 'max-h-96 overflow-scroll overscroll-contain'
+                                    list: 'max-h-96 overflow-scroll overscroll-contain',
                                 }}
                             >
                                 {productCategories.map((productCategory) => (

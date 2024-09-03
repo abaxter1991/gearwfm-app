@@ -11,13 +11,6 @@ const config: Config = {
         './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
     ],
     theme: {
-        // container: {
-        //     center: true,
-        //     padding: '2rem',
-        //     screens: {
-        //         '2xl': '1400px',
-        //     },
-        // },
         extend: {
             animation: {
                 'spin-3s': 'spin 3s linear infinite',
@@ -41,6 +34,19 @@ const config: Config = {
                     lightest: '#F5F6F8',
                 },
             },
+            // The sm, md, lg, xl, and 2xl breakpoints below are currently set to the default values.
+            // This is done intentionally so that we can change these values to more efficient ones in
+            // the future when we are ready to make the site more responsive than it currently is.
+            screens: {
+                'mobile': '576px',
+                'sm': '640px',
+                'md': '768px',
+                'tablet': '960px',
+                'lg': '1024px',
+                'xl': '1280px',
+                'desktop': '1440px',
+                '2xl': '1536px',
+            }
         },
     },
     variants: {

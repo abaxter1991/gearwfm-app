@@ -24,7 +24,7 @@ export default async function SalesOrdersPage() {
 
     return (
         <div className="flex w-full justify-center">
-            <div className="grid grid-cols-3 gap-8 place-items-stretch">
+            <div className="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-8 place-items-stretch">
                 {salesOrders.map((salesOrder) => (
                     <SalesOrderCard key={salesOrder.id} salesOrderId={salesOrder.id} />
                 ))}
