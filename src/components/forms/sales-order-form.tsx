@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import axios from 'axios'
 import { now, getLocalTimeZone, CalendarDateTime,  } from '@internationalized/date'
@@ -22,7 +23,7 @@ import { SalesOrderImportModal } from '@/components/sales-order/sales-order-impo
 import { useEffect } from 'react'
 import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
-import { HiTrash } from 'react-icons/hi2'
+import { HiTrash, HiXMark } from 'react-icons/hi2'
 import { productCategories } from '@/lib/constants/product-categories'
 import type { DateValue } from '@internationalized/date'
 import type { SalesOrderAndRelations } from '@/types'
@@ -87,11 +88,14 @@ export type AssembledProductType = {
 type Props = {
     salesOrder?: SalesOrderAndRelations
     mutate?: any
+    onClose?: () => void
     showImportButton?: boolean
 }
 
-export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }: Props) {
+export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton = false }: Props) {
     const { user } = useUser()
+
+    const router = useRouter()
 
     let defaultSalesOrder: SalesOrderType = {
         id: '',
@@ -172,6 +176,8 @@ export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }:
             if (mutate) {
                 mutate()
             }
+
+            router.back()
 
             toast('Sales order has been updated!')
         } else {
@@ -274,17 +280,42 @@ export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }:
                                 Sales Order Form
                             </h1>
                             {salesOrder ? (
-                                <InputField
-                                    form={form}
-                                    name="externalId"
-                                    label="SO#"
-                                    labelPlacement="outside-left"
-                                    placeholder=" "
-                                    variant="bordered"
-                                    size="sm"
-                                    defaultValue={salesOrder.externalId}
-                                />
-                            ) : <div />}
+                                <div className="flex gap-4">
+                                    <InputField
+                                        form={form}
+                                        name="externalId"
+                                        label="SO#"
+                                        labelPlacement="outside-left"
+                                        placeholder=" "
+                                        variant="bordered"
+                                        size="sm"
+                                        defaultValue={salesOrder.externalId}
+                                    />
+                                    {onClose && (
+                                        <Button
+                                            isIconOnly
+                                            variant="light"
+                                            size="sm"
+                                            onPress={onClose}
+                                        >
+                                            <HiXMark className="size-4"/>
+                                        </Button>
+                                    )}
+                                </div>
+                            ) : (
+                                <div>
+                                    {onClose && (
+                                        <Button
+                                            isIconOnly
+                                            variant="light"
+                                            size="sm"
+                                            onPress={onClose}
+                                        >
+                                            <HiXMark className="size-4"/>
+                                        </Button>
+                                    )}
+                                </div>
+                            )}
                         </CardHeader>
                         <CardBody className="gap-4">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -466,61 +497,6 @@ export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }:
                                                 )}
                                             />
                                         </div>
-                                        {/*{showImportButton ? (*/}
-                                        {/*    <div className="flex-none w-[150px]">*/}
-                                        {/*        <FormField*/}
-                                        {/*            control={form.control}*/}
-                                        {/*            name={`products.${index}.item` as const}*/}
-                                        {/*            render={({field, fieldState}) => (*/}
-                                        {/*                <FormItem>*/}
-                                        {/*                    <FormControl>*/}
-                                        {/*                        <Select*/}
-                                        {/*                            {...field}*/}
-                                        {/*                            {...form.register(`products.${index}.item` as const)}*/}
-                                        {/*                            items={productCategories.filter((productCategory) => {*/}
-                                        {/*                                return {*/}
-                                        {/*                                    key: productCategory.key,*/}
-                                        {/*                                    label: productCategory.label,*/}
-                                        {/*                                }*/}
-                                        {/*                            })}*/}
-                                        {/*                            label="ITEM"*/}
-                                        {/*                            placeholder=" "*/}
-                                        {/*                            variant="bordered"*/}
-                                        {/*                            size="sm"*/}
-                                        {/*                            labelPlacement="outside"*/}
-                                        {/*                            isInvalid={fieldState.invalid}*/}
-                                        {/*                            errorMessage={fieldState.error?.message}*/}
-                                        {/*                            classNames={{*/}
-                                        {/*                                value: 'text-foreground',*/}
-                                        {/*                                listboxWrapper: 'overscroll-contain',*/}
-                                        {/*                            }}*/}
-                                        {/*                        >*/}
-                                        {/*                            {(item) => (*/}
-                                        {/*                                <SelectItem key={item.key}>*/}
-                                        {/*                                    {item.label}*/}
-                                        {/*                                </SelectItem>*/}
-                                        {/*                            )}*/}
-                                        {/*                        </Select>*/}
-                                        {/*                    </FormControl>*/}
-                                        {/*                    <FormMessage/>*/}
-                                        {/*                </FormItem>*/}
-                                        {/*            )}*/}
-                                        {/*        />*/}
-                                        {/*    </div>*/}
-                                        {/*) : (*/}
-                                        {/*    <div className="flex-none w-[75px]">*/}
-                                        {/*        <InputField*/}
-                                        {/*            isReadOnly*/}
-                                        {/*            form={form}*/}
-                                        {/*            label="ITEM"*/}
-                                        {/*            name={`products.${index}.item` as const}*/}
-                                        {/*            placeholder=" "*/}
-                                        {/*            variant="bordered"*/}
-                                        {/*            size="sm"*/}
-                                        {/*            labelPlacement="outside"*/}
-                                        {/*        />*/}
-                                        {/*    </div>*/}
-                                        {/*)}*/}
                                         <div className="flex-none w-[150px]">
                                             <InputField
                                                 form={form}
@@ -792,13 +768,26 @@ export function SalesOrderForm({ salesOrder, mutate, showImportButton = false }:
                                         />
                                     </div>
                                 </div>
-                                <Button
-                                    type="submit"
-                                    variant="solid"
-                                    className="bg-brand-primary text-black"
-                                >
-                                    {salesOrder ? 'Save' : 'Submit'}
-                                </Button>
+                                <div className="flex w-full justify-end gap-4">
+                                    {salesOrder && (
+                                        <Button
+                                            type="button"
+                                            variant="bordered"
+                                            color="danger"
+                                            className="text-danger"
+                                            onPress={() => router.back()}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    )}
+                                    <Button
+                                        type="submit"
+                                        variant="solid"
+                                        className="bg-brand-primary text-black w-full"
+                                    >
+                                        {salesOrder ? 'Save' : 'Submit'}
+                                    </Button>
+                                </div>
                             </div>
                         </CardBody>
                     </Card>

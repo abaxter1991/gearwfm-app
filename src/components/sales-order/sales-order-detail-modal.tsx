@@ -1,7 +1,7 @@
 'use client'
 
 import { SalesOrderForm } from '@/components/forms/sales-order-form'
-import { Button, Modal, ModalBody, ModalContent, useDisclosure } from '@nextui-org/react'
+import { Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@nextui-org/react'
 import type { SalesOrderAndRelations } from '@/types'
 
 type Props = {
@@ -18,19 +18,29 @@ export function SalesOrderDetailModal({ salesOrder, mutate }: Props) {
                 onPress={onOpen}
                 className="bg-brand-primary text-black"
             >
-                View Order
+                View Order (Modal)
             </Button>
             <Modal
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
+                hideCloseButton={true}
+                isDismissable={false}
+                isKeyboardDismissDisabled={true}
+                placement="top-center"
                 size="full"
                 backdrop="blur"
+                // scrollBehavior="outside"
+                className="absolute h-dvh"
+                // classNames={{
+                //     wrapper: 'h-dvh overflow-y-scroll',
+                //     base: 'h-dvh overflow-y-scroll',
+                // }}
             >
-                <ModalContent>
+                <ModalContent className="h-dvh overflow-y-scroll">
                     {(onClose) => (
                         <>
-                            <ModalBody className="p-6">
-                                <SalesOrderForm salesOrder={salesOrder} mutate={mutate} />
+                            <ModalBody className="h-dvh overflow-y-scroll p-0">
+                                <SalesOrderForm salesOrder={salesOrder} mutate={mutate} onClose={onClose} />
                             </ModalBody>
                         </>
                     )}

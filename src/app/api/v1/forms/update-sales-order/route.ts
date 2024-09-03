@@ -1,5 +1,5 @@
 import prisma from '@/prisma/client'
-import type { SalesOrderType } from '@/components/forms/sales-order-form'
+import type { AssembledProductType, SalesOrderType } from '@/components/forms/sales-order-form'
 
 export async function POST(request: Request) {
     const data: SalesOrderType = await request.json()
@@ -22,12 +22,27 @@ export async function POST(request: Request) {
         }
     })
 
+    function isAllAssembled(item: string) {
+        const assembledProduct = assembledProducts.find((product) => product.item === item)
+
+        if (!assembledProduct || !assembledProduct.allAssembled) {
+            return false
+        }
+
+        return assembledProduct.allAssembled
+    }
+
     const newAssembledProducts = productsToAssemble.map((item) => {
-        return { item, allAssembled: false }
+        return {
+            item,
+            allAssembled: isAllAssembled(item),
+        }
     })
 
     const updatedSalesOrder = await prisma.salesOrder.update({
-        where: { id: salesOrderId },
+        where: {
+            id: salesOrderId,
+        },
         data: {
             ...salesOrder,
             isNewCustomer: Boolean(isNewCustomer),
@@ -35,9 +50,6 @@ export async function POST(request: Request) {
             dueDate: new Date(dueDate.year, dueDate.month - 1, dueDate.day),
             status: 'NEW_ORDER',
             isDraft: true,
-            approvedProof: false,
-            partsOrdered: false,
-            partsReceived: false,
         },
     })
 

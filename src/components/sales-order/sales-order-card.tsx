@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { pusherClient } from '@/lib/pusher'
 import { useSalesOrder } from '@/lib/queries'
 import { useEffect } from 'react'
@@ -10,7 +11,7 @@ import {
     updateSalesOrderPartsOrdered,
     updateSalesOrderPartsReceived,
 } from '@/lib/actions'
-import { Card, CardBody, CardFooter, CardHeader, Checkbox, Divider, Textarea } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, CardHeader, Checkbox, Divider, Textarea } from '@nextui-org/react'
 import { CustomCheckbox } from './custom-checkbox'
 
 type Props = {
@@ -19,6 +20,8 @@ type Props = {
 
 export function SalesOrderCard({ salesOrderId }: Props) {
     const { data: salesOrder, mutate } = useSalesOrder(salesOrderId)
+
+    const router = useRouter()
 
     function formatDateString(dateString: string) {
         const date = new Date(dateString)
@@ -122,6 +125,14 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                             maxRows={5}
                             className="w-1/2"
                         />
+                        <Textarea
+                            isReadOnly
+                            label="Tracking Number"
+                            value={salesOrder.trackingNumber || ''}
+                            minRows={1}
+                            maxRows={1}
+                            className="w-1/2"
+                        />
                     </div>
                     <div className="flex flex-col gap-1">
                         <p className="text-medium text-default-500">
@@ -147,7 +158,13 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                 </CardBody>
                 <Divider/>
                 <CardFooter className="justify-around">
-                    <SalesOrderDetailModal salesOrder={salesOrder} mutate={mutate} />
+                    <Button
+                        onPress={() => router.push(`/sales-orders/${salesOrderId}`)}
+                        className="bg-brand-primary text-black"
+                    >
+                        View Order
+                    </Button>
+                    {/*<SalesOrderDetailModal salesOrder={salesOrder} mutate={mutate} />*/}
                     <SalesOrderProofModal salesOrder={salesOrder} />
                 </CardFooter>
             </Card>

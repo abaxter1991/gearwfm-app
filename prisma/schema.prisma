@@ -29,6 +29,7 @@ model SalesOrder {
     shippingAddress        String                       @default("") @map("shipping_address")
     billingAddress         String                       @default("") @map("billing_address")
     notes                  String                       @default("")
+    trackingNumber         String                       @default("") @map("tracking_number")
     discount               Int                          @default(0)
     shippingPrice          Float                        @default(0.00) @map("shipping_price")
     grandTotal             Float                        @default(0.00) @map("grand_total")
