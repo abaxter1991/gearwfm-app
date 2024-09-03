@@ -117,7 +117,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                 </Checkbox>
                             </div>
                         </div>
-                        <div className="flex flex-col w-1/2 gap-4">
+                        <div className="flex flex-col w-1/2 gap-2">
                             <Textarea
                                 isReadOnly
                                 label="NOTES"
