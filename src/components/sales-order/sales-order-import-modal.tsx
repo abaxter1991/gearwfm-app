@@ -5,10 +5,11 @@ import axios from 'axios'
 import { useState } from 'react'
 import { CsvReader } from '~/components/common/csv-reader'
 
+const djangoApiBaseUrl = process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL
+
 async function parseCsvData(csvData: any) {
     const data = JSON.stringify(csvData)
-    // const response = await axios.post('http://127.0.0.1:8001/api/products/import/parse/', { data })
-    const response = await axios.post('https://api.gearwfm.com/api/products/import/parse/', { data })
+    const response = await axios.post(`${djangoApiBaseUrl}/products/import/parse`, { data })
     console.log({ responseData: response.data })
     return response.data
 }
