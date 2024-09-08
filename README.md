@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# GearWFM README
 
-## Getting Started
+[GearWFM Homepage](https://www.gearwfm.com)
 
-First, run the development server:
+## Scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+npm run dev:inspect
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run dev:local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```bash
+npm run build
+```
 
-## Learn More
+```bash
+npm run start
+```
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run format
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+npm run check
+```
 
-## Deploy on Vercel
+```bash
+npm run prepare
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run postinstall
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+npm run studio
+```
+
+These scripts are defined in the `package.json` file.
+
+## Commits
+
+This project has been configured with the following:
+
+-   commitlint
+-   eslint
+-   husky
+-   prettier
+
+This is to ensure every developer working on this project is held to the same coding standards.<br />
+For details on conventional commits, please see [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
+Also, to understand how this project has been configured for commits, take a look at the code in the following files:
+
+-   .husky
+    -   commit-msg
+    -   pre-commit
+    -   pre-push
+-   eslint.config.js
+-   .prettierignore
+-   commitlint.config.mjs
+-   prettier.config.cjs
+
+### Commit Messages
+
+| Commit Type    | Description                                                                                                     |
+| -------------- | --------------------------------------------------------------------------------------------------------------- |
+| `build:`       | Changes that effect the build system or external dependencies (example: gulp, broccoli, npm)                    |
+| `ci:`          | Changes to CI configuration files and scripts (example: Travis, Circle, BrowserStack, SauceLabs)                |
+| `docs:`        | Documentation changes                                                                                           |
+| `feature:`     | New feature                                                                                                     |
+| `fix:`         | Bug fix                                                                                                         |
+| `performance:` | Code changes that improve performance                                                                           |
+| `refactor:`    | Code changes that neither fixes a bug nor adds a feature                                                        |
+| `style:`       | Changes that do not affect the meaning of the code (example: white-space, formatting, missing semi-colons, etc) |
+| `test:`        | Adding or fixing tests                                                                                          |
+
+### Examples:
+
+```
+git commit -m "build: update dependencies"
+git commit -m "feature: add new feature"
+```

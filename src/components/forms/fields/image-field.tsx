@@ -1,9 +1,9 @@
 import { Button, Input } from '@nextui-org/react'
-import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { cn } from '@/lib/utils'
+import { HiPhoto } from 'react-icons/hi2'
+import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
+import { cn } from '~/lib/utils'
 import type { InputProps } from '@nextui-org/react'
 import type { UseFormReturn } from 'react-hook-form'
-import { HiPhoto } from 'react-icons/hi2'
 
 type Props = Omit<InputProps, 'form' | 'type'> & {
     form: UseFormReturn<any, undefined>
@@ -13,7 +13,7 @@ export default function ImageField(fieldProps: Props) {
     const { form, className, classNames, ...props } = fieldProps
     const name = props.name || ''
 
-    let readOnlyClassNames = {
+    const readOnlyClassNames = {
         ...classNames,
         inputWrapper: [
             // 'border-0 shadow-none',
@@ -43,13 +43,13 @@ export default function ImageField(fieldProps: Props) {
                                         color="primary"
                                         size="sm"
                                     >
-                                        <HiPhoto className="h-6 w-6" />
+                                        <HiPhoto className="size-6" />
                                     </Button>
                                 }
                             />
                             {/*<img src={field.value} />*/}
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>
                 )}
             />
@@ -58,8 +58,8 @@ export default function ImageField(fieldProps: Props) {
 }
 
 // import { Button } from '@nextui-org/react'
-// import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-// import { cn } from '@/lib/utils'
+// import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
+// import { cn } from '~/lib/utils'
 // import type { UseFormReturn } from 'react-hook-form'
 // import { HiPhoto } from 'react-icons/hi2'
 // import type { InputHTMLAttributes } from 'react'

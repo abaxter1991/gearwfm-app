@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/prisma/client'
+import { NextResponse } from 'next/server'
+import prisma from '~/prisma/client'
+import type { NextRequest } from 'next/server'
 
 type Params = {
     params: {
@@ -18,14 +19,14 @@ export async function GET(request: NextRequest, { params }: Params) {
             products: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
             assembledProducts: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
-        }
+        },
     })
 
     return NextResponse.json(salesOrder, { status: 200 })

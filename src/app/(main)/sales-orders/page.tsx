@@ -1,5 +1,7 @@
-import prisma from '@/prisma/client'
-import { SalesOrderCard } from '@/components/sales-order/sales-order-card'
+// import { Card, CardBody } from '@nextui-org/react'
+import { SalesOrderCard } from '~/components/sales-order/sales-order-card'
+// import { SearchBar } from '~/components/ui/custom/search-bar'
+import prisma from '~/prisma/client'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,12 +11,12 @@ export default async function SalesOrdersPage() {
             products: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
             assembledProducts: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
         },
         orderBy: {
@@ -22,11 +24,31 @@ export default async function SalesOrdersPage() {
         },
     })
 
+    const _salesOrdersV2 = await prisma.salesOrder.findMany({
+        where: {
+            OR: [
+                {
+                    companyName: {
+                        contains: 'test',
+                    },
+                },
+            ],
+        },
+    })
+
     return (
-        <div className="flex w-full justify-center">
-            <div className="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-8 place-items-stretch">
+        <div className="flex w-full flex-col items-center gap-4">
+            {/*<Card className="w-full">*/}
+            {/*    <CardBody>*/}
+            {/*        <SearchBar />*/}
+            {/*    </CardBody>*/}
+            {/*</Card>*/}
+            <div className="grid grid-cols-1 gap-8 tablet:grid-cols-2 desktop:grid-cols-3">
                 {salesOrders.map((salesOrder) => (
-                    <SalesOrderCard key={salesOrder.id} salesOrderId={salesOrder.id} />
+                    <SalesOrderCard
+                        key={salesOrder.id}
+                        salesOrderId={salesOrder.id}
+                    />
                 ))}
             </div>
         </div>

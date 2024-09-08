@@ -1,7 +1,7 @@
-import { ReactNode } from 'react'
 import { Checkbox } from '@nextui-org/react'
-import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { cn } from '@/lib/utils'
+import { type ReactNode } from 'react'
+import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
+import { cn } from '~/lib/utils'
 import type { CheckboxProps } from '@nextui-org/react'
 import type { UseFormReturn } from 'react-hook-form'
 
@@ -34,7 +34,7 @@ export default function CheckboxField(fieldProps: Props) {
                                 {children}
                             </Checkbox>
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>
                 )}
             />

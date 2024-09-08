@@ -1,6 +1,6 @@
+import { type NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import { NextRequest, NextResponse } from 'next/server'
-// import { WelcomeEmailHtml } from '@/components/Mailers/WelcomeEmail/WelcomeEmailHtml'
+// import { WelcomeEmailHtml } from '~/components/Mailers/WelcomeEmail/WelcomeEmailHtml'
 
 const email = 'sales@gearwfm.com'
 const pass = ''

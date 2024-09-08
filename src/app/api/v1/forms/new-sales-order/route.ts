@@ -1,13 +1,13 @@
-import prisma from '@/prisma/client'
-import type { SalesOrderType } from '@/components/forms/sales-order-form'
+import prisma from '~/prisma/client'
+import type { SalesOrderType } from '~/components/forms/sales-order-form'
 
 export async function POST(request: Request) {
     const data: SalesOrderType = await request.json()
-    const { id, isNewCustomer, orderDate, dueDate, products, ...salesOrder } = data
+    const { id: _salesOrderId, isNewCustomer, orderDate, dueDate, products, ...salesOrder } = data
     const productsToAssemble: string[] = []
 
     const cleanedProducts = products.map((product) => {
-        const { id, ...restProduct } = product
+        const { id: _productId, ...restProduct } = product
         return restProduct
     })
 
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         return { item, allAssembled: false }
     })
 
-    const createdSalesOrder = await prisma.salesOrder.create({
+    await prisma.salesOrder.create({
         data: {
             ...salesOrder,
             isNewCustomer: Boolean(isNewCustomer),

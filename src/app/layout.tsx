@@ -1,10 +1,10 @@
-import { ReactNode } from 'react'
-import type { Metadata } from 'next'
 import { DM_Sans } from 'next/font/google'
-import { AppProvider } from '@/providers/app-provider'
+import { Toaster as SonnerToaster } from '~/components/ui/sonner'
+import { Toaster } from '~/components/ui/toaster'
+import { AppProvider } from '~/providers/app-provider'
+import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import './globals.css'
-import { Toaster } from '@/components/ui/toaster'
-import { Toaster as SonnerToaster } from '@/components/ui/sonner'
 
 const font = DM_Sans({ subsets: ['latin'] })
 

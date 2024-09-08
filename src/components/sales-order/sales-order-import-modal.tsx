@@ -1,12 +1,9 @@
 'use client'
 
-import axios from 'axios'
-import { CSSProperties, useState } from 'react'
-import { CsvReader } from '@/components/common/csv-reader'
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, useDisclosure } from '@nextui-org/react'
-import { useCSVReader } from 'react-papaparse'
-import type { SalesOrderAndRelations } from '@/types'
-import type { ProductType } from '@/components/forms/sales-order-form'
+import axios from 'axios'
+import { useState } from 'react'
+import { CsvReader } from '~/components/common/csv-reader'
 
 async function parseCsvData(csvData: any) {
     const data = JSON.stringify(csvData)
@@ -17,11 +14,11 @@ async function parseCsvData(csvData: any) {
 }
 
 type Props = {
-    onImport?: (data: any) => void,
+    onImport?: (data: any) => void
 }
 
 export function SalesOrderImportModal({ onImport }: Props) {
-    const {isOpen, onOpen, onOpenChange} = useDisclosure()
+    const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     const [importedData, setImportedData] = useState<any>([])
 

@@ -1,17 +1,12 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { pusherClient } from '@/lib/pusher'
-import { useSalesOrder } from '@/lib/queries'
-import { useEffect } from 'react'
-import { SalesOrderDetailModal } from '@/components/sales-order/sales-order-detail-modal'
-import { SalesOrderProofModal } from '@/components/sales-order/sales-order-proof-modal'
-import {
-    updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct,
-    updateSalesOrderPartsOrdered,
-    updateSalesOrderPartsReceived,
-} from '@/lib/actions'
 import { Button, Card, CardBody, CardFooter, CardHeader, Checkbox, Divider, Textarea } from '@nextui-org/react'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { SalesOrderProofModal } from '~/components/sales-order/sales-order-proof-modal'
+import { updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct, updateSalesOrderPartsOrdered, updateSalesOrderPartsReceived } from '~/lib/actions'
+import { pusherClient } from '~/lib/pusher'
+import { useSalesOrder } from '~/lib/queries'
 import { CustomCheckbox } from './custom-checkbox'
 
 type Props = {
@@ -29,11 +24,9 @@ export function SalesOrderCard({ salesOrderId }: Props) {
     }
 
     useEffect(() => {
-        pusherClient
-            .subscribe(salesOrderId)
-            .bind('sales-order-updated', async (data: any) => {
-                mutate(data.salesOrder)
-            })
+        pusherClient.subscribe(salesOrderId).bind('sales-order-updated', async (data: any) => {
+            mutate(data.salesOrder)
+        })
 
         return () => {
             pusherClient.unsubscribe(salesOrderId)
@@ -42,41 +35,27 @@ export function SalesOrderCard({ salesOrderId }: Props) {
 
     return (
         salesOrder && (
-            <Card className="w-[500px] aspect-square justify-self-center">
+            <Card className="aspect-square w-[500px] justify-self-center">
                 <CardHeader className="flex flex-col gap-1">
-                    <h1 className="text-2xl">
-                        {salesOrder.companyName}
-                    </h1>
-                    <p className="text-sm">
-                        SO#: {salesOrder.externalId}
-                    </p>
+                    <h1 className="text-2xl">{salesOrder.companyName}</h1>
+                    <p className="text-sm">SO#: {salesOrder.externalId}</p>
                 </CardHeader>
                 <Divider />
                 <CardBody className="gap-1.5">
                     <div className="flex flex-col gap-1">
                         <div className="flex justify-between">
-                            <p className="font-bold">
-                                Due Date
-                            </p>
-                            <p>
-                                {formatDateString(String(salesOrder.dueDate))}
-                            </p>
+                            <p className="font-bold">Due Date</p>
+                            <p>{formatDateString(String(salesOrder.dueDate))}</p>
                         </div>
                         <div className="flex justify-between">
-                            <p className="font-bold">
-                                Sales Rep
-                            </p>
-                            <p>
-                                {salesOrder.salesRepName}
-                            </p>
+                            <p className="font-bold">Sales Rep</p>
+                            <p>{salesOrder.salesRepName}</p>
                         </div>
                     </div>
                     <div className="flex justify-between">
-                        <div className="flex flex-col gap-1 w-1/2">
+                        <div className="flex w-1/2 flex-col gap-1">
                             <div className="flex flex-col gap-1">
-                                <p className="text-medium text-default-500">
-                                    Approvals
-                                </p>
+                                <p className="text-medium text-default-500">Approvals</p>
                                 <Checkbox
                                     value="approvedProof"
                                     color="success"
@@ -90,9 +69,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                 </Checkbox>
                             </div>
                             <div className="flex flex-col gap-1">
-                                <p className="text-medium text-default-500">
-                                    Inventory & Parts
-                                </p>
+                                <p className="text-medium text-default-500">Inventory & Parts</p>
                                 <Checkbox
                                     value="partsOrdered"
                                     color="success"
@@ -117,7 +94,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                 </Checkbox>
                             </div>
                         </div>
-                        <div className="flex flex-col w-1/2 gap-2">
+                        <div className="flex w-1/2 flex-col gap-2">
                             <Textarea
                                 isReadOnly
                                 label="NOTES"
@@ -137,9 +114,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                         </div>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <p className="text-medium text-default-500">
-                            Assembled Products
-                        </p>
+                        <p className="text-medium text-default-500">Assembled Products</p>
                         <div className="flex gap-2">
                             {salesOrder.assembledProducts.map((assembledProduct) => (
                                 <CustomCheckbox
@@ -158,7 +133,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                         </div>
                     </div>
                 </CardBody>
-                <Divider/>
+                <Divider />
                 <CardFooter className="justify-around">
                     <Button
                         onPress={() => router.push(`/sales-orders/${salesOrderId}`)}

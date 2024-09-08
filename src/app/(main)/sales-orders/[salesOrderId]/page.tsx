@@ -1,7 +1,7 @@
 'use client'
 
-import { SalesOrderForm } from '@/components/forms/sales-order-form'
-import { useSalesOrder } from '@/lib/queries'
+import { SalesOrderForm } from '~/components/forms/sales-order-form'
+import { useSalesOrder } from '~/lib/queries'
 
 type Props = {
     params: {
@@ -15,6 +15,9 @@ export default function SalesOrdersPage({ params }: Props) {
     const { data: salesOrder, mutate } = useSalesOrder(salesOrderId)
 
     return (
-        <SalesOrderForm salesOrder={salesOrder} mutate={mutate} />
+        <SalesOrderForm
+            salesOrder={salesOrder}
+            mutate={mutate}
+        />
     )
 }

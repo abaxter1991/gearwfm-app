@@ -1,8 +1,8 @@
 'use client'
 
-import { SalesOrderForm } from '@/components/forms/sales-order-form'
-import { Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@nextui-org/react'
-import type { SalesOrderAndRelations } from '@/types'
+import { Button, Modal, ModalBody, ModalContent, useDisclosure } from '@nextui-org/react'
+import { SalesOrderForm } from '~/components/forms/sales-order-form'
+import type { SalesOrderAndRelations } from '~/types'
 
 type Props = {
     salesOrder: SalesOrderAndRelations
@@ -10,7 +10,7 @@ type Props = {
 }
 
 export function SalesOrderDetailModal({ salesOrder, mutate }: Props) {
-    const {isOpen, onOpen, onOpenChange} = useDisclosure()
+    const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     return (
         <>
@@ -40,7 +40,11 @@ export function SalesOrderDetailModal({ salesOrder, mutate }: Props) {
                     {(onClose) => (
                         <>
                             <ModalBody className="h-dvh overflow-y-scroll p-0">
-                                <SalesOrderForm salesOrder={salesOrder} mutate={mutate} onClose={onClose} />
+                                <SalesOrderForm
+                                    salesOrder={salesOrder}
+                                    mutate={mutate}
+                                    onClose={onClose}
+                                />
                             </ModalBody>
                         </>
                     )}

@@ -1,28 +1,18 @@
 'use client'
 
-import {
-    Button,
-    Divider,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    Pagination,
-    useDisclosure,
-} from '@nextui-org/react'
+import { Button, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, useDisclosure } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
-import { ProductProofDetail } from './product-proof-detail'
 import { HiArrowDownTray } from 'react-icons/hi2'
+import { ProductProofDetail } from './product-proof-detail'
 import type { SalesOrderProduct } from '@prisma/client'
-import type { SalesOrderAndRelations } from '@/types'
+import type { SalesOrderAndRelations } from '~/types'
 
 type Props = {
     salesOrder: SalesOrderAndRelations
 }
 
 export function SalesOrderProofModal({ salesOrder }: Props) {
-    const {isOpen, onOpen, onOpenChange} = useDisclosure()
+    const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     const [currentPage, setCurrentPage] = useState(1)
     // const [productsInGroup, setProductsInGroup] = useState<SalesOrderProduct[]>([])
@@ -31,7 +21,7 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
     const itemsPerPage = 6
 
     useEffect(() => {
-        const start = (currentPage * itemsPerPage) - itemsPerPage
+        const start = currentPage * itemsPerPage - itemsPerPage
         const end = currentPage * itemsPerPage
         setProductsInView(salesOrder.products.slice(start, end))
     }, [currentPage])
@@ -53,14 +43,10 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex gap-1 items-center justify-between">
+                            <ModalHeader className="flex items-center justify-between gap-1">
                                 <div className="flex flex-col gap-1">
-                                    <h1 className="text-2xl">
-                                        {salesOrder.companyName}
-                                    </h1>
-                                    <p className="text-sm">
-                                        Due Date: {new Date(String(salesOrder.dueDate)).toLocaleDateString()}
-                                    </p>
+                                    <h1 className="text-2xl">{salesOrder.companyName}</h1>
+                                    <p className="text-sm">Due Date: {new Date(String(salesOrder.dueDate)).toLocaleDateString()}</p>
                                 </div>
                                 <Button
                                     isIconOnly
@@ -74,9 +60,12 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
                             </ModalHeader>
                             <Divider />
                             <ModalBody>
-                                <div className="grid grid-cols-3 grid-rows-2 h-full w-full place-content-between">
+                                <div className="grid size-full grid-cols-3 grid-rows-2 place-content-between">
                                     {productsInView.map((product) => (
-                                        <ProductProofDetail key={product.id} product={product} />
+                                        <ProductProofDetail
+                                            key={product.id}
+                                            product={product}
+                                        />
                                     ))}
                                 </div>
                             </ModalBody>

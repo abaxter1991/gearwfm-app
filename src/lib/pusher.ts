@@ -13,16 +13,13 @@ export const pusherServer = new PusherServer({
     useTLS: true,
 })
 
-export const pusherClient = new PusherClient(
-    pusherAppKey,
-    {
-        cluster: 'us3',
-        // authEndpoint: '/api/pusher-auth',
-        // authTransport: 'ajax',
-        // auth: {
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        // },
-    }
-)
+export const pusherClient = new PusherClient(pusherAppKey, {
+    cluster: 'us3',
+    // authEndpoint: '/api/pusher-auth',
+    // authTransport: 'ajax',
+    // auth: {
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    // },
+})

@@ -1,35 +1,29 @@
-import { useCheckbox, Chip, VisuallyHidden, tv } from '@nextui-org/react'
+import { Chip, tv, useCheckbox, VisuallyHidden } from '@nextui-org/react'
 import type { CheckboxProps } from '@nextui-org/react'
 
 const checkbox = tv({
     slots: {
-        base: "border-default hover:bg-default-200",
-        content: "text-default-500"
+        base: 'border-default hover:bg-default-200',
+        content: 'text-default-500',
     },
     variants: {
         isSelected: {
             true: {
-                base: "border-success bg-success hover:bg-success-500 hover:border-success-500",
-                content: "text-success-foreground pl-1"
-            }
+                base: 'border-success bg-success hover:bg-success-500 hover:border-success-500',
+                content: 'text-success-foreground pl-1',
+            },
         },
         isFocusVisible: {
             true: {
-                base: "outline-none ring-2 ring-focus ring-offset-2 ring-offset-background",
-            }
-        }
-    }
+                base: 'outline-none ring-2 ring-focus ring-offset-2 ring-offset-background',
+            },
+        },
+    },
 })
 
 export function CustomCheckbox({ ...props }: CheckboxProps) {
-    const {
-        children,
-        isSelected,
-        isFocusVisible,
-        getBaseProps,
-        getInputProps,
-    } = useCheckbox({
-        ...props
+    const { children, isSelected, isFocusVisible, getBaseProps, getInputProps } = useCheckbox({
+        ...props,
     })
 
     const styles = checkbox({ isSelected, isFocusVisible })
@@ -49,7 +43,7 @@ export function CustomCheckbox({ ...props }: CheckboxProps) {
                 size="sm"
                 radius="sm"
             >
-                {children ? children : isSelected ? "Enabled" : "Disabled"}
+                {children ? children : isSelected ? 'Enabled' : 'Disabled'}
             </Chip>
         </label>
     )

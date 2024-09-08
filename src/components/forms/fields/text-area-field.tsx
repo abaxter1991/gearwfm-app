@@ -1,6 +1,6 @@
 import { Textarea } from '@nextui-org/react'
-import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { cn } from '@/lib/utils'
+import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
+import { cn } from '~/lib/utils'
 import type { TextAreaProps } from '@nextui-org/react'
 import type { UseFormReturn } from 'react-hook-form'
 
@@ -28,7 +28,7 @@ export default function TextAreaField(fieldProps: Props) {
                                 errorMessage={fieldState.error?.message}
                             />
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>
                 )}
             />

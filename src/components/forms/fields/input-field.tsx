@@ -1,6 +1,6 @@
 import { Input } from '@nextui-org/react'
-import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { cn } from '@/lib/utils'
+import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
+import { cn } from '~/lib/utils'
 import type { InputProps } from '@nextui-org/react'
 import type { UseFormReturn } from 'react-hook-form'
 
@@ -12,7 +12,7 @@ export default function InputField(fieldProps: Props) {
     const { form, className, classNames, ...props } = fieldProps
     const name = props.name || ''
 
-    let readOnlyClassNames = {
+    const readOnlyClassNames = {
         ...classNames,
         inputWrapper: [
             // 'border-0 shadow-none',
@@ -36,7 +36,7 @@ export default function InputField(fieldProps: Props) {
                                 errorMessage={fieldState.error?.message}
                             />
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>
                 )}
             />

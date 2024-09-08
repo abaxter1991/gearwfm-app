@@ -1,7 +1,7 @@
 'use server'
 
-import prisma from '@/prisma/client'
-import { pusherServer } from '@/lib/pusher'
+import { pusherServer } from '~/lib/pusher'
+import prisma from '~/prisma/client'
 
 export async function updateSalesOrderApprovedProof(salesOrderId: string, approvedProof: boolean) {
     await prisma.salesOrder.update({
@@ -21,14 +21,14 @@ export async function updateSalesOrderApprovedProof(salesOrderId: string, approv
             products: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
             assembledProducts: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
-        }
+        },
     })
 
     pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrder })
@@ -52,14 +52,14 @@ export async function updateSalesOrderPartsOrdered(salesOrderId: string, partsOr
             products: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
             assembledProducts: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
-        }
+        },
     })
 
     pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrder })
@@ -83,14 +83,14 @@ export async function updateSalesOrderPartsReceived(salesOrderId: string, partsR
             products: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
             assembledProducts: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
-        }
+        },
     })
 
     pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrder })
@@ -114,14 +114,14 @@ export async function updateSalesOrderAssembledProduct(salesOrderId: string, ass
             products: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
             assembledProducts: {
                 orderBy: {
                     item: 'asc',
-                }
+                },
             },
-        }
+        },
     })
 
     pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrder })

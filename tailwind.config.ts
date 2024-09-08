@@ -38,15 +38,15 @@ const config: Config = {
             // This is done intentionally so that we can change these values to more efficient ones in
             // the future when we are ready to make the site more responsive than it currently is.
             screens: {
-                'mobile': '576px',
-                'sm': '640px',
-                'md': '768px',
-                'tablet': '960px',
-                'lg': '1024px',
-                'xl': '1280px',
-                'desktop': '1440px',
+                mobile: '576px',
+                sm: '640px',
+                md: '768px',
+                tablet: '960px',
+                lg: '1024px',
+                xl: '1280px',
+                desktop: '1440px',
                 '2xl': '1536px',
-            }
+            },
         },
     },
     variants: {
@@ -59,6 +59,46 @@ const config: Config = {
     },
     plugins: [
         nextui(),
+        // nextui({
+        //     themes: {
+        //         light: {
+        //             extend: 'light',
+        //             colors: {
+        //                 danger: {
+        //                     DEFAULT: '#ef4444',
+        //                     50: '#7f1d1d',
+        //                     100: '#991b1b',
+        //                     200: '#b91c1c',
+        //                     300: '#dc2626',
+        //                     400: '#ef4444',
+        //                     500: '#f87171',
+        //                     600: '#fca5a5',
+        //                     700: '#fecaca',
+        //                     800: '#fee2e2',
+        //                     900: '#fef2f2',
+        //                 },
+        //             },
+        //         },
+        //         dark: {
+        //             extend: 'dark',
+        //             colors: {
+        //                 danger: {
+        //                     DEFAULT: '#ef4444',
+        //                     50: '#fef2f2',
+        //                     100: '#fee2e2',
+        //                     200: '#fecaca',
+        //                     300: '#fca5a5',
+        //                     400: '#f87171',
+        //                     500: '#ef4444',
+        //                     600: '#dc2626',
+        //                     700: '#b91c1c',
+        //                     800: '#991b1b',
+        //                     900: '#7f1d1d',
+        //                 },
+        //             },
+        //         },
+        //     },
+        // }),
     ],
 }
 

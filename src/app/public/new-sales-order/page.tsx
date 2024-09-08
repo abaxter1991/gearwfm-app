@@ -2,7 +2,7 @@
 
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
-import { SalesOrderForm } from '@/components/forms/sales-order-form'
+import { SalesOrderForm } from '~/components/forms/sales-order-form'
 
 export default function PublicNewSalesOrderPage() {
     const { isSignedIn } = useUser()
@@ -12,7 +12,5 @@ export default function PublicNewSalesOrderPage() {
         router.push('/sales-orders/new-sales-order')
     }
 
-    return (
-        <SalesOrderForm />
-    )
+    return <SalesOrderForm />
 }

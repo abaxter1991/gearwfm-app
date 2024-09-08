@@ -1,7 +1,5 @@
-import { SalesOrderForm } from '@/components/forms/sales-order-form'
+import { SalesOrderForm } from '~/components/forms/sales-order-form'
 
 export default function NewSalesOrderPage() {
-    return (
-        <SalesOrderForm />
-    )
+    return <SalesOrderForm />
 }

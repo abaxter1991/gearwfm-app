@@ -1,28 +1,19 @@
 import { useState } from 'react'
-import { cn } from '@/lib/utils'
 
-import {
-    useCSVReader,
-    lightenDarkenColor,
-    formatFileSize,
-} from 'react-papaparse'
+import { formatFileSize, lightenDarkenColor, useCSVReader } from 'react-papaparse'
+import { cn } from '~/lib/utils'
 
 const DEFAULT_REMOVE_HOVER_COLOR = '#A01919'
-const REMOVE_HOVER_COLOR_LIGHT = lightenDarkenColor(
-    DEFAULT_REMOVE_HOVER_COLOR,
-    40
-)
+const REMOVE_HOVER_COLOR_LIGHT = lightenDarkenColor(DEFAULT_REMOVE_HOVER_COLOR, 40)
 
 type Props = {
-    onCsvLoaded?: (csvData: any) => void,
+    onCsvLoaded?: (csvData: any) => void
 }
 
 export function CsvReader({ onCsvLoaded }: Props) {
     const { CSVReader } = useCSVReader()
 
-    const [removeHoverColor, setRemoveHoverColor] = useState(
-        DEFAULT_REMOVE_HOVER_COLOR
-    )
+    const [removeHoverColor, setRemoveHoverColor] = useState(DEFAULT_REMOVE_HOVER_COLOR)
 
     return (
         <CSVReader
@@ -38,39 +29,25 @@ export function CsvReader({ onCsvLoaded }: Props) {
                 event.preventDefault()
             }}
         >
-            {({
-                getRootProps,
-                getRemoveFileProps,
-                acceptedFile,
-                ProgressBar,
-                Remove,
-            }: any) => (
+            {({ getRootProps, getRemoveFileProps, acceptedFile, ProgressBar, Remove }: any) => (
                 <>
                     <div
                         {...getRootProps()}
-                        className={cn(
-                            'flex flex-col items-center gap-6',
-                            'rounded-lg border border-dashed p-6 outline-0',
-                            'transition duration-250 ease-in-out',
-                        )}
+                        className={cn('flex flex-col items-center gap-6', 'rounded-lg border border-dashed p-6 outline-0', 'transition duration-250 ease-in-out')}
                     >
                         {acceptedFile ? (
                             <>
-                                <div className="relative flex flex-col justify-center size-28 z-10">
+                                <div className="relative z-10 flex size-28 flex-col justify-center">
                                     <div className="flex flex-col items-center px-2.5">
-                                        <p className="flex justify-center">
-                                            {formatFileSize(acceptedFile.size)}
-                                        </p>
-                                        <p>
-                                            {acceptedFile.name}
-                                        </p>
+                                        <p className="flex justify-center">{formatFileSize(acceptedFile.size)}</p>
+                                        <p>{acceptedFile.name}</p>
                                     </div>
-                                    <div className="absolute w-full px-2.5 bottom-3.5">
+                                    <div className="absolute bottom-3.5 w-full px-2.5">
                                         <ProgressBar />
                                     </div>
                                     <div
                                         {...getRemoveFileProps()}
-                                        className="absolute size-10 top-1.5 right-1.5"
+                                        className="absolute right-1.5 top-1.5 size-10"
                                         onMouseOver={(event: Event) => {
                                             event.preventDefault()
                                             setRemoveHoverColor(REMOVE_HOVER_COLOR_LIGHT)

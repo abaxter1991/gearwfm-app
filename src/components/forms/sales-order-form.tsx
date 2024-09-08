@@ -1,32 +1,21 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
+import { CalendarDateTime, getLocalTimeZone, now } from '@internationalized/date'
+import { Button, Card, CardBody, CardHeader, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem } from '@nextui-org/react'
 import axios from 'axios'
-import { now, getLocalTimeZone, CalendarDateTime,  } from '@internationalized/date'
-import { CheckboxField, DatePickerField, InputField, TextAreaField, UsdInputField } from '@/components/forms/fields'
-import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger,
-    Select,
-    SelectItem,
-} from '@nextui-org/react'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { FileUpload } from '@/components/common/file-upload'
-import { SalesOrderImportModal } from '@/components/sales-order/sales-order-import-modal'
+import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useFieldArray, useForm, useWatch } from 'react-hook-form'
-import { toast } from 'sonner'
 import { HiTrash, HiXMark } from 'react-icons/hi2'
-import { productCategories } from '@/lib/constants/product-categories'
+import { toast } from 'sonner'
+import { FileUpload } from '~/components/common/file-upload'
+import { CheckboxField, DatePickerField, InputField, TextAreaField } from '~/components/forms/fields'
+import { SalesOrderImportModal } from '~/components/sales-order/sales-order-import-modal'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
+import { productCategories } from '~/lib/constants/product-categories'
 import type { DateValue } from '@internationalized/date'
-import type { SalesOrderAndRelations } from '@/types'
+import type { SalesOrderAndRelations } from '~/types'
 
 // import { DevTool } from '@hookform/devtools'
 
@@ -103,7 +92,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
         orderDate: today,
         dueDate: today.add({ weeks: 3 }),
         salesRepName: user ? `${user.firstName} ${user.lastName}` : '',
-        salesRepEmailAddress: '',
+        salesRepEmailAddress: user && user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : '',
         externalId: '',
         referenceId: '',
         isNewCustomer: false,
@@ -116,8 +105,8 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
         notes: '',
         trackingNumber: '',
         discount: 0,
-        shippingPrice: 0.00,
-        grandTotal: 0.00,
+        shippingPrice: 0.0,
+        grandTotal: 0.0,
         products: [],
         assembledProducts: [],
     }
@@ -152,15 +141,19 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
         quantityOf3XL: 0,
         quantityOf4XL: 0,
         totalQuantity: 0,
-        unitPrice: 0.00,
-        subtotal: 0.00,
+        unitPrice: 0.0,
+        subtotal: 0.0,
     }
 
     const form = useForm<SalesOrderType>({ defaultValues: defaultSalesOrder })
     const { control, handleSubmit, formState, watch } = form
-    const { errors } = formState
+    const { errors: _errors } = formState
 
-    const { fields: products, append, remove } = useFieldArray({
+    const {
+        fields: products,
+        append,
+        remove,
+    } = useFieldArray({
         name: 'products',
         control: control,
     })
@@ -172,6 +165,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
     })
 
     const onSubmit = handleSubmit(async (data) => {
+        console.log(data)
         if (salesOrder) {
             await axios.post(`${apiBaseUrl}/forms/update-sales-order`, data)
 
@@ -188,7 +182,11 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
         }
     })
 
-    function getSizeFields(key: string) {
+    function getSizeFields(key: string | undefined) {
+        if (!key) {
+            return []
+        }
+
         const productCategory = productCategories.find((category) => category.key === key)
         return productCategory ? productCategory.sizeFields : []
     }
@@ -214,17 +212,24 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
     function updateTotalQuantity(productIndex: number) {
         const formValues = form.getValues()
         const product = formValues.products[productIndex]
-        const { quantityOfXS, quantityOfSM, quantityOfMD, quantityOfLG, quantityOfXL, quantityOf2XL, quantityOf3XL, quantityOf4XL } = product
-        const totalQuantity = Number(quantityOfXS) + Number(quantityOfSM) + Number(quantityOfMD) + Number(quantityOfLG) + Number(quantityOfXL) + Number(quantityOf2XL) + Number(quantityOf3XL) + Number(quantityOf4XL)
-        form.setValue(`products.${productIndex}.totalQuantity`, totalQuantity)
+
+        if (product) {
+            const { quantityOfXS, quantityOfSM, quantityOfMD, quantityOfLG, quantityOfXL, quantityOf2XL, quantityOf3XL, quantityOf4XL } = product
+            const totalQuantity =
+                Number(quantityOfXS) + Number(quantityOfSM) + Number(quantityOfMD) + Number(quantityOfLG) + Number(quantityOfXL) + Number(quantityOf2XL) + Number(quantityOf3XL) + Number(quantityOf4XL)
+            form.setValue(`products.${productIndex}.totalQuantity`, totalQuantity)
+        }
     }
 
     function updateSubTotal(productIndex: number) {
         const formValues = form.getValues()
         const product = formValues.products[productIndex]
-        const { totalQuantity, unitPrice } = product
-        const subtotal = Number(totalQuantity) * Number(unitPrice)
-        form.setValue(`products.${productIndex}.subtotal`, subtotal)
+
+        if (product) {
+            const { totalQuantity, unitPrice } = product
+            const subtotal = Number(totalQuantity) * Number(unitPrice)
+            form.setValue(`products.${productIndex}.subtotal`, subtotal)
+        }
     }
 
     function updateGrandTotal() {
@@ -232,7 +237,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
         const { discount, shippingPrice, products } = formValues
         const subtotalSum = products.reduce((total, product) => total + product.subtotal, 0)
         const discountAmount = subtotalSum * (discount / 100)
-        const grandTotal = (subtotalSum - discountAmount) + Number(shippingPrice)
+        const grandTotal = subtotalSum - discountAmount + Number(shippingPrice)
         form.setValue('grandTotal', grandTotal)
     }
 
@@ -270,17 +275,19 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
     return (
         <Form {...form}>
             <form onSubmit={onSubmit}>
-                <div className="flex flex-col gap-4 h-full w-full">
+                <div className="flex size-full flex-col gap-4">
                     <Card className="shrink-0">
-                        <CardHeader className="bg-brand-primary text-black justify-between w-full">
+                        <CardHeader className="w-full justify-between bg-brand-primary text-black">
                             {showImportButton ? (
-                                <SalesOrderImportModal onImport={(data) => {
-                                    form.setValue('products', data)
-                                }} />
-                            ) : <div />}
-                            <h1 className="flex-none self-center text-2xl font-bold">
-                                Sales Order Form
-                            </h1>
+                                <SalesOrderImportModal
+                                    onImport={(data) => {
+                                        form.setValue('products', data)
+                                    }}
+                                />
+                            ) : (
+                                <div />
+                            )}
+                            <h1 className="flex-none self-center text-2xl font-bold">Sales Order Form</h1>
                             {salesOrder ? (
                                 <div className="flex gap-4">
                                     <InputField
@@ -300,7 +307,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             size="sm"
                                             onPress={onClose}
                                         >
-                                            <HiXMark className="size-4"/>
+                                            <HiXMark className="size-4" />
                                         </Button>
                                     )}
                                 </div>
@@ -313,14 +320,14 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             size="sm"
                                             onPress={onClose}
                                         >
-                                            <HiXMark className="size-4"/>
+                                            <HiXMark className="size-4" />
                                         </Button>
                                     )}
                                 </div>
                             )}
                         </CardHeader>
                         <CardBody className="gap-4">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                                 <div className="flex flex-col gap-4">
                                     <div className="flex gap-4">
                                         <DatePickerField
@@ -380,9 +387,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         >
                                             NEW CUSTOMER
                                         </CheckboxField>
-                                        <p className="text-default-500 text-small">
-                                            *If customer already exists, then leave this unchecked.
-                                        </p>
+                                        <p className="text-small text-default-500">*If customer already exists, then leave this unchecked.</p>
                                     </div>
                                 </div>
                                 <div className="space-y-4">
@@ -467,11 +472,11 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         key={product.id}
                                         className="flex w-full gap-4 border-b-zinc-300 dark:border-b-black"
                                     >
-                                        <div className="flex-none w-[75px]">
+                                        <div className="w-[75px] flex-none">
                                             <FormField
                                                 control={form.control}
                                                 name={`products.${index}.item` as const}
-                                                render={({field, fieldState}) => (
+                                                render={({ field, fieldState }) => (
                                                     <FormItem>
                                                         <FormControl>
                                                             <Select
@@ -497,18 +502,21 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                                 }}
                                                             >
                                                                 {(item) => (
-                                                                    <SelectItem key={item.key} textValue={item.key}>
+                                                                    <SelectItem
+                                                                        key={item.key}
+                                                                        textValue={item.key}
+                                                                    >
                                                                         {item.label}
                                                                     </SelectItem>
                                                                 )}
                                                             </Select>
                                                         </FormControl>
-                                                        <FormMessage/>
+                                                        <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
                                         </div>
-                                        <div className="flex-none w-[150px]">
+                                        <div className="w-[150px] flex-none">
                                             <InputField
                                                 form={form}
                                                 label="FILE NAME"
@@ -519,7 +527,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-auto min-w-[100px] max-w-[150px]">
+                                        <div className="min-w-[100px] max-w-[150px] flex-auto">
                                             <InputField
                                                 form={form}
                                                 label="STYLE"
@@ -530,7 +538,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-auto min-w-[100px] max-w-[150px]">
+                                        <div className="min-w-[100px] max-w-[150px] flex-auto">
                                             <InputField
                                                 form={form}
                                                 label="COLOR"
@@ -541,12 +549,12 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-none w-[100px]">
+                                        <div className="w-[100px] flex-none">
                                             <FormField
                                                 disabled={form.formState.isSubmitting}
                                                 control={form.control}
                                                 name={`products.${index}.mockupImageUrl` as const}
-                                                render={({field}) => (
+                                                render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
                                                             <FileUpload
@@ -555,12 +563,12 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                                 value={field.value}
                                                             />
                                                         </FormControl>
-                                                        <FormMessage/>
+                                                        <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
                                         </div>
-                                        <div className="flex-auto w-full min-w-[150px]">
+                                        <div className="w-full min-w-[150px] flex-auto">
                                             <InputField
                                                 form={form}
                                                 label="NOTES"
@@ -573,14 +581,14 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         </div>
                                         <div className="flex gap-4">
                                             {Object.values(getSizeFields(productsOutput[index]?.item)).length === 0 ? (
-                                                <div className="flex-auto w-[712px] flex items-center justify-center">
-                                                    Select an item to add quantities for this product!
-                                                </div>
+                                                <div className="flex w-[712px] flex-auto items-center justify-center">Select an item to add quantities for this product!</div>
                                             ) : (
-                                                Object.values(getSizeFields(productsOutput[index]?.item)).map((sizeField) => (
+                                                Object.values(getSizeFields(productsOutput[index]?.item)).map((sizeField) =>
                                                     sizeField.show ? (
-                                                        <div key={`${index}-${sizeField.label}`}
-                                                             className="flex-auto w-[75px]">
+                                                        <div
+                                                            key={`${index}-${sizeField.label}`}
+                                                            className="w-[75px] flex-auto"
+                                                        >
                                                             <InputField
                                                                 form={form}
                                                                 label={sizeField.label}
@@ -593,17 +601,17 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                             />
                                                         </div>
                                                     ) : (
-                                                        <div key={`${index}-${sizeField.label}`}
-                                                             className="flex-auto w-[75px] flex items-center justify-center">
-                                                            <p>
-                                                                -
-                                                            </p>
+                                                        <div
+                                                            key={`${index}-${sizeField.label}`}
+                                                            className="flex w-[75px] flex-auto items-center justify-center"
+                                                        >
+                                                            <p>-</p>
                                                         </div>
                                                     )
-                                                ))
+                                                )
                                             )}
                                         </div>
-                                        <div className="flex-shrink-0 w-[75px]">
+                                        <div className="w-[75px] shrink-0">
                                             <InputField
                                                 isReadOnly={product.item ? !isOneSizeFitsAll(product.item) : false}
                                                 form={form}
@@ -616,7 +624,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                 min={0}
                                             />
                                         </div>
-                                        <div className="flex-shrink-0 w-[125px]">
+                                        <div className="w-[125px] shrink-0">
                                             <InputField
                                                 form={form}
                                                 label="UNIT PRICE"
@@ -627,14 +635,12 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                 labelPlacement="outside"
                                                 startContent={
                                                     <div className="pointer-events-none flex items-center">
-                                                        <p className="text-small">
-                                                            $
-                                                        </p>
+                                                        <p className="text-small">$</p>
                                                     </div>
                                                 }
                                             />
                                         </div>
-                                        <div className="flex-shrink-0 w-[125px]">
+                                        <div className="w-[125px] shrink-0">
                                             <InputField
                                                 isReadOnly
                                                 form={form}
@@ -646,14 +652,12 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                 labelPlacement="outside"
                                                 startContent={
                                                     <div className="pointer-events-none flex items-center">
-                                                        <p className="text-small">
-                                                            $
-                                                        </p>
+                                                        <p className="text-small">$</p>
                                                     </div>
                                                 }
                                             />
                                         </div>
-                                        <div className="flex-shrink-0 self-end">
+                                        <div className="shrink-0 self-end">
                                             <Button
                                                 isIconOnly
                                                 variant="light"
@@ -662,7 +666,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                 className="text-danger"
                                                 onPress={() => remove(index)}
                                             >
-                                                <HiTrash className="size-4"/>
+                                                <HiTrash className="size-4" />
                                             </Button>
                                         </div>
                                     </div>
@@ -670,7 +674,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                             </CardBody>
                         </Card>
                     )}
-                    <div className="flex items-center justify-center w-full gap-4">
+                    <div className="flex w-full items-center justify-center gap-4">
                         <Dropdown>
                             <DropdownTrigger>
                                 <Button
@@ -682,34 +686,32 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                             </DropdownTrigger>
                             <DropdownMenu
                                 aria-label="Action event example"
-                                onAction={(key) => append({
-                                    ...defaultProduct,
-                                    item: String(key),
-                                })}
+                                onAction={(key) =>
+                                    append({
+                                        ...defaultProduct,
+                                        item: String(key),
+                                    })
+                                }
                                 classNames={{
                                     list: 'max-h-96 overflow-scroll overscroll-contain',
                                 }}
                             >
                                 {productCategories.map((productCategory) => (
-                                    <DropdownItem key={productCategory.key}>
-                                        {productCategory.label}
-                                    </DropdownItem>
+                                    <DropdownItem key={productCategory.key}>{productCategory.label}</DropdownItem>
                                 ))}
                             </DropdownMenu>
                         </Dropdown>
                     </div>
                     <Card className="shrink-0">
-                        <CardBody className="flex-row justify-end w-full">
+                        <CardBody className="w-full flex-row justify-end">
                             {/* TODO: Display any errors here. */}
                             {/*<div>*/}
                             {/*    {errors}*/}
                             {/*</div>*/}
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center justify-between gap-4">
-                                    <p className="text-sm font-medium">
-                                        DISCOUNT
-                                    </p>
-                                    <div className="flex-none w-[125px]">
+                                    <p className="text-sm font-medium">DISCOUNT</p>
+                                    <div className="w-[125px] flex-none">
                                         <InputField
                                             form={form}
                                             name="discount"
@@ -724,22 +726,17 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             }}
                                             endContent={
                                                 <div className="pointer-events-none flex items-center">
-                                                    <p className="text-small">
-                                                        %
-                                                    </p>
+                                                    <p className="text-small">%</p>
                                                 </div>
                                             }
                                         />
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between gap-4">
-                                    <p className="text-sm font-medium">
-                                        SHIPPING COST
-                                    </p>
-                                    <div className="flex-none w-[125px]">
+                                    <p className="text-sm font-medium">SHIPPING COST</p>
+                                    <div className="w-[125px] flex-none">
                                         <InputField
                                             form={form}
-                                            // label="SHIPPING COST"
                                             name="shippingPrice"
                                             type="number"
                                             variant="bordered"
@@ -747,23 +744,18 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             labelPlacement="outside-left"
                                             startContent={
                                                 <div className="pointer-events-none flex items-center">
-                                                    <p className="text-small">
-                                                        $
-                                                    </p>
+                                                    <p className="text-small">$</p>
                                                 </div>
                                             }
                                         />
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between gap-4">
-                                    <p className="text-sm font-medium">
-                                        GRAND TOTAL
-                                    </p>
-                                    <div className="flex-none w-[125px]">
+                                    <p className="text-sm font-medium">GRAND TOTAL</p>
+                                    <div className="w-[125px] flex-none">
                                         <InputField
                                             isReadOnly
                                             form={form}
-                                            // label="GRAND TOTAL"
                                             name="grandTotal"
                                             type="number"
                                             variant="bordered"
@@ -771,9 +763,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             labelPlacement="outside-left"
                                             startContent={
                                                 <div className="pointer-events-none flex items-center">
-                                                    <p className="text-small">
-                                                        $
-                                                    </p>
+                                                    <p className="text-small">$</p>
                                                 </div>
                                             }
                                         />
@@ -794,7 +784,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                     <Button
                                         type="submit"
                                         variant="solid"
-                                        className="bg-brand-primary text-black w-full"
+                                        className="w-full bg-brand-primary text-black"
                                     >
                                         {salesOrder ? 'Save' : 'Submit'}
                                     </Button>

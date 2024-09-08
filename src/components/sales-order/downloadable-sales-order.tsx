@@ -1,7 +1,6 @@
-import { Checkbox, Input, Textarea } from '@nextui-org/react'
-import { SalesOrderAndRelations } from '@/types'
-import { Card, CardBody, CardHeader } from '@nextui-org/react'
+import { Card, CardBody, CardHeader, Checkbox, Input, Textarea } from '@nextui-org/react'
 import Image from 'next/image'
+import { type SalesOrderAndRelations } from '~/types'
 
 const productCategories = [
     { key: 'TEE', label: 'T-Shirt', fieldLayout: 'Tees' },
@@ -31,15 +30,13 @@ type Props = {
 
 export async function DownloadableSalesOrder({ salesOrder }: Props) {
     return (
-        <div className="flex flex-col gap-4 h-full w-full">
+        <div className="flex size-full flex-col gap-4">
             <Card className="shrink-0">
-                <CardHeader className="bg-brand-primary text-black justify-center w-full">
-                    <h1 className="text-2xl font-bold">
-                        Sales Order Form
-                    </h1>
+                <CardHeader className="w-full justify-center bg-brand-primary text-black">
+                    <h1 className="text-2xl font-bold">Sales Order Form</h1>
                 </CardHeader>
                 <CardBody className="gap-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div className="flex flex-col gap-4">
                             <div className="flex gap-4">
                                 <Input
@@ -91,9 +88,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                 >
                                     NEW CUSTOMER
                                 </Checkbox>
-                                <p className="text-default-500 text-small">
-                                    *If customer already exists, then leave this unchecked.
-                                </p>
+                                <p className="text-small text-default-500">*If customer already exists, then leave this unchecked.</p>
                             </div>
                         </div>
                         <div className="space-y-4">
@@ -169,7 +164,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                 key={product.id}
                                 className="flex w-full gap-4 border-b-zinc-300 dark:border-b-black"
                             >
-                                <div className="flex-none w-[75px]">
+                                <div className="w-[75px] flex-none">
                                     <Input
                                         isReadOnly
                                         label="ITEM"
@@ -180,7 +175,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                         labelPlacement="outside"
                                     />
                                 </div>
-                                <div className="flex-none w-[150px]">
+                                <div className="w-[150px] flex-none">
                                     <Input
                                         isReadOnly
                                         label="FILE NAME"
@@ -191,7 +186,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                         labelPlacement="outside"
                                     />
                                 </div>
-                                <div className="flex-auto min-w-[100px] max-w-[150px]">
+                                <div className="min-w-[100px] max-w-[150px] flex-auto">
                                     <Input
                                         isReadOnly
                                         label="STYLE"
@@ -202,7 +197,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                         labelPlacement="outside"
                                     />
                                 </div>
-                                <div className="flex-auto min-w-[100px] max-w-[150px]">
+                                <div className="min-w-[100px] max-w-[150px] flex-auto">
                                     <Input
                                         isReadOnly
                                         label="COLOR"
@@ -213,10 +208,8 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                         labelPlacement="outside"
                                     />
                                 </div>
-                                <div className="flex-none w-[75px]">
-                                    <p className="text-tiny pb-1.5">
-                                        MOCK UP
-                                    </p>
+                                <div className="w-[75px] flex-none">
+                                    <p className="pb-1.5 text-tiny">MOCK UP</p>
                                     <div className="relative size-8">
                                         <Image
                                             src={product.mockupImageUrl}
@@ -226,8 +219,8 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                         />
                                     </div>
                                 </div>
-                                <div className="flex-auto w-full min-w-[150px]">
-                                {/*<Textarea*/}
+                                <div className="w-full min-w-[150px] flex-auto">
+                                    {/*<Textarea*/}
                                     {/*   */}
                                     {/*    label="NOTES"*/}
                                     {/*    String(value{product.notes` a)}
@@ -249,7 +242,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                 </div>
                                 {product.item && getFieldLayout(product.item) === 'Tees' && (
                                     <div className="flex gap-4">
-                                        <div className="flex-auto w-[50px]">
+                                        <div className="w-[50px] flex-auto">
                                             <Input
                                                 isReadOnly
                                                 label="XS"
@@ -261,7 +254,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-auto w-[50px]">
+                                        <div className="w-[50px] flex-auto">
                                             <Input
                                                 isReadOnly
                                                 label="SM"
@@ -273,7 +266,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-auto w-[50px]">
+                                        <div className="w-[50px] flex-auto">
                                             <Input
                                                 isReadOnly
                                                 label="MD"
@@ -285,7 +278,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-auto w-[50px]">
+                                        <div className="w-[50px] flex-auto">
                                             <Input
                                                 isReadOnly
                                                 label="LG"
@@ -297,7 +290,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-auto w-[50px]">
+                                        <div className="w-[50px] flex-auto">
                                             <Input
                                                 isReadOnly
                                                 label="XL"
@@ -309,7 +302,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-auto w-[50px]">
+                                        <div className="w-[50px] flex-auto">
                                             <Input
                                                 isReadOnly
                                                 label="2XL"
@@ -321,7 +314,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-auto w-[50px]">
+                                        <div className="w-[50px] flex-auto">
                                             <Input
                                                 isReadOnly
                                                 label="3XL"
@@ -333,7 +326,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                                 labelPlacement="outside"
                                             />
                                         </div>
-                                        <div className="flex-auto w-[50px]">
+                                        <div className="w-[50px] flex-auto">
                                             <Input
                                                 isReadOnly
                                                 label="4XL"
@@ -347,7 +340,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                         </div>
                                     </div>
                                 )}
-                                <div className="flex-shrink-0 w-[75px]">
+                                <div className="w-[75px] shrink-0">
                                     <Input
                                         isReadOnly
                                         label={product.item && getFieldLayout(product.item) !== 'Gear' ? 'TOTAL' : 'QUANTITY'}
@@ -358,7 +351,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                         labelPlacement="outside"
                                     />
                                 </div>
-                                <div className="flex-shrink-0 w-[75px]">
+                                <div className="w-[75px] shrink-0">
                                     <Input
                                         isReadOnly
                                         label="UNIT PRICE"
@@ -369,14 +362,12 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                         labelPlacement="outside"
                                         startContent={
                                             <div className="pointer-events-none flex items-center">
-                                                <p className="text-small">
-                                                    $
-                                                </p>
+                                                <p className="text-small">$</p>
                                             </div>
                                         }
                                     />
                                 </div>
-                                <div className="flex-shrink-0 w-[75px]">
+                                <div className="w-[75px] shrink-0">
                                     <Input
                                         isReadOnly
                                         label="SUBTOTAL"
@@ -387,9 +378,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                         labelPlacement="outside"
                                         startContent={
                                             <div className="pointer-events-none flex items-center">
-                                                <p className="text-small">
-                                                    $
-                                                </p>
+                                                <p className="text-small">$</p>
                                             </div>
                                         }
                                     />
@@ -400,12 +389,10 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                 </Card>
             )}
             <Card className="shrink-0">
-                <CardBody className="flex-row justify-end w-full">
+                <CardBody className="w-full flex-row justify-end">
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center justify-between gap-4">
-                            <p className="text-sm font-medium">
-                                DISCOUNT
-                            </p>
+                            <p className="text-sm font-medium">DISCOUNT</p>
                             <Input
                                 isReadOnly
                                 name="discount"
@@ -415,17 +402,13 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                 labelPlacement="outside-left"
                                 endContent={
                                     <div className="pointer-events-none flex items-center">
-                                        <p className="text-small">
-                                            %
-                                        </p>
+                                        <p className="text-small">%</p>
                                     </div>
                                 }
                             />
                         </div>
                         <div className="flex items-center justify-between gap-4">
-                            <p className="text-sm font-medium">
-                                SHIPPING COST
-                            </p>
+                            <p className="text-sm font-medium">SHIPPING COST</p>
                             <Input
                                 isReadOnly
                                 name="shippingPrice"
@@ -435,17 +418,13 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                 labelPlacement="outside-left"
                                 startContent={
                                     <div className="pointer-events-none flex items-center">
-                                        <p className="text-small">
-                                            $
-                                        </p>
+                                        <p className="text-small">$</p>
                                     </div>
                                 }
                             />
                         </div>
                         <div className="flex items-center justify-between gap-4">
-                            <p className="text-sm font-medium">
-                                GRAND TOTAL
-                            </p>
+                            <p className="text-sm font-medium">GRAND TOTAL</p>
                             <Input
                                 isReadOnly
                                 name="grandTotal"
@@ -455,9 +434,7 @@ export async function DownloadableSalesOrder({ salesOrder }: Props) {
                                 labelPlacement="outside-left"
                                 startContent={
                                     <div className="pointer-events-none flex items-center">
-                                        <p className="text-small">
-                                            $
-                                        </p>
+                                        <p className="text-small">$</p>
                                     </div>
                                 }
                             />

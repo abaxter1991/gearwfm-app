@@ -1,11 +1,11 @@
 'use client'
 
-import axios from 'axios'
-import { HiTrash } from 'react-icons/hi2'
-import Image from 'next/image'
 import { Button } from '@nextui-org/react'
-import { UploadDropzone } from '@/lib/uploadthing'
-import { cn } from '@/lib/utils'
+import axios from 'axios'
+import Image from 'next/image'
+import { HiTrash } from 'react-icons/hi2'
+import { UploadDropzone } from '~/lib/uploadthing'
+import { cn } from '~/lib/utils'
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
@@ -16,7 +16,7 @@ type Props = {
 }
 
 export function FileUpload({ endpoint, onChange, value }: Props) {
-    const handleDeleteImage = async () => {
+    async function handleDeleteImage() {
         if (value) {
             const fileKey = value.replace('https://utfs.io/f/', '')
             await axios.delete(`${baseUrl}/api/uploadthing/delete/${fileKey}`)
@@ -28,10 +28,8 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
     if (value) {
         return (
             <div className="w-full">
-                <p className="text-tiny pb-1.5">
-                    MOCK UP
-                </p>
-                <div className="group relative flex items-center justify-center w-full">
+                <p className="pb-1.5 text-tiny">MOCKUP</p>
+                <div className="group relative flex w-full items-center justify-center">
                     <div className="relative size-8">
                         <Image
                             src={value}
@@ -40,17 +38,17 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
                             fill
                         />
                     </div>
-                    <div className="absolute inset-0 hidden h-full w-full items-center justify-center rounded-lg backdrop-blur-[2px] group-hover:flex">
+                    <div className="absolute inset-0 hidden size-full items-center justify-center rounded-lg backdrop-blur-[2px] group-hover:flex">
                         <Button
                             isIconOnly
                             type="button"
                             variant="bordered"
                             color="danger"
                             size="sm"
-                            className="text-danger bg-transparent"
+                            className="bg-transparent text-danger"
                             onClick={handleDeleteImage}
                         >
-                            <HiTrash className="size-6"/>
+                            <HiTrash className="size-6" />
                         </Button>
                     </div>
                 </div>
@@ -60,9 +58,7 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
 
     return (
         <div className="w-full">
-            <p className="text-tiny pb-1.5">
-                MOCKUP
-            </p>
+            <p className="pb-1.5 text-tiny">MOCKUP</p>
             <UploadDropzone
                 endpoint={endpoint}
                 config={{
@@ -74,11 +70,11 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
                     label: 'hidden',
                     allowedContent: 'hidden',
                     button: cn(
-                        'h-7 w-auto m-0',
-                        'text-primary-foreground text-tiny bg-transparent',
+                        'm-0 h-7 w-auto',
+                        'bg-transparent text-tiny text-primary-foreground',
                         'ut-uploading:w-full ut-uploading:cursor-not-allowed',
                         'focus-within:ring-brand-primary',
-                        'after:bg-brand-primary',
+                        'after:bg-brand-primary'
                     ),
                 }}
                 content={{
@@ -89,7 +85,7 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
                     },
                 }}
                 onClientUploadComplete={(res) => {
-                    onChange(res?.[0].url)
+                    onChange(res?.[0]?.url)
                 }}
                 onUploadAborted={() => {
                     alert('Upload aborted!')
