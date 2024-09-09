@@ -330,7 +330,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                         <CardBody className="gap-4">
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                                 <div className="flex flex-col gap-4">
-                                    <div className="flex gap-4">
+                                    <div className="grid grid-cols-2 gap-4">
                                         <DatePickerField
                                             form={form}
                                             name="orderDate"
@@ -353,16 +353,15 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             variant="bordered"
                                             size="sm"
                                         />
-                                        <InputField
-                                            form={form}
-                                            name="referenceId"
-                                            label="REFERENCE #"
-                                            placeholder=" "
-                                            variant="bordered"
-                                            size="sm"
-                                            className="w-full"
-                                        />
                                     </div>
+                                    <InputField
+                                        form={form}
+                                        name="referenceId"
+                                        label="REFERENCE #"
+                                        placeholder=" "
+                                        variant="bordered"
+                                        size="sm"
+                                    />
                                     <InputField
                                         form={form}
                                         name="salesRepName"
@@ -450,7 +449,10 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         placeholder=" "
                                         variant="bordered"
                                         size="sm"
-                                        maxRows={3}
+                                        disableAutosize={true}
+                                        classNames={{
+                                            input: 'resize-y h-20 min-h-3',
+                                        }}
                                     />
                                     <TextAreaField
                                         form={form}
@@ -459,7 +461,10 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         placeholder=" "
                                         variant="bordered"
                                         size="sm"
-                                        maxRows={1}
+                                        disableAutosize={true}
+                                        classNames={{
+                                            input: 'resize-y h-20 h-3.5 min-h-3.5',
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -570,7 +575,16 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             />
                                         </div>
                                         <div className="w-full min-w-[150px] flex-auto">
-                                            <InputField
+                                            {/*<InputField*/}
+                                            {/*    form={form}*/}
+                                            {/*    label="NOTES"*/}
+                                            {/*    name={`products.${index}.notes` as const}*/}
+                                            {/*    placeholder=" "*/}
+                                            {/*    variant="bordered"*/}
+                                            {/*    size="sm"*/}
+                                            {/*    labelPlacement="outside"*/}
+                                            {/*/>*/}
+                                            <TextAreaField
                                                 form={form}
                                                 label="NOTES"
                                                 name={`products.${index}.notes` as const}
@@ -578,11 +592,18 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                 variant="bordered"
                                                 size="sm"
                                                 labelPlacement="outside"
+                                                disableAutosize={true}
+                                                classNames={{
+                                                    inputWrapper: 'py-0',
+                                                    input: 'resize-y h-20 h-3 min-h-3',
+                                                }}
                                             />
                                         </div>
                                         <div className="flex gap-4">
                                             {Object.values(getSizeFields(productsOutput[index]?.item)).length === 0 ? (
-                                                <div className="flex w-[712px] flex-auto items-center justify-center">Select an item to add quantities for this product!</div>
+                                                <div className="flex w-[712px] flex-auto items-center justify-center">
+                                                    Select an item to add quantities for this product!
+                                                </div>
                                             ) : (
                                                 Object.values(getSizeFields(productsOutput[index]?.item)).map((sizeField) =>
                                                     sizeField.show ? (
