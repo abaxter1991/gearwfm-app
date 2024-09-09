@@ -71,7 +71,7 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
                     allowedContent: 'hidden',
                     button: cn(
                         'm-0 h-7 w-auto',
-                        'bg-transparent text-xs text-primary-foreground',
+                        'bg-transparent text-xs text-foreground',
                         'ut-uploading:w-full ut-uploading:cursor-not-allowed',
                         'focus-within:ring-brand-primary',
                         'after:bg-brand-primary'
