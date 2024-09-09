@@ -50,12 +50,12 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
         include: {
             products: {
                 orderBy: {
-                    item: 'asc',
+                    createdAt: 'asc',
                 },
             },
             assembledProducts: {
                 orderBy: {
-                    item: 'asc',
+                    createdAt: 'asc',
                 },
             },
         },
