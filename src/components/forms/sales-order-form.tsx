@@ -85,7 +85,6 @@ type Props = {
 
 export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton = false }: Props) {
     const { user } = useUser()
-
     const router = useRouter()
 
     let defaultSalesOrder: SalesOrderType = {
@@ -789,7 +788,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             variant="bordered"
                                             color="danger"
                                             className="text-danger"
-                                            onPress={() => router.back()}
+                                            onPress={() => router.push('/sales-orders')}
                                         >
                                             Cancel
                                         </Button>

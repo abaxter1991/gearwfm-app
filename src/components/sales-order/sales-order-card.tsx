@@ -35,7 +35,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
 
     return (
         salesOrder && (
-            <Card className="aspect-square w-[500px] justify-self-center">
+            <Card className="h-[500px] w-full justify-self-center">
                 <CardHeader className="flex flex-col gap-1">
                     <h1 className="text-2xl">{salesOrder.companyName}</h1>
                     <p className="text-sm">SO#: {salesOrder.externalId}</p>
@@ -134,7 +134,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                     </div>
                 </CardBody>
                 <Divider />
-                <CardFooter className="justify-around">
+                <CardFooter className="justify-end gap-4">
                     <Button
                         onPress={() => router.push(`/sales-orders/${salesOrderId}`)}
                         className="bg-brand-primary text-black"

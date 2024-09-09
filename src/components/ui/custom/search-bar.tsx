@@ -1,114 +1,128 @@
 'use client'
 
-import { Chip, Input, Select, SelectItem } from '@nextui-org/react'
+import { parseDate, getLocalTimeZone, now, CalendarDate } from '@internationalized/date'
+import { Button, Card, CardBody, DateRangePicker, Input, Select, SelectItem } from '@nextui-org/react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { HiMagnifyingGlass } from 'react-icons/hi2'
-import type { SelectedItems, Selection } from '@nextui-org/react'
+import type { DateValue } from '@react-types/datepicker'
+import type { RangeValue } from '@react-types/shared'
 import type { KeyboardEvent } from 'react'
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
-type SearchBy = {
-    key: string
-    label: string
-}
+const today = now(getLocalTimeZone()).toDate()
+const todayString = new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()).toString()
+const firstDayOfYearString = new CalendarDate(today.getFullYear(), 1, 1).toString()
 
 export function SearchBar() {
-    const [query, setQuery] = useState('')
-    const [_searchBy, _setSearchBy] = useState<Selection>(new Set(['all']))
+    const [dateRange, setDateRange] = useState<RangeValue<DateValue>>({
+        start: parseDate(firstDayOfYearString),
+        end: parseDate(todayString),
+    })
+    // const [dateRange, setDateRange] = useState<RangeValue<DateValue | null>>({ start: null, end: null })
+    const [searchDateBy, setSearchDateBy] = useState<string>('orderDate')
+    const [search, setSearch] = useState('')
 
     const router = useRouter()
-
     const searchParams = useSearchParams()!
 
-    const search = searchParams.get('search')
+    const startDateString = searchParams.get('startDate')
+    const endDateString = searchParams.get('endDate')
+    const searchDateByString = searchParams.get('searchDateBy')
+    const searchString = searchParams.get('search')
 
     useEffect(() => {
-        if (search) setQuery(search)
-    }, [search])
+        if (startDateString && endDateString) {
+            setDateRange({
+                start: parseDate(startDateString),
+                end: parseDate(endDateString),
+            })
+        }
 
-    const createQueryString = useCallback(
-        (name: string, value: string) => {
-            const params = new URLSearchParams(searchParams)
-            params.set(name, value)
-            return params.toString()
-        },
-        [searchParams]
-    )
+        if (searchDateByString) setSearchDateBy(searchDateByString)
+        if (searchString) setSearch(searchString)
+    }, [searchParams])
+
+    const handleSearch = () => {
+        router.push('/')
+        const urlString = `${baseUrl}/sales-orders?startDate=${dateRange.start ? dateRange.start.toString() : ''}&endDate=${dateRange.end ? dateRange.end.toString() : ''}&searchDateBy=${searchDateBy}&search=${search}`
+        router.push(urlString)
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Enter' && query) {
-            if (query !== '') {
-                const queryString = `${BASE_URL}?${createQueryString('search', query)}`
-                router.push(queryString)
-            } else {
-                router.push('/')
-            }
-        } else if (e.key === 'Enter') {
-            router.push('/')
+        if (e.key === 'Enter') {
+            handleSearch()
         }
     }
 
-    const searchByItems = [
-        { key: 'all', label: 'All' },
-        { key: 'salesRepName', label: 'Sales Rep Name' },
-        { key: 'customerName', label: 'Customer Name' },
+    const searchDateByItems = [
+        { key: 'orderDate', label: 'Order Date' },
+        { key: 'dueDate', label: 'Due Date' },
     ]
 
     return (
-        <div className="flex w-full flex-col gap-4 lg:flex lg:w-2/5">
-            <Input
-                isClearable
-                variant="flat"
-                placeholder="Type to search..."
-                value={query}
-                onValueChange={setQuery}
-                onClear={() => setQuery('')}
-                onKeyDown={handleKeyDown}
-                startContent={<HiMagnifyingGlass className="pointer-events-none mx-2 shrink-0 text-2xl text-default-400" />}
-                classNames={{
-                    inputWrapper: 'shadow-inner',
-                }}
-            />
-            <Select
-                items={searchByItems}
-                label="Search By"
-                variant="flat"
-                isMultiline={true}
-                selectionMode="multiple"
-                placeholder="Choose 1 or more search filters..."
-                labelPlacement="outside"
-                classNames={{
-                    trigger: 'px-0 overflow-hidden bg-transparent',
-                    label: 'h-10 w-36 p-0 bg-brand-primary flex items-center justify-center',
-                }}
-                renderValue={(items: SelectedItems<SearchBy>) => {
-                    return (
-                        <div className="flex flex-wrap gap-2">
-                            {items.map((item) => (
-                                <Chip
-                                    key={item.key}
-                                    size="sm"
-                                    radius="sm"
-                                    color="warning"
-                                >
-                                    {item.data?.label}
-                                </Chip>
-                            ))}
-                        </div>
-                    )
-                }}
-            >
-                {(item) => (
-                    <SelectItem
-                        key={item.key}
-                        textValue={item.label}
+        <Card className="w-full">
+            <CardBody>
+                <div className="flex items-end gap-4">
+                    <div className="flex gap-4">
+                        <DateRangePicker
+                            label="Search Date Range"
+                            labelPlacement="outside"
+                            visibleMonths={2}
+                            value={dateRange}
+                            onChange={setDateRange}
+                        />
+                    </div>
+                    <Select
+                        label="Search Date By"
+                        variant="flat"
+                        placeholder="Choose a filter..."
+                        labelPlacement="outside"
+                        selectedKeys={[searchDateBy]}
+                        onChange={(event) => {
+                            setSearchDateBy(event.target.value)
+                        }}
+                        className="max-w-48"
+                        classNames={{
+                            value: 'text-foreground',
+                            listboxWrapper: 'overscroll-contain',
+                            popoverContent: 'w-auto',
+                        }}
                     >
-                        {item.label}
-                    </SelectItem>
-                )}
-            </Select>
-        </div>
+                        {searchDateByItems.map((item) => (
+                            <SelectItem
+                                key={item.key}
+                                textValue={item.label}
+                            >
+                                {item.label}
+                            </SelectItem>
+                        ))}
+                    </Select>
+                    <Input
+                        isClearable
+                        variant="flat"
+                        placeholder="Type to search..."
+                        value={search}
+                        onValueChange={setSearch}
+                        onClear={() => setSearch('')}
+                        onKeyDown={handleKeyDown}
+                        startContent={<HiMagnifyingGlass className="pointer-events-none mx-2 shrink-0 text-2xl text-default-400" />}
+                        classNames={{
+                            inputWrapper: 'shadow-inner',
+                        }}
+                    />
+                    <Button
+                        type="button"
+                        variant="solid"
+                        color="primary"
+                        onPress={handleSearch}
+                        className="bg-brand-primary text-black"
+                    >
+                        Search
+                    </Button>
+                </div>
+            </CardBody>
+        </Card>
     )
 }

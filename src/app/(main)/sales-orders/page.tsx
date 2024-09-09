@@ -1,12 +1,52 @@
-// import { Card, CardBody } from '@nextui-org/react'
 import { SalesOrderCard } from '~/components/sales-order/sales-order-card'
-// import { SearchBar } from '~/components/ui/custom/search-bar'
+import { SearchBar } from '~/components/ui/custom/search-bar'
 import prisma from '~/prisma/client'
+import type { Prisma } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
-export default async function SalesOrdersPage() {
+type Props = {
+    searchParams: {
+        startDate?: string
+        endDate?: string
+        searchDateBy?: string
+        search?: string
+    }
+}
+
+export default async function SalesOrdersPage({ searchParams }: Props) {
+    const { startDate, endDate, searchDateBy, search } = searchParams
+
+    const searchOptions: Prisma.StringFilter<"SalesOrder"> | string = { contains: search ? search : '', mode: 'insensitive' }
+
+    let dateRangeParams = {}
+
+    if (startDate && endDate) {
+        if (searchDateBy == 'orderDate') {
+            dateRangeParams = { orderDate: { gte: new Date(startDate), lte: new Date(endDate) } }
+        } else if (searchDateBy == 'dueDate') {
+            dateRangeParams = { dueDate: { gte: new Date(startDate), lte: new Date(endDate) } }
+        }
+    }
+
     const salesOrders = await prisma.salesOrder.findMany({
+        where: {
+            ...dateRangeParams,
+            OR: [
+                { referenceId: searchOptions },
+                { salesRepName: searchOptions },
+                { salesRepEmailAddress: searchOptions },
+                { customerServiceRepName: searchOptions },
+                { companyName: searchOptions },
+                { contactName: searchOptions },
+                { phoneNumber: searchOptions },
+                { emailAddress: searchOptions },
+                { shippingAddress: searchOptions },
+                { billingAddress: searchOptions },
+                { notes: searchOptions },
+                { trackingNumber: searchOptions },
+            ],
+        },
         include: {
             products: {
                 orderBy: {
@@ -24,26 +64,10 @@ export default async function SalesOrdersPage() {
         },
     })
 
-    const _salesOrdersV2 = await prisma.salesOrder.findMany({
-        where: {
-            OR: [
-                {
-                    companyName: {
-                        contains: 'test',
-                    },
-                },
-            ],
-        },
-    })
-
     return (
         <div className="flex w-full flex-col items-center gap-4">
-            {/*<Card className="w-full">*/}
-            {/*    <CardBody>*/}
-            {/*        <SearchBar />*/}
-            {/*    </CardBody>*/}
-            {/*</Card>*/}
-            <div className="grid grid-cols-1 gap-8 tablet:grid-cols-2 desktop:grid-cols-3">
+            <SearchBar />
+            <div className="grid w-full grid-cols-1 gap-4 tablet:grid-cols-2 desktop:grid-cols-3">
                 {salesOrders.map((salesOrder) => (
                     <SalesOrderCard
                         key={salesOrder.id}
