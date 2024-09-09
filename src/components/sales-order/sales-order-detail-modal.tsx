@@ -29,12 +29,7 @@ export function SalesOrderDetailModal({ salesOrder, mutate }: Props) {
                 placement="top-center"
                 size="full"
                 backdrop="blur"
-                // scrollBehavior="outside"
                 className="absolute h-dvh"
-                // classNames={{
-                //     wrapper: 'h-dvh overflow-y-scroll',
-                //     base: 'h-dvh overflow-y-scroll',
-                // }}
             >
                 <ModalContent className="h-dvh overflow-y-scroll">
                     {(onClose) => (

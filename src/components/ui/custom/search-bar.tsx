@@ -67,25 +67,6 @@ export function SearchBar() {
                 onClear={() => setQuery('')}
                 onKeyDown={handleKeyDown}
                 startContent={<HiMagnifyingGlass className="pointer-events-none mx-2 shrink-0 text-2xl text-default-400" />}
-                // startContent={
-                //     <Select
-                //         color="primary"
-                //         selectedKeys={value}
-                //         onSelectionChange={setValue}
-                //         className="w-56"
-                //         classNames={{
-                //             value: 'text-foreground',
-                //             listboxWrapper: 'overscroll-contain',
-                //             popoverContent: 'w-auto',
-                //         }}
-                //     >
-                //         {searchByItems.map((item) => (
-                //             <SelectItem key={item.key}>
-                //                 {item.label}
-                //             </SelectItem>
-                //         ))}
-                //     </Select>
-                // }
                 classNames={{
                     inputWrapper: 'shadow-inner',
                 }}

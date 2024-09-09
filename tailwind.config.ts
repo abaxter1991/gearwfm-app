@@ -35,8 +35,8 @@ const config: Config = {
                 },
             },
             // The sm, md, lg, xl, and 2xl breakpoints below are currently set to the default values.
-            // This is done intentionally so that we can change these values to more efficient ones in
-            // the future when we are ready to make the site more responsive than it currently is.
+            // This is done intentionally so that we can remember to change these values to more efficient
+            // ones in the future when we are ready to make the site more responsive than it currently is.
             screens: {
                 mobile: '576px',
                 sm: '640px',
@@ -59,6 +59,7 @@ const config: Config = {
     },
     plugins: [
         nextui(),
+        // TODO: Verify with client if he would like to use the default danger/red colors from NextUI or change it back to TailwindCSS red colors.
         // nextui({
         //     themes: {
         //         light: {

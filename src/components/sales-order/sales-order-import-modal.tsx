@@ -10,7 +10,6 @@ const djangoApiBaseUrl = process.env.NEXT_PUBLIC_DJANGO_API_BASE_URL
 async function parseCsvData(csvData: any) {
     const data = JSON.stringify(csvData)
     const response = await axios.post(`${djangoApiBaseUrl}/products/import/parse`, { data })
-    console.log({ responseData: response.data })
     return response.data
 }
 

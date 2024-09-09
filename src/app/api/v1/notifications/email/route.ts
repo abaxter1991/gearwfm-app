@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-// import { WelcomeEmailHtml } from '~/components/Mailers/WelcomeEmail/WelcomeEmailHtml'
 
+// TODO: Setup the sales email address and set the following values to environment variables
 const email = 'sales@gearwfm.com'
 const pass = ''
 
@@ -28,7 +28,8 @@ export async function POST(request: NextRequest) {
             from: email,
             to: data.email,
             subject: data.subject,
-            // html: WelcomeEmailHtml(data.name),
+            // TODO: Create the email template
+            // html: EmailHtml(data),
         })
 
         return NextResponse.json({ success: true }, { status: 200 })

@@ -15,7 +15,6 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     const [currentPage, setCurrentPage] = useState(1)
-    // const [productsInGroup, setProductsInGroup] = useState<SalesOrderProduct[]>([])
     const [productsInView, setProductsInView] = useState<SalesOrderProduct[]>([])
 
     const itemsPerPage = 6

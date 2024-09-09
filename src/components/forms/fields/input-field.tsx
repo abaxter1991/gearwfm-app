@@ -12,11 +12,10 @@ export default function InputField(fieldProps: Props) {
     const { form, className, classNames, ...props } = fieldProps
     const name = props.name || ''
 
+    // TODO: Create the read only styles
     const readOnlyClassNames = {
         ...classNames,
-        inputWrapper: [
-            // 'border-0 shadow-none',
-        ],
+        inputWrapper: [],
     }
 
     return (

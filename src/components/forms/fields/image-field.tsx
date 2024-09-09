@@ -13,13 +13,6 @@ export default function ImageField(fieldProps: Props) {
     const { form, className, classNames, ...props } = fieldProps
     const name = props.name || ''
 
-    const readOnlyClassNames = {
-        ...classNames,
-        inputWrapper: [
-            // 'border-0 shadow-none',
-        ],
-    }
-
     return (
         <div className={cn(className)}>
             <FormField
@@ -33,10 +26,9 @@ export default function ImageField(fieldProps: Props) {
                                 {...form.register(name)}
                                 {...props}
                                 type="file"
-                                classNames={props.isReadOnly ? readOnlyClassNames : classNames}
+                                classNames={classNames}
                                 isInvalid={fieldState.invalid}
                                 errorMessage={fieldState.error?.message}
-                                // onChange={() => console.log(field.value)}
                                 startContent={
                                     <Button
                                         isIconOnly
@@ -47,7 +39,6 @@ export default function ImageField(fieldProps: Props) {
                                     </Button>
                                 }
                             />
-                            {/*<img src={field.value} />*/}
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -56,50 +47,3 @@ export default function ImageField(fieldProps: Props) {
         </div>
     )
 }
-
-// import { Button } from '@nextui-org/react'
-// import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
-// import { cn } from '~/lib/utils'
-// import type { UseFormReturn } from 'react-hook-form'
-// import { HiPhoto } from 'react-icons/hi2'
-// import type { InputHTMLAttributes } from 'react'
-//
-// type Props = Omit<InputHTMLAttributes<HTMLInputElement>, | 'type'> & {
-//     form: UseFormReturn<any, undefined>
-// }
-//
-// export default function ImageField(fieldProps: Props) {
-//     const { form, className, ...props } = fieldProps
-//     const name = props.name || ''
-//
-//     return (
-//         <div className={cn(className)}>
-//             <FormField
-//                 control={form.control}
-//                 name={name}
-//                 render={({ field, fieldState }) => (
-//                     <FormItem>
-//                         <FormControl>
-//                             <input
-//                                 {...field}
-//                                 {...form.register(name)}
-//                                 {...props}
-//                                 type="file"
-//                                 onChange={() => console.log(field.value)}
-//                             />
-//                             <Button
-//                                 isIconOnly
-//                                 color="primary"
-//                                 size="sm"
-//                                 onClick={open}
-//                             >
-//                                 <HiPhoto className="h-6 w-6" />
-//                             </Button>
-//                         </FormControl>
-//                         <FormMessage/>
-//                     </FormItem>
-//                 )}
-//             />
-//         </div>
-//     )
-// }

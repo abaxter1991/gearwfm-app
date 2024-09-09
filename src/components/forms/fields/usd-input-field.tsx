@@ -12,11 +12,10 @@ export default function UsdInputField(fieldProps: Props) {
     const { form, className, classNames, ...props } = fieldProps
     const name = props.name || ''
 
+    // TODO: Create the read only styles
     const readOnlyClassNames = {
         ...classNames,
-        inputWrapper: [
-            // 'border-0 shadow-none',
-        ],
+        inputWrapper: [],
     }
 
     return (
@@ -31,7 +30,6 @@ export default function UsdInputField(fieldProps: Props) {
                                 {...field}
                                 {...form.register(name, { valueAsNumber: true })}
                                 {...props}
-                                // value={props.value ? parseFloat(props.value).toFixed(2) : props.value}
                                 value={isNaN(field.value) || field.value === 0 ? '' : parseFloat(field.value.toString()).toFixed(2)}
                                 onValueChange={(value) =>
                                     field.onChange(() => {

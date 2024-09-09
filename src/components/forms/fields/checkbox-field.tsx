@@ -29,7 +29,6 @@ export default function CheckboxField(fieldProps: Props) {
                                 isSelected={field.value}
                                 onValueChange={field.onChange}
                                 isInvalid={fieldState.invalid}
-                                // errorMessage={fieldState.error?.message}
                             >
                                 {children}
                             </Checkbox>

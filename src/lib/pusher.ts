@@ -15,6 +15,7 @@ export const pusherServer = new PusherServer({
 
 export const pusherClient = new PusherClient(pusherAppKey, {
     cluster: 'us3',
+    // TODO: Implement authentication for security.
     // authEndpoint: '/api/pusher-auth',
     // authTransport: 'ajax',
     // auth: {

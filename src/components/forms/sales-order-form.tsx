@@ -17,6 +17,7 @@ import { productCategories } from '~/lib/constants/product-categories'
 import type { DateValue } from '@internationalized/date'
 import type { SalesOrderAndRelations } from '~/types'
 
+// TODO: Fix the hydration error in react hook form devtools and implement a way to run devtools only on local dev server.
 // import { DevTool } from '@hookform/devtools'
 
 const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
