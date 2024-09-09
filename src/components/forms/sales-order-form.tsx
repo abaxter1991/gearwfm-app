@@ -575,15 +575,6 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             />
                                         </div>
                                         <div className="w-full min-w-[150px] flex-auto">
-                                            {/*<InputField*/}
-                                            {/*    form={form}*/}
-                                            {/*    label="NOTES"*/}
-                                            {/*    name={`products.${index}.notes` as const}*/}
-                                            {/*    placeholder=" "*/}
-                                            {/*    variant="bordered"*/}
-                                            {/*    size="sm"*/}
-                                            {/*    labelPlacement="outside"*/}
-                                            {/*/>*/}
                                             <TextAreaField
                                                 form={form}
                                                 label="NOTES"
