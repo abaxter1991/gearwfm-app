@@ -23,7 +23,7 @@ const config: Config = {
                 'inner-lg': 'inset 0 2px 6px 0 rgba(0, 0, 0, 0.5)',
             },
             colors: {
-                'brand-primary': '#3B82F6',
+                'brand-primary': '#3F9FD8',
                 'gear-gray': {
                     darkest: '#1E1E20',
                     darker: '#323338',
