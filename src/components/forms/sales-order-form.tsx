@@ -146,7 +146,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
     }
 
     const form = useForm<SalesOrderType>({ defaultValues: defaultSalesOrder })
-    const { control, handleSubmit, formState, watch } = form
+    const { control, handleSubmit, formState, watch, reset } = form
     const { errors: _errors } = formState
 
     const {
@@ -165,7 +165,6 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
     })
 
     const onSubmit = handleSubmit(async (data) => {
-        console.log(data)
         if (salesOrder) {
             await axios.post(`${apiBaseUrl}/forms/update-sales-order`, data)
 
@@ -173,7 +172,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                 mutate()
             }
 
-            router.back()
+            handleFormResetAndClose()
 
             toast('Sales order has been updated!')
         } else {
@@ -181,6 +180,11 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
             toast('New sales order has been submitted!')
         }
     })
+
+    function handleFormResetAndClose() {
+        reset()
+        router.push('/sales-orders')
+    }
 
     function getSizeFields(key: string | undefined) {
         if (!key) {
@@ -450,7 +454,8 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         size="sm"
                                         disableAutosize={true}
                                         classNames={{
-                                            input: 'resize-y h-20 min-h-3',
+                                            // inputWrapper: 'py-0',
+                                            input: 'resize-y h-20 min-h-5',
                                         }}
                                     />
                                     <TextAreaField
@@ -462,7 +467,8 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         size="sm"
                                         disableAutosize={true}
                                         classNames={{
-                                            input: 'resize-y h-20 h-3.5 min-h-3.5',
+                                            // inputWrapper: 'py-0',
+                                            input: 'resize-y h-5 min-h-5',
                                         }}
                                     />
                                 </div>
@@ -477,7 +483,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         key={product.id}
                                         className="flex w-full gap-4 border-b-zinc-300 dark:border-b-black"
                                     >
-                                        <div className="w-[75px] flex-none">
+                                        <div className="w-[90px] flex-none">
                                             <FormField
                                                 control={form.control}
                                                 name={`products.${index}.item` as const}
@@ -788,7 +794,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             variant="bordered"
                                             color="danger"
                                             className="text-danger"
-                                            onPress={() => router.push('/sales-orders')}
+                                            onPress={handleFormResetAndClose}
                                         >
                                             Cancel
                                         </Button>

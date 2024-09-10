@@ -35,14 +35,15 @@ export function SalesOrderCard({ salesOrderId }: Props) {
 
     return (
         salesOrder && (
-            <Card className="h-[500px] w-full justify-self-center">
+            <Card className="h-[525px] w-full justify-self-center">
                 <CardHeader className="flex flex-col gap-1">
                     <h1 className="text-2xl">{salesOrder.companyName}</h1>
                     <p className="text-sm">SO#: {salesOrder.externalId}</p>
+                    <p className="text-sm">Reference #: {salesOrder.referenceId}</p>
                 </CardHeader>
-                <Divider />
+                <Divider/>
                 <CardBody className="gap-1.5">
-                    <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1">
                         <div className="flex justify-between">
                             <p className="font-bold">Due Date</p>
                             <p>{formatDateString(String(salesOrder.dueDate))}</p>
@@ -91,6 +92,33 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                     }}
                                 >
                                     Received
+                                </Checkbox>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <p className="text-medium text-default-500">
+                                    Shipping
+                                </p>
+                                <Checkbox
+                                    value="partsOrdered"
+                                    color="success"
+                                    size="sm"
+                                    // isSelected={salesOrder.partsOrdered}
+                                    // onValueChange={(isSelected) => {
+                                    //     updateSalesOrderPartsOrdered(salesOrder.id, isSelected)
+                                    // }}
+                                >
+                                    Counted
+                                </Checkbox>
+                                <Checkbox
+                                    value="partsReceived"
+                                    color="success"
+                                    size="sm"
+                                    // isSelected={salesOrder.partsReceived}
+                                    // onValueChange={(isSelected) => {
+                                    //     updateSalesOrderPartsReceived(salesOrder.id, isSelected)
+                                    // }}
+                                >
+                                    Shipped
                                 </Checkbox>
                             </div>
                         </div>
