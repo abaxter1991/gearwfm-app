@@ -4,7 +4,7 @@ import { Button, Card, CardBody, CardFooter, CardHeader, Checkbox, Divider, Text
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { SalesOrderProofModal } from '~/components/sales-order/sales-order-proof-modal'
-import { updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct, updateSalesOrderPartsOrdered, updateSalesOrderPartsReceived } from '~/lib/actions'
+import { updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct, updateSalesOrderPartsOrdered, updateSalesOrderProductsCounted, updateSalesOrderProductsShipped, updateSalesOrderPartsReceived } from '~/lib/actions'
 import { pusherClient } from '~/lib/pusher'
 import { useSalesOrder } from '~/lib/queries'
 import { CustomCheckbox } from './custom-checkbox'
@@ -99,24 +99,24 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                     Shipping
                                 </p>
                                 <Checkbox
-                                    value="partsOrdered"
+                                    value="productsCounted"
                                     color="success"
                                     size="sm"
-                                    // isSelected={salesOrder.partsOrdered}
-                                    // onValueChange={(isSelected) => {
-                                    //     updateSalesOrderPartsOrdered(salesOrder.id, isSelected)
-                                    // }}
+                                    isSelected={salesOrder.productsCounted}
+                                    onValueChange={(isSelected) => {
+                                        updateSalesOrderProductsCounted(salesOrder.id, isSelected)
+                                    }}
                                 >
                                     Counted
                                 </Checkbox>
                                 <Checkbox
-                                    value="partsReceived"
+                                    value="productsShipped"
                                     color="success"
                                     size="sm"
-                                    // isSelected={salesOrder.partsReceived}
-                                    // onValueChange={(isSelected) => {
-                                    //     updateSalesOrderPartsReceived(salesOrder.id, isSelected)
-                                    // }}
+                                    isSelected={salesOrder.productsShipped}
+                                    onValueChange={(isSelected) => {
+                                        updateSalesOrderProductsShipped(salesOrder.id, isSelected)
+                                    }}
                                 >
                                     Shipped
                                 </Checkbox>

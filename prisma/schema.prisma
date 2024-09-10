@@ -37,6 +37,8 @@ model SalesOrder {
     approvedProof          Boolean                      @default(false) @map("approved_proof")
     partsOrdered           Boolean                      @default(false) @map("parts_ordered")
     partsReceived          Boolean                      @default(false) @map("parts_received")
+    productsCounted        Boolean                      @default(false) @map("products_counted")
+    productsShipped        Boolean                      @default(false) @map("products_shipped")
     //
     products               SalesOrderProduct[]
     //

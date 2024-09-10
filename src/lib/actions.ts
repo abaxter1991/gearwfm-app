@@ -20,12 +20,12 @@ export async function updateSalesOrderApprovedProof(salesOrderId: string, approv
         include: {
             products: {
                 orderBy: {
-                    item: 'asc',
+                    createdAt: 'asc',
                 },
             },
             assembledProducts: {
                 orderBy: {
-                    item: 'asc',
+                    createdAt: 'asc',
                 },
             },
         },
@@ -51,12 +51,12 @@ export async function updateSalesOrderPartsOrdered(salesOrderId: string, partsOr
         include: {
             products: {
                 orderBy: {
-                    item: 'asc',
+                    createdAt: 'asc',
                 },
             },
             assembledProducts: {
                 orderBy: {
-                    item: 'asc',
+                    createdAt: 'asc',
                 },
             },
         },
@@ -82,12 +82,74 @@ export async function updateSalesOrderPartsReceived(salesOrderId: string, partsR
         include: {
             products: {
                 orderBy: {
-                    item: 'asc',
+                    createdAt: 'asc',
                 },
             },
             assembledProducts: {
                 orderBy: {
-                    item: 'asc',
+                    createdAt: 'asc',
+                },
+            },
+        },
+    })
+
+    pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrder })
+}
+
+export async function updateSalesOrderProductsCounted(salesOrderId: string, productsCounted: boolean) {
+    await prisma.salesOrder.update({
+        where: {
+            id: salesOrderId,
+        },
+        data: {
+            productsCounted: productsCounted,
+        },
+    })
+
+    const salesOrder = await prisma.salesOrder.findUnique({
+        where: {
+            id: salesOrderId,
+        },
+        include: {
+            products: {
+                orderBy: {
+                    createdAt: 'asc',
+                },
+            },
+            assembledProducts: {
+                orderBy: {
+                    createdAt: 'asc',
+                },
+            },
+        },
+    })
+
+    pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrder })
+}
+
+export async function updateSalesOrderProductsShipped(salesOrderId: string, productsShipped: boolean) {
+    await prisma.salesOrder.update({
+        where: {
+            id: salesOrderId,
+        },
+        data: {
+            productsShipped: productsShipped,
+        },
+    })
+
+    const salesOrder = await prisma.salesOrder.findUnique({
+        where: {
+            id: salesOrderId,
+        },
+        include: {
+            products: {
+                orderBy: {
+                    createdAt: 'asc',
+                },
+            },
+            assembledProducts: {
+                orderBy: {
+                    createdAt: 'asc',
                 },
             },
         },
@@ -113,12 +175,12 @@ export async function updateSalesOrderAssembledProduct(salesOrderId: string, ass
         include: {
             products: {
                 orderBy: {
-                    item: 'asc',
+                    createdAt: 'asc',
                 },
             },
             assembledProducts: {
                 orderBy: {
-                    item: 'asc',
+                    createdAt: 'asc',
                 },
             },
         },
