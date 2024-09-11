@@ -81,6 +81,9 @@ export const productCategories = [
         group: 'Foot Gear',
         sizeFields: {
             ...defaultSizeFields,
+            SM: { ...smField, show: true },
+            MD: { ...mdField, show: true },
+            LG: { ...lgField, show: true },
         },
     },
     {
@@ -89,6 +92,9 @@ export const productCategories = [
         group: 'Foot Gear',
         sizeFields: {
             ...defaultSizeFields,
+            SM: { ...smField, show: true },
+            MD: { ...mdField, show: true },
+            LG: { ...lgField, show: true },
         },
     },
     {
@@ -204,6 +210,22 @@ export const productCategories = [
         },
     },
     {
+        key: 'YJKT',
+        label: 'Youth Jacket',
+        group: 'Upper Gear',
+        sizeFields: {
+            ...defaultSizeFields,
+            XS: { ...xsField, show: true },
+            SM: { ...smField, show: true },
+            MD: { ...mdField, show: true },
+            LG: { ...lgField, show: true },
+            XL: { ...xlField, show: true },
+            XL2: { ...xl2Field, show: true },
+            XL3: { ...xl3Field, show: true },
+            XL4: { ...xl4Field, show: true },
+        },
+    },
+    {
         key: 'QZ',
         label: 'Quarter Zip Pullover',
         group: 'Upper Gear',
@@ -252,6 +274,22 @@ export const productCategories = [
         },
     },
     {
+        key: 'YPNT',
+        label: 'Youth Pants or Leggings',
+        group: 'Leg Wear',
+        sizeFields: {
+            ...defaultSizeFields,
+            XS: { ...xsField, show: true },
+            SM: { ...smField, show: true },
+            MD: { ...mdField, show: true },
+            LG: { ...lgField, show: true },
+            XL: { ...xlField, show: true },
+            XL2: { ...xl2Field, show: true },
+            XL3: { ...xl3Field, show: true },
+            XL4: { ...xl4Field, show: true },
+        },
+    },
+    {
         key: 'SHT',
         label: 'Shorts',
         group: 'Leg Gear',
@@ -265,6 +303,30 @@ export const productCategories = [
             XL2: { ...xl2Field, show: true },
             XL3: { ...xl3Field, show: true },
             XL4: { ...xl4Field, show: true },
+        },
+    },
+    {
+        key: 'YSHT',
+        label: 'Youth Shorts',
+        group: 'Leg Gear',
+        sizeFields: {
+            ...defaultSizeFields,
+            XS: { ...xsField, show: true },
+            SM: { ...smField, show: true },
+            MD: { ...mdField, show: true },
+            LG: { ...lgField, show: true },
+            XL: { ...xlField, show: true },
+            XL2: { ...xl2Field, show: true },
+            XL3: { ...xl3Field, show: true },
+            XL4: { ...xl4Field, show: true },
+        },
+    },
+    {
+        key: 'BAG',
+        label: 'Bag',
+        group: 'Other Gear',
+        sizeFields: {
+            ...defaultSizeFields,
         },
     },
 ]
