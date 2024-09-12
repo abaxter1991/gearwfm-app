@@ -330,3 +330,5 @@ export const productCategories = [
         },
     },
 ]
+
+export const sortedCategoryKeys = productCategories.map((productCategory) => productCategory.key)

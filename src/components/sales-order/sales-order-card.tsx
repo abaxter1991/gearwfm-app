@@ -2,13 +2,15 @@
 
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Textarea } from '@nextui-org/react'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { SalesOrderProofModal } from '~/components/sales-order/sales-order-proof-modal'
 import { updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct, updateSalesOrderPartsOrdered, updateSalesOrderProductsCounted, updateSalesOrderProductsShipped, updateSalesOrderPartsReceived } from '~/lib/actions'
+import { sortedCategoryKeys } from '~/lib/constants/product-categories'
 import { pusherClient } from '~/lib/pusher'
 import { useSalesOrder } from '~/lib/queries'
 import { CustomCheckbox } from './custom-checkbox'
 import { CustomToggle } from './custom-toggle'
+import type { SalesOrderAssembledProduct } from '@prisma/client'
 
 type Props = {
     salesOrderId: string
@@ -17,6 +19,8 @@ type Props = {
 export function SalesOrderCard({ salesOrderId }: Props) {
     const { data: salesOrder, mutate } = useSalesOrder(salesOrderId)
     const router = useRouter()
+
+    const [assembledProducts, setAssembledProducts] = useState<SalesOrderAssembledProduct[]>([])
 
     function formatDateString(dateString: string) {
         const date = new Date(dateString)
@@ -32,6 +36,22 @@ export function SalesOrderCard({ salesOrderId }: Props) {
             pusherClient.unsubscribe(salesOrderId)
         }
     }, [])
+
+    useEffect(() => {
+        if (salesOrder) {
+            const sortedAssembledProducts: SalesOrderAssembledProduct[] = []
+
+            sortedCategoryKeys.forEach((categoryKey) => {
+                const foundAssembledProduct = salesOrder.assembledProducts.find((assembledProduct) => assembledProduct.item === categoryKey)
+
+                if (foundAssembledProduct) {
+                    sortedAssembledProducts.push(foundAssembledProduct)
+                }
+            })
+
+            setAssembledProducts(sortedAssembledProducts)
+        }
+    }, [salesOrder])
 
     return (
         salesOrder && (
@@ -135,7 +155,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                             Assembled Products
                         </p>
                         <div className="flex flex-wrap gap-2">
-                            {salesOrder.assembledProducts.map((assembledProduct) => (
+                            {assembledProducts.map((assembledProduct) => (
                                 <CustomCheckbox
                                     key={assembledProduct.id}
                                     value={assembledProduct.item.toLowerCase()}
