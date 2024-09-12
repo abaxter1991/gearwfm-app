@@ -28,6 +28,7 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
     return (
         <>
             <Button
+                size="sm"
                 onPress={onOpen}
                 className="bg-brand-primary text-black"
             >

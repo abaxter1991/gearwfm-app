@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Card, CardBody, CardFooter, CardHeader, Checkbox, Divider, Textarea } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Textarea } from '@nextui-org/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { SalesOrderProofModal } from '~/components/sales-order/sales-order-proof-modal'
@@ -8,6 +8,7 @@ import { updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct, update
 import { pusherClient } from '~/lib/pusher'
 import { useSalesOrder } from '~/lib/queries'
 import { CustomCheckbox } from './custom-checkbox'
+import { CustomToggle } from './custom-toggle'
 
 type Props = {
     salesOrderId: string
@@ -15,7 +16,6 @@ type Props = {
 
 export function SalesOrderCard({ salesOrderId }: Props) {
     const { data: salesOrder, mutate } = useSalesOrder(salesOrderId)
-
     const router = useRouter()
 
     function formatDateString(dateString: string) {
@@ -24,9 +24,9 @@ export function SalesOrderCard({ salesOrderId }: Props) {
     }
 
     useEffect(() => {
-        pusherClient.subscribe(salesOrderId).bind('sales-order-updated', async (data: any) => {
-            mutate(data.salesOrder)
-        })
+        pusherClient
+            .subscribe(salesOrderId)
+            .bind('sales-order-updated', async () => mutate())
 
         return () => {
             pusherClient.unsubscribe(salesOrderId)
@@ -56,70 +56,59 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                     <div className="flex justify-between">
                         <div className="flex w-1/2 flex-col gap-1">
                             <div className="flex flex-col gap-1">
-                                <p className="text-medium text-default-500">Approvals</p>
-                                <Checkbox
-                                    value="approvedProof"
-                                    color="success"
-                                    size="sm"
-                                    isSelected={salesOrder.approvedProof}
-                                    onValueChange={(isSelected) => {
-                                        updateSalesOrderApprovedProof(salesOrder.id, isSelected)
+                                <p className="text-medium text-default-500">
+                                    Approvals
+                                </p>
+                                <CustomToggle
+                                    isToggled={salesOrder.approvedProof}
+                                    update={async () => {
+                                        await updateSalesOrderApprovedProof(salesOrder.id, !salesOrder.approvedProof)
                                     }}
                                 >
                                     Proof
-                                </Checkbox>
+                                </CustomToggle>
                             </div>
                             <div className="flex flex-col gap-1">
-                                <p className="text-medium text-default-500">Inventory & Parts</p>
-                                <Checkbox
-                                    value="partsOrdered"
-                                    color="success"
-                                    size="sm"
-                                    isSelected={salesOrder.partsOrdered}
-                                    onValueChange={(isSelected) => {
-                                        updateSalesOrderPartsOrdered(salesOrder.id, isSelected)
+                                <p className="text-medium text-default-500">
+                                    Inventory & Parts
+                                </p>
+                                <CustomToggle
+                                    isToggled={salesOrder.partsOrdered}
+                                    update={async () => {
+                                        await updateSalesOrderPartsOrdered(salesOrder.id, !salesOrder.partsOrdered)
                                     }}
                                 >
                                     Ordered
-                                </Checkbox>
-                                <Checkbox
-                                    value="partsReceived"
-                                    color="success"
-                                    size="sm"
-                                    isSelected={salesOrder.partsReceived}
-                                    onValueChange={(isSelected) => {
-                                        updateSalesOrderPartsReceived(salesOrder.id, isSelected)
+                                </CustomToggle>
+                                <CustomToggle
+                                    isToggled={salesOrder.partsReceived}
+                                    update={async () => {
+                                        await updateSalesOrderPartsReceived(salesOrder.id, !salesOrder.partsReceived)
                                     }}
                                 >
                                     Received
-                                </Checkbox>
+                                </CustomToggle>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <p className="text-medium text-default-500">
                                     Shipping
                                 </p>
-                                <Checkbox
-                                    value="productsCounted"
-                                    color="success"
-                                    size="sm"
-                                    isSelected={salesOrder.productsCounted}
-                                    onValueChange={(isSelected) => {
-                                        updateSalesOrderProductsCounted(salesOrder.id, isSelected)
+                                <CustomToggle
+                                    isToggled={salesOrder.productsCounted}
+                                    update={async () => {
+                                        await updateSalesOrderProductsCounted(salesOrder.id, !salesOrder.productsCounted)
                                     }}
                                 >
                                     Counted
-                                </Checkbox>
-                                <Checkbox
-                                    value="productsShipped"
-                                    color="success"
-                                    size="sm"
-                                    isSelected={salesOrder.productsShipped}
-                                    onValueChange={(isSelected) => {
-                                        updateSalesOrderProductsShipped(salesOrder.id, isSelected)
+                                </CustomToggle>
+                                <CustomToggle
+                                    isToggled={salesOrder.productsShipped}
+                                    update={async () => {
+                                        await updateSalesOrderProductsShipped(salesOrder.id, !salesOrder.productsShipped)
                                     }}
                                 >
                                     Shipped
-                                </Checkbox>
+                                </CustomToggle>
                             </div>
                         </div>
                         <div className="flex w-1/2 flex-col gap-2">
@@ -151,8 +140,8 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                     color="success"
                                     size="sm"
                                     isSelected={assembledProduct.allAssembled}
-                                    onValueChange={(isSelected) => {
-                                        updateSalesOrderAssembledProduct(salesOrder.id, assembledProduct.id, isSelected)
+                                    onValueChange={async (isSelected) => {
+                                        await updateSalesOrderAssembledProduct(salesOrder.id, assembledProduct.id, isSelected)
                                     }}
                                 >
                                     {assembledProduct.item}
@@ -164,12 +153,12 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                 <Divider />
                 <CardFooter className="justify-end gap-4">
                     <Button
+                        size="sm"
                         onPress={() => router.push(`/sales-orders/${salesOrderId}`)}
                         className="bg-brand-primary text-black"
                     >
                         View Order
                     </Button>
-                    {/*<SalesOrderDetailModal salesOrder={salesOrder} mutate={mutate} />*/}
                     <SalesOrderProofModal salesOrder={salesOrder} />
                 </CardFooter>
             </Card>

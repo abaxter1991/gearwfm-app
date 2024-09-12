@@ -31,6 +31,7 @@ export function FileDropzoneField({ accept, onDrop }: FileDropzoneProps) {
                     <p>Drag and Drop Image</p>
                     <Button
                         color="default"
+                        size="sm"
                         onClick={open}
                     >
                         Select File

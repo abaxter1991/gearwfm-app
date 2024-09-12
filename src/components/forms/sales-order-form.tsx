@@ -5,7 +5,7 @@ import { CalendarDateTime, getLocalTimeZone, now } from '@internationalized/date
 import { Button, Card, CardBody, CardHeader, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem } from '@nextui-org/react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { HiTrash, HiXMark } from 'react-icons/hi2'
 import { toast } from 'sonner'
@@ -87,6 +87,8 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
     const { user } = useUser()
     const router = useRouter()
 
+    const [isLoading, setIsLoading] = useState(false)
+
     let defaultSalesOrder: SalesOrderType = {
         id: '',
         orderDate: today,
@@ -112,13 +114,20 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
     }
 
     if (salesOrder) {
+        const { products, ...restSalesOrder } = salesOrder
         const orderDate = new Date(salesOrder.orderDate)
         const dueDate = new Date(salesOrder.dueDate)
         const formattedOrderDate = new CalendarDateTime(orderDate.getUTCFullYear(), orderDate.getUTCMonth() + 1, orderDate.getUTCDate())
         const formattedDueDate = new CalendarDateTime(dueDate.getUTCFullYear(), dueDate.getUTCMonth() + 1, dueDate.getUTCDate())
 
+        const cleanedProducts = products.map((product) => {
+            const { salesOrderId: _salesOrderId, ...restProduct } = product
+            return restProduct
+        })
+
         defaultSalesOrder = {
-            ...salesOrder,
+            ...restSalesOrder,
+            products: cleanedProducts,
             orderDate: formattedOrderDate,
             dueDate: formattedDueDate,
         }
@@ -165,18 +174,35 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
     })
 
     const onSubmit = handleSubmit(async (data) => {
+        setIsLoading(true)
+
         if (salesOrder) {
-            await axios.post(`${apiBaseUrl}/forms/update-sales-order`, data)
+            const response = await axios.post(`${apiBaseUrl}/forms/update-sales-order`, data)
+            const errorMessage = response.data.message
+
+            if (errorMessage) {
+                toast(`Oops, something went wrong! ${errorMessage}`)
+                setIsLoading(false)
+                return
+            }
 
             if (mutate) {
                 mutate()
             }
 
             handleFormResetAndClose()
-
             toast('Sales order has been updated!')
         } else {
-            await axios.post(`${apiBaseUrl}/forms/new-sales-order`, data)
+            const response = await axios.post(`${apiBaseUrl}/forms/new-sales-order`, data)
+            const errorMessage = response.data.message
+
+            if (errorMessage) {
+                toast(`Oops, something went wrong! ${errorMessage}`)
+                setIsLoading(false)
+                return
+            }
+
+            reset()
             toast('New sales order has been submitted!')
         }
     })
@@ -184,6 +210,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
     function handleFormResetAndClose() {
         reset()
         router.push('/sales-orders')
+        setIsLoading(false)
     }
 
     function getSizeFields(key: string | undefined) {
@@ -454,7 +481,6 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         size="sm"
                                         disableAutosize={true}
                                         classNames={{
-                                            // inputWrapper: 'py-0',
                                             input: 'resize-y h-20 min-h-5',
                                         }}
                                     />
@@ -467,7 +493,6 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         size="sm"
                                         disableAutosize={true}
                                         classNames={{
-                                            // inputWrapper: 'py-0',
                                             input: 'resize-y h-5 min-h-5',
                                         }}
                                     />
@@ -591,7 +616,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                 disableAutosize={true}
                                                 classNames={{
                                                     inputWrapper: 'py-0',
-                                                    input: 'resize-y h-20 h-3 min-h-3',
+                                                    input: 'resize-y h-20 h-5 min-h-5',
                                                 }}
                                             />
                                         </div>
@@ -697,6 +722,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                             <DropdownTrigger>
                                 <Button
                                     variant="solid"
+                                    size="sm"
                                     className="bg-brand-primary text-black"
                                 >
                                     Add Product
@@ -793,6 +819,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             type="button"
                                             variant="bordered"
                                             color="danger"
+                                            size="sm"
                                             className="text-danger"
                                             onPress={handleFormResetAndClose}
                                         >
@@ -800,8 +827,10 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         </Button>
                                     )}
                                     <Button
+                                        isDisabled={isLoading}
                                         type="submit"
                                         variant="solid"
+                                        size="sm"
                                         className="w-full bg-brand-primary text-black"
                                     >
                                         {salesOrder ? 'Save' : 'Submit'}

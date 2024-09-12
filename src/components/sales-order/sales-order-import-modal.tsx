@@ -48,8 +48,9 @@ export function SalesOrderImportModal({ onImport }: Props) {
                             </ModalBody>
                             <ModalFooter>
                                 <Button
-                                    color="danger"
                                     variant="light"
+                                    color="danger"
+                                    size="sm"
                                     onPress={onClose}
                                 >
                                     Cancel
@@ -57,6 +58,7 @@ export function SalesOrderImportModal({ onImport }: Props) {
                                 <Button
                                     isDisabled={importedData.length === 0}
                                     color="primary"
+                                    size="sm"
                                     className="bg-brand-primary text-black"
                                     onPress={() => {
                                         if (onImport) {

@@ -25,6 +25,7 @@ export function TopBar() {
                     <SignedIn>
                         <Button
                             variant="solid"
+                            size="sm"
                             className="bg-brand-primary text-black"
                         >
                             <Link href="/sales-orders/new-sales-order">New Order</Link>

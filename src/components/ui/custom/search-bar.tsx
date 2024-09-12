@@ -99,28 +99,31 @@ export function SearchBar() {
                             </SelectItem>
                         ))}
                     </Select>
-                    <Input
-                        isClearable
-                        variant="flat"
-                        placeholder="Type to search..."
-                        value={search}
-                        onValueChange={setSearch}
-                        onClear={() => setSearch('')}
-                        onKeyDown={handleKeyDown}
-                        startContent={<HiMagnifyingGlass className="pointer-events-none mx-2 shrink-0 text-2xl text-default-400" />}
-                        classNames={{
-                            inputWrapper: 'shadow-inner',
-                        }}
-                    />
-                    <Button
-                        type="button"
-                        variant="solid"
-                        color="primary"
-                        onPress={handleSearch}
-                        className="bg-brand-primary text-black"
-                    >
-                        Search
-                    </Button>
+                    <div className="flex w-full items-center gap-4">
+                        <Input
+                            isClearable
+                            variant="flat"
+                            placeholder="Type to search..."
+                            value={search}
+                            onValueChange={setSearch}
+                            onClear={() => setSearch('')}
+                            onKeyDown={handleKeyDown}
+                            startContent={<HiMagnifyingGlass className="pointer-events-none mx-2 shrink-0 text-2xl text-default-400" />}
+                            classNames={{
+                                inputWrapper: 'shadow-inner',
+                            }}
+                        />
+                        <Button
+                            type="button"
+                            variant="solid"
+                            color="primary"
+                            size="sm"
+                            onPress={handleSearch}
+                            className="bg-brand-primary text-black"
+                        >
+                            Search
+                        </Button>
+                    </div>
                 </div>
             </CardBody>
         </Card>

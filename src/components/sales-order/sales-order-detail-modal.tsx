@@ -15,6 +15,7 @@ export function SalesOrderDetailModal({ salesOrder, mutate }: Props) {
     return (
         <>
             <Button
+                size="sm"
                 onPress={onOpen}
                 className="bg-brand-primary text-black"
             >

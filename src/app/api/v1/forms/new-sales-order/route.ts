@@ -1,41 +1,47 @@
+import { NextResponse } from 'next/server'
 import prisma from '~/prisma/client'
 import type { SalesOrderType } from '~/components/forms/sales-order-form'
 
 export async function POST(request: Request) {
-    const data: SalesOrderType = await request.json()
-    const { id: _salesOrderId, isNewCustomer, orderDate, dueDate, products, ...salesOrder } = data
-    const productsToAssemble: string[] = []
+    try {
+        const salesOrder: SalesOrderType = await request.json()
+        const { id: _salesOrderId, isNewCustomer, orderDate, dueDate, products, ...restSalesOrder } = salesOrder
+        const productsToAssemble: string[] = []
 
-    const cleanedProducts = products.map((product) => {
-        const { id: _productId, ...restProduct } = product
-        return restProduct
-    })
+        products.forEach((product) => {
+            if (product.item && !productsToAssemble.includes(product.item)) {
+                productsToAssemble.push(product.item)
+            }
+        })
 
-    cleanedProducts.forEach((product) => {
-        if (product.item && !productsToAssemble.includes(product.item)) {
-            productsToAssemble.push(product.item)
-        }
-    })
+        const cleanedProducts = products.map((product) => {
+            const { id: _productId, ...restProduct } = product
+            return restProduct
+        })
 
-    const assembledProducts = productsToAssemble.map((item) => {
-        return { item, allAssembled: false }
-    })
+        const assembledProducts = productsToAssemble.map((item) => {
+            return { item, allAssembled: false }
+        })
 
-    await prisma.salesOrder.create({
-        data: {
-            ...salesOrder,
-            isNewCustomer: Boolean(isNewCustomer),
-            orderDate: new Date(orderDate.year, orderDate.month - 1, orderDate.day),
-            dueDate: new Date(dueDate.year, dueDate.month - 1, dueDate.day),
-            status: 'NEW_ORDER',
-            isDraft: true,
-            approvedProof: false,
-            partsOrdered: false,
-            partsReceived: false,
-            products: { create: cleanedProducts },
-            assembledProducts: { create: assembledProducts },
-        },
-    })
+        await prisma.salesOrder.create({
+            data: {
+                ...restSalesOrder,
+                isNewCustomer: Boolean(isNewCustomer),
+                orderDate: new Date(orderDate.year, orderDate.month - 1, orderDate.day),
+                dueDate: new Date(dueDate.year, dueDate.month - 1, dueDate.day),
+                status: 'NEW_ORDER',
+                isDraft: true,
+                approvedProof: false,
+                partsOrdered: false,
+                partsReceived: false,
+                products: { create: cleanedProducts },
+                assembledProducts: { create: assembledProducts },
+            },
+        })
 
-    return Response.json({ data })
+        return NextResponse.json({ salesOrder }, { status: 200 })
+    } catch (error) {
+        console.error('Failed to create sales order:', error)
+        return NextResponse.json({ error, message: 'Internal Server Error' }, { status: 500 })
+    }
 }
