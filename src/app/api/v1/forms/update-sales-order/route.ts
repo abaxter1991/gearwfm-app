@@ -47,9 +47,10 @@ export async function POST(request: Request) {
 
     for (const product of products) {
         const { id: productId, ...restProduct } = product
-        await prisma.salesOrderProduct.update({
+        await prisma.salesOrderProduct.upsert({
             where: { id: productId },
-            data: { ...restProduct },
+            update: { ...restProduct },
+            create: { ...restProduct },
         })
     }
 
