@@ -131,8 +131,10 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                         </div>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <p className="text-medium text-default-500">Assembled Products</p>
-                        <div className="flex gap-2">
+                        <p className="text-medium text-default-500">
+                            Assembled Products
+                        </p>
+                        <div className="flex flex-wrap gap-2">
                             {salesOrder.assembledProducts.map((assembledProduct) => (
                                 <CustomCheckbox
                                     key={assembledProduct.id}
