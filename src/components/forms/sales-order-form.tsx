@@ -305,7 +305,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
 
     return (
         <Form {...form}>
-            <form onSubmit={onSubmit}>
+            <form>
                 <div className="flex size-full flex-col gap-4">
                     <Card className="shrink-0">
                         <CardHeader className="w-full justify-between bg-brand-primary text-black">
@@ -830,10 +830,10 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                     )}
                                     <Button
                                         isDisabled={isLoading}
-                                        type="submit"
                                         variant="solid"
                                         size="sm"
                                         className="w-full bg-brand-primary text-black"
+                                        onPress={() => onSubmit()}
                                     >
                                         {salesOrder ? 'Save' : 'Submit'}
                                     </Button>
