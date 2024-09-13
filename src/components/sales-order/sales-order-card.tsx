@@ -10,7 +10,6 @@ import { pusherClient } from '~/lib/pusher'
 import { useSalesOrder } from '~/lib/queries'
 import { downloadUrl } from '~/lib/utils'
 import { CustomCheckbox } from './custom-checkbox'
-import { CustomToggle } from './custom-toggle'
 import type { SalesOrderAssembledProduct } from '@prisma/client'
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
@@ -84,61 +83,77 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                         </div>
                     </div>
                     <div className="flex justify-between">
-                        <div className="flex w-1/2 flex-col gap-1">
-                            <div className="flex flex-col gap-1">
+                        <div className="flex w-1/2 flex-col gap-3">
+                            <div className="flex flex-col">
                                 <p className="text-medium text-default-500">
                                     Approvals
                                 </p>
-                                <CustomToggle
-                                    isToggled={salesOrder.approvedProof}
-                                    update={async () => {
-                                        await updateSalesOrderApprovedProof(salesOrder.id, !salesOrder.approvedProof)
-                                    }}
-                                >
-                                    Proof
-                                </CustomToggle>
+                                <div className="flex flex-wrap gap-2">
+                                    <CustomCheckbox
+                                        color="success"
+                                        size="sm"
+                                        isSelected={salesOrder.approvedProof}
+                                        onUpdate={async () => {
+                                            await updateSalesOrderApprovedProof(salesOrder.id, !salesOrder.approvedProof)
+                                        }}
+                                    >
+                                        Proof
+                                    </CustomCheckbox>
+                                </div>
                             </div>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col">
                                 <p className="text-medium text-default-500">
                                     Inventory & Parts
                                 </p>
-                                <CustomToggle
-                                    isToggled={salesOrder.partsOrdered}
-                                    update={async () => {
-                                        await updateSalesOrderPartsOrdered(salesOrder.id, !salesOrder.partsOrdered)
-                                    }}
-                                >
-                                    Ordered
-                                </CustomToggle>
-                                <CustomToggle
-                                    isToggled={salesOrder.partsReceived}
-                                    update={async () => {
-                                        await updateSalesOrderPartsReceived(salesOrder.id, !salesOrder.partsReceived)
-                                    }}
-                                >
-                                    Received
-                                </CustomToggle>
+                                <div className="flex flex-wrap gap-2">
+                                    <CustomCheckbox
+                                        color="success"
+                                        size="sm"
+                                        isSelected={salesOrder.partsOrdered}
+                                        onUpdate={async () => {
+                                            await updateSalesOrderPartsOrdered(salesOrder.id, !salesOrder.partsOrdered)
+                                        }}
+                                    >
+                                        Ordered
+                                    </CustomCheckbox>
+                                    <CustomCheckbox
+                                        color="success"
+                                        size="sm"
+                                        isSelected={salesOrder.partsReceived}
+                                        onUpdate={async () => {
+                                            await updateSalesOrderPartsReceived(salesOrder.id, !salesOrder.partsReceived)
+                                        }}
+                                    >
+                                        Received
+                                    </CustomCheckbox>
+                                </div>
                             </div>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col">
                                 <p className="text-medium text-default-500">
                                     Shipping
                                 </p>
-                                <CustomToggle
-                                    isToggled={salesOrder.productsCounted}
-                                    update={async () => {
-                                        await updateSalesOrderProductsCounted(salesOrder.id, !salesOrder.productsCounted)
-                                    }}
-                                >
-                                    Counted
-                                </CustomToggle>
-                                <CustomToggle
-                                    isToggled={salesOrder.productsShipped}
-                                    update={async () => {
-                                        await updateSalesOrderProductsShipped(salesOrder.id, !salesOrder.productsShipped)
-                                    }}
-                                >
-                                    Shipped
-                                </CustomToggle>
+                                <div className="flex flex-wrap gap-2">
+                                    <CustomCheckbox
+                                        color="success"
+                                        size="sm"
+                                        isSelected={salesOrder.productsCounted}
+                                        onUpdate={async () => {
+                                            await updateSalesOrderProductsCounted(salesOrder.id, !salesOrder.productsCounted)
+                                        }}
+                                    >
+                                        Counted
+                                    </CustomCheckbox>
+                                    <CustomCheckbox
+                                        color="success"
+                                        size="sm"
+                                        isSelected={salesOrder.productsShipped}
+                                        onUpdate={async () => {
+                                            await updateSalesOrderProductsShipped(salesOrder.id, !salesOrder.productsShipped)
+                                        }}
+                                    >
+                                        Shipped
+                                    </CustomCheckbox>
+                                </div>
                             </div>
                         </div>
                         <div className="flex w-1/2 flex-col gap-2">
@@ -168,12 +183,11 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                             {assembledProducts.map((assembledProduct) => (
                                 <CustomCheckbox
                                     key={assembledProduct.id}
-                                    value={assembledProduct.item.toLowerCase()}
                                     color="success"
                                     size="sm"
                                     isSelected={assembledProduct.allAssembled}
-                                    onValueChange={async (isSelected) => {
-                                        await updateSalesOrderAssembledProduct(salesOrder.id, assembledProduct.id, isSelected)
+                                    onUpdate={async () => {
+                                        await updateSalesOrderAssembledProduct(salesOrder.id, assembledProduct.id, !assembledProduct.allAssembled)
                                     }}
                                 >
                                     {assembledProduct.item}

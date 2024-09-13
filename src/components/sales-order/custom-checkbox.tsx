@@ -1,10 +1,12 @@
-import { Chip, tv, useCheckbox, VisuallyHidden } from '@nextui-org/react'
+import { Chip, Spinner, tv, useCheckbox, VisuallyHidden } from '@nextui-org/react'
+import { useState } from 'react'
+import { cn } from '~/lib/utils'
 import type { CheckboxProps } from '@nextui-org/react'
 
 const checkbox = tv({
     slots: {
         base: 'border-default hover:bg-default-200',
-        content: 'text-default-500',
+        content: 'text-default-500 uppercase',
     },
     variants: {
         isSelected: {
@@ -21,10 +23,14 @@ const checkbox = tv({
     },
 })
 
-export function CustomCheckbox({ ...props }: CheckboxProps) {
-    const { children, isSelected, isFocusVisible, getBaseProps, getInputProps } = useCheckbox({
-        ...props,
-    })
+type Props = CheckboxProps & {
+    onUpdate: () => Promise<void>
+}
+
+export function CustomCheckbox({ onUpdate, ...props }: Props) {
+    const { children, isSelected, isFocusVisible, getBaseProps, getInputProps } = useCheckbox({...props,})
+
+    const [isLoading, setIsLoading] = useState(false)
 
     const styles = checkbox({ isSelected, isFocusVisible })
 
@@ -42,8 +48,22 @@ export function CustomCheckbox({ ...props }: CheckboxProps) {
                 variant="faded"
                 size="sm"
                 radius="sm"
+                onClick={async () => {
+                    if (isLoading) {
+                        return
+                    }
+
+                    setIsLoading(true)
+                    await onUpdate()
+                    setIsLoading(false)
+                }}
             >
-                {children ? children : isSelected ? 'Enabled' : 'Disabled'}
+                <div className="group relative">
+                    {children ? children : isSelected ? 'Enabled' : 'Disabled'}
+                    <div className={cn('absolute inset-0 size-full items-center justify-center backdrop-blur-[1px]', isLoading ? 'flex' : 'hidden')}>
+                        {isLoading && <Spinner classNames={{wrapper: 'h-4 w-4'}}/>}
+                    </div>
+                </div>
             </Chip>
         </label>
     )
