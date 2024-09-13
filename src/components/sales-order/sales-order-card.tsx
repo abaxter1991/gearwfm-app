@@ -8,9 +8,12 @@ import { updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct, update
 import { sortedCategoryKeys } from '~/lib/constants/product-categories'
 import { pusherClient } from '~/lib/pusher'
 import { useSalesOrder } from '~/lib/queries'
+import { downloadUrl } from '~/lib/utils'
 import { CustomCheckbox } from './custom-checkbox'
 import { CustomToggle } from './custom-toggle'
 import type { SalesOrderAssembledProduct } from '@prisma/client'
+
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
 type Props = {
     salesOrderId: string
@@ -25,6 +28,13 @@ export function SalesOrderCard({ salesOrderId }: Props) {
     function formatDateString(dateString: string) {
         const date = new Date(dateString)
         return `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`
+    }
+
+    async function handleDownloadOrder() {
+        downloadUrl(
+            `${apiBaseUrl}/sales-order/${salesOrderId}/download`,
+            'gear-wfm-sales-order.pdf',
+        )
     }
 
     useEffect(() => {
@@ -174,6 +184,13 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                 </CardBody>
                 <Divider />
                 <CardFooter className="justify-end gap-4">
+                    <Button
+                        size="sm"
+                        onPress={handleDownloadOrder}
+                        className="bg-brand-primary text-black"
+                    >
+                        Download Order
+                    </Button>
                     <Button
                         size="sm"
                         onPress={() => router.push(`/sales-orders/${salesOrderId}`)}

@@ -1,6 +1,7 @@
 import { nextui } from '@nextui-org/react'
 import { withUt } from 'uploadthing/tw'
 import type { Config } from 'tailwindcss'
+import { semanticColors } from '@nextui-org/react'
 
 const config: Config = {
     darkMode: 'class',

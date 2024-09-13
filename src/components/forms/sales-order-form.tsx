@@ -417,7 +417,9 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         >
                                             NEW CUSTOMER
                                         </CheckboxField>
-                                        <p className="text-small text-default-500">*If customer already exists, then leave this unchecked.</p>
+                                        <p className="text-small text-default-500">
+                                            *If customer already exists, then leave this unchecked.
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="space-y-4">
