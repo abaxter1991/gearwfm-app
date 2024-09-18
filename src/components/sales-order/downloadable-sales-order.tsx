@@ -171,7 +171,7 @@ export function DownloadableSalesOrder({ salesOrder }: Props) {
                                 <Text style={styles.fieldValue}>{product.color || ' '}</Text>
                             </View>
                             <View style={{ ...styles.fieldGroupNoLabel, width: '65' }}>
-                                <Image style={styles.fieldValue} source={product.mockupImageUrl} />
+                                <Image style={styles.fieldValue} source={product.mockupImageUrl} src={product.mockupImageUrl} />
                             </View>
                             <View style={{ ...styles.fieldGroupNoLabel, width: '100' }}>
                                 <Text style={styles.fieldValue}>{product.notes || ' '}</Text>
