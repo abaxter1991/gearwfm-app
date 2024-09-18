@@ -3,6 +3,7 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Textarea } from '@nextui-org/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { HiArrowDownTray, HiPencilSquare } from 'react-icons/hi2'
 import { SalesOrderProofModal } from '~/components/sales-order/sales-order-proof-modal'
 import { updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct, updateSalesOrderPartsOrdered, updateSalesOrderProductsCounted, updateSalesOrderProductsShipped, updateSalesOrderPartsReceived } from '~/lib/actions'
 import { sortedCategoryKeys } from '~/lib/constants/product-categories'
@@ -24,6 +25,8 @@ export function SalesOrderCard({ salesOrderId }: Props) {
     const router = useRouter()
 
     const [assembledProducts, setAssembledProducts] = useState<SalesOrderAssembledProduct[]>([])
+
+    const iconClasses = 'text-xl text-black pointer-events-none flex-shrink-0'
 
     function formatDateString(dateString: string) {
         const date = new Date(dateString)
@@ -226,14 +229,16 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                     <Button
                         size="sm"
                         onPress={handleDownloadOrder}
-                        className="bg-brand-primary text-black"
+                        className="w-28 bg-brand-primary text-black"
+                        startContent={<HiArrowDownTray className={iconClasses} />}
                     >
-                        Download Order
+                        Download
                     </Button>
                     <Button
                         size="sm"
                         onPress={() => router.push(`/sales-orders/${salesOrderId}`)}
-                        className="bg-brand-primary text-black"
+                        className="w-28 bg-brand-primary text-black"
+                        startContent={<HiPencilSquare className={iconClasses} />}
                     >
                         View Order
                     </Button>

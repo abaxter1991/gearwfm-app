@@ -2,7 +2,7 @@
 
 import { Button, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, useDisclosure } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
-import { HiArrowDownTray } from 'react-icons/hi2'
+import { HiArrowDownTray, HiOutlineCheckCircle } from 'react-icons/hi2'
 import { ProductProofDetail } from './product-proof-detail'
 import type { SalesOrderProduct } from '@prisma/client'
 import type { SalesOrderAndRelations } from '~/types'
@@ -17,6 +17,8 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
     const [currentPage, setCurrentPage] = useState(1)
     const [productsInView, setProductsInView] = useState<SalesOrderProduct[]>([])
 
+    const iconClasses = 'text-xl text-black pointer-events-none flex-shrink-0'
+
     const itemsPerPage = 6
 
     useEffect(() => {
@@ -30,7 +32,8 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
             <Button
                 size="sm"
                 onPress={onOpen}
-                className="bg-brand-primary text-black"
+                className="w-28 bg-brand-primary text-black"
+                startContent={<HiOutlineCheckCircle className={iconClasses} />}
             >
                 View Proof
             </Button>
