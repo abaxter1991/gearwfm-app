@@ -11,7 +11,7 @@ type Params = {
 }
 
 export async function GET(request: NextRequest, { params }: Params) {
-    const salesOrderId = params.salesOrderId
+    const { salesOrderId } = params
 
     const salesOrder = await prisma.salesOrder.findUnique({
         where: { id: salesOrderId },
@@ -28,8 +28,6 @@ export async function GET(request: NextRequest, { params }: Params) {
             },
         },
     })
-
-    console.dir({ salesOrderId, salesOrder })
 
     if (!salesOrder) {
         return NextResponse.json({ error: 'Not Found', message: `Error: Could not find sales order ${salesOrderId}` }, { status: 404 })

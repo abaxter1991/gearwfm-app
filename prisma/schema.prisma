@@ -18,6 +18,8 @@ model SalesOrder {
     status                 SalesOrderStatus             @default(NEW_ORDER)
     isDraft                Boolean                      @default(true) @map("is_draft")
     isNewCustomer          Boolean                      @default(false) @map("is_new_customer")
+    isArchived             Boolean                      @default(false) @map("is_archived")
+    archivedReason         String                       @default("") @map("arhived_reason")
     externalId             String                       @default("") @map("external_id")
     referenceId            String                       @default("") @map("reference_id")
     salesRepName           String                       @default("") @map("sales_rep_name")

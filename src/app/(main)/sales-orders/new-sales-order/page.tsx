@@ -1,5 +1,5 @@
 import { SalesOrderForm } from '~/components/forms/sales-order-form'
 
-export default function NewSalesOrderPage() {
+export default async function NewSalesOrderPage() {
     return <SalesOrderForm />
 }

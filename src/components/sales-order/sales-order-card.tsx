@@ -10,6 +10,7 @@ import { pusherClient } from '~/lib/pusher'
 import { useSalesOrder } from '~/lib/queries'
 import { downloadUrl } from '~/lib/utils'
 import { CustomCheckbox } from './custom-checkbox'
+import { SalesOrderOptionsMenu } from './sales-order-options-menu'
 import type { SalesOrderAssembledProduct } from '@prisma/client'
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
@@ -69,10 +70,18 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                     <h1 className="text-2xl">{salesOrder.companyName}</h1>
                     <p className="text-sm">SO#: {salesOrder.externalId}</p>
                     <p className="text-sm">Reference #: {salesOrder.referenceId}</p>
+                    <div className="absolute right-0 top-0 p-2">
+                        <SalesOrderOptionsMenu
+                            salesOrderId={salesOrder.id}
+                            onDelete={() => {
+                                router.refresh()
+                            }}
+                        />
+                    </div>
                 </CardHeader>
                 <Divider/>
                 <CardBody className="gap-1.5">
-                <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1">
                         <div className="flex justify-between">
                             <p className="font-bold">Due Date</p>
                             <p>{formatDateString(String(salesOrder.dueDate))}</p>

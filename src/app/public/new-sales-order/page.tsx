@@ -4,6 +4,7 @@ import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { SalesOrderForm } from '~/components/forms/sales-order-form'
 
+// TODO: Make this a server component
 export default function PublicNewSalesOrderPage() {
     const { isSignedIn } = useUser()
     const router = useRouter()

@@ -2,20 +2,20 @@
 
 import { useUser } from '@clerk/nextjs'
 import { CalendarDateTime, getLocalTimeZone, now } from '@internationalized/date'
-import { Button, Card, CardBody, CardHeader, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem } from '@nextui-org/react'
+import { Button, Card, CardBody, CardHeader, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from '@nextui-org/react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useFieldArray, useForm, useWatch } from 'react-hook-form'
-import { HiTrash, HiXMark } from 'react-icons/hi2'
+import { HiTrash } from 'react-icons/hi2'
 import { toast } from 'sonner'
 import { FileUpload } from '~/components/common/file-upload'
-import { CheckboxField, DatePickerField, InputField, TextAreaField } from '~/components/forms/fields'
+import { CheckboxField, DatePickerField, InputField, NumberInputField, TextAreaField } from '~/components/forms/fields'
 import { SalesOrderImportModal } from '~/components/sales-order/sales-order-import-modal'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
 import { productCategories } from '~/lib/constants/product-categories'
-import type { DateValue } from '@internationalized/date'
-import type { SalesOrderAndRelations } from '~/types'
+import { useSalesOrder } from '~/lib/queries'
+import type { SalesOrderFormData, SalesOrderProductFormData } from '~/types'
 
 // TODO: Fix the hydration error in react hook form devtools and implement a way to run devtools only on local dev server.
 // import { DevTool } from '@hookform/devtools'
@@ -25,76 +25,25 @@ const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
 const today = now(getLocalTimeZone())
 
-export type SalesOrderType = {
-    id: string
-    orderDate: DateValue
-    dueDate: DateValue
-    salesRepName: string
-    salesRepEmailAddress: string
-    externalId: string
-    referenceId: string
-    isNewCustomer: boolean
-    companyName: string
-    contactName: string
-    phoneNumber: string
-    emailAddress: string
-    shippingAddress: string
-    billingAddress: string
-    notes: string
-    trackingNumber: string
-    discount: number
-    shippingPrice: number
-    grandTotal: number
-    products: ProductType[]
-    assembledProducts: AssembledProductType[]
-}
-
-export type ProductType = {
-    id: string
-    item: string
-    fileName: string
-    style: string
-    color: string
-    mockupImageUrl: string
-    notes: string
-    quantityOfXS: number
-    quantityOfSM: number
-    quantityOfMD: number
-    quantityOfLG: number
-    quantityOfXL: number
-    quantityOf2XL: number
-    quantityOf3XL: number
-    quantityOf4XL: number
-    totalQuantity: number
-    unitPrice: number
-    subtotal: number
-}
-
-export type AssembledProductType = {
-    id: string
-    item: string
-    allAssembled: boolean
-}
-
 type Props = {
-    salesOrder?: SalesOrderAndRelations
-    mutate?: any
-    onClose?: () => void
+    salesOrderId?: string
     showImportButton?: boolean
 }
 
-export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton = false }: Props) {
+export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props) {
+    const { data: salesOrder, mutate } = useSalesOrder(salesOrderId)
+    const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const { user } = useUser()
     const router = useRouter()
 
     const [isLoading, setIsLoading] = useState(false)
 
-    let defaultSalesOrder: SalesOrderType = {
+    const defaultSalesOrder: SalesOrderFormData = {
         id: '',
         orderDate: today,
         dueDate: today.add({ weeks: 3 }),
-        salesRepName: user ? `${user.firstName} ${user.lastName}` : '',
-        salesRepEmailAddress: user && user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : '',
+        salesRepName: user?.fullName || '',
+        salesRepEmailAddress: user?.primaryEmailAddress?.emailAddress || '',
         externalId: '',
         referenceId: '',
         isNewCustomer: false,
@@ -113,27 +62,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
         assembledProducts: [],
     }
 
-    if (salesOrder) {
-        const { products, ...restSalesOrder } = salesOrder
-        const orderDate = new Date(salesOrder.orderDate)
-        const dueDate = new Date(salesOrder.dueDate)
-        const formattedOrderDate = new CalendarDateTime(orderDate.getUTCFullYear(), orderDate.getUTCMonth() + 1, orderDate.getUTCDate())
-        const formattedDueDate = new CalendarDateTime(dueDate.getUTCFullYear(), dueDate.getUTCMonth() + 1, dueDate.getUTCDate())
-
-        const cleanedProducts = products.map((product) => {
-            const { salesOrderId: _salesOrderId, ...restProduct } = product
-            return restProduct
-        })
-
-        defaultSalesOrder = {
-            ...restSalesOrder,
-            products: cleanedProducts,
-            orderDate: formattedOrderDate,
-            dueDate: formattedDueDate,
-        }
-    }
-
-    const defaultProduct: ProductType = {
+    const defaultSalesOrderProduct: SalesOrderProductFormData = {
         id: '',
         item: '',
         fileName: '',
@@ -154,7 +83,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
         subtotal: 0.0,
     }
 
-    const form = useForm<SalesOrderType>({ defaultValues: defaultSalesOrder })
+    const form = useForm<SalesOrderFormData>({ defaultValues: defaultSalesOrder })
     const { control, handleSubmit, formState, watch, reset } = form
     const { errors: _errors } = formState
 
@@ -165,6 +94,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
     } = useFieldArray({
         name: 'products',
         control: control,
+        keyName: 'rhfId'
     })
 
     const productsOutput = useWatch({
@@ -172,6 +102,42 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
         control: control,
         defaultValue: products,
     })
+
+    useEffect(() => {
+        if (salesOrder) {
+            const { products } = salesOrder
+            const orderDate = new Date(salesOrder.orderDate)
+            const dueDate = new Date(salesOrder.dueDate)
+            const formattedOrderDate = new CalendarDateTime(orderDate.getUTCFullYear(), orderDate.getUTCMonth() + 1, orderDate.getUTCDate())
+            const formattedDueDate = new CalendarDateTime(dueDate.getUTCFullYear(), dueDate.getUTCMonth() + 1, dueDate.getUTCDate())
+
+            const cleanedProducts = products.map((product) => {
+                const { salesOrderId: _salesOrderId, ...restProduct } = product
+                return restProduct
+            })
+
+            form.setValue('id', salesOrder.id)
+            form.setValue('orderDate', formattedOrderDate)
+            form.setValue('dueDate', formattedDueDate)
+            form.setValue('salesRepName', salesOrder.salesRepName)
+            form.setValue('salesRepEmailAddress', salesOrder.salesRepEmailAddress)
+            form.setValue('externalId', salesOrder.externalId)
+            form.setValue('referenceId', salesOrder.referenceId)
+            form.setValue('isNewCustomer', salesOrder.isNewCustomer)
+            form.setValue('companyName', salesOrder.companyName)
+            form.setValue('contactName', salesOrder.contactName)
+            form.setValue('phoneNumber', salesOrder.phoneNumber)
+            form.setValue('emailAddress', salesOrder.emailAddress)
+            form.setValue('shippingAddress', salesOrder.shippingAddress)
+            form.setValue('billingAddress', salesOrder.billingAddress)
+            form.setValue('notes', salesOrder.notes)
+            form.setValue('trackingNumber', salesOrder.trackingNumber)
+            form.setValue('discount', salesOrder.discount)
+            form.setValue('shippingPrice', salesOrder.shippingPrice)
+            form.setValue('grandTotal', salesOrder.grandTotal)
+            form.setValue('products', cleanedProducts)
+        }
+    }, [user, salesOrder])
 
     const onSubmit = handleSubmit(async (data) => {
         setIsLoading(true)
@@ -186,9 +152,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                 return
             }
 
-            if (mutate) {
-                mutate()
-            }
+            mutate()
 
             handleFormResetAndClose()
             toast('Sales order has been updated!')
@@ -211,6 +175,14 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
         reset()
         router.push('/sales-orders')
         setIsLoading(false)
+    }
+
+    async function handleRemoveProduct(productId: string, index: number) {
+        if (productId) {
+            await axios.delete(`${apiBaseUrl}/product/${productId}`)
+        }
+
+        remove(index)
     }
 
     function getSizeFields(key: string | undefined) {
@@ -291,6 +263,12 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                         updateGrandTotal()
                     }
 
+                    // Update value of the subtotal, and grandTotal fields when the totalQuantity field has been updated.
+                    if (name.includes('totalQuantity')) {
+                        updateSubTotal(Number(productIndex))
+                        updateGrandTotal()
+                    }
+
                     // Update value of the subtotal, and grandTotal fields when the unitPrice field has been updated.
                     if (name.includes('.unitPrice')) {
                         updateSubTotal(Number(productIndex))
@@ -319,7 +297,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                 <div />
                             )}
                             <h1 className="flex-none self-center text-2xl font-bold">Sales Order Form</h1>
-                            {salesOrder ? (
+                            {salesOrder && (
                                 <div className="flex gap-4">
                                     <InputField
                                         form={form}
@@ -331,29 +309,6 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                         size="sm"
                                         defaultValue={salesOrder.externalId}
                                     />
-                                    {onClose && (
-                                        <Button
-                                            isIconOnly
-                                            variant="light"
-                                            size="sm"
-                                            onPress={onClose}
-                                        >
-                                            <HiXMark className="size-4" />
-                                        </Button>
-                                    )}
-                                </div>
-                            ) : (
-                                <div>
-                                    {onClose && (
-                                        <Button
-                                            isIconOnly
-                                            variant="light"
-                                            size="sm"
-                                            onPress={onClose}
-                                        >
-                                            <HiXMark className="size-4" />
-                                        </Button>
-                                    )}
                                 </div>
                             )}
                         </CardHeader>
@@ -507,7 +462,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                             <CardBody className="gap-4">
                                 {products.map((product, index) => (
                                     <div
-                                        key={product.id}
+                                        key={product.rhfId}
                                         className="flex w-full gap-4 border-b-zinc-300 dark:border-b-black"
                                     >
                                         <div className="w-[90px] flex-none">
@@ -634,11 +589,11 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                             key={`${index}-${sizeField.label}`}
                                                             className="w-[75px] flex-auto"
                                                         >
-                                                            <InputField
+                                                            <NumberInputField
+                                                                preventValueChangeOnScroll
                                                                 form={form}
                                                                 label={sizeField.label}
                                                                 name={`products.${index}.${sizeField.name}` as const}
-                                                                type="number"
                                                                 variant="bordered"
                                                                 size="sm"
                                                                 labelPlacement="outside"
@@ -657,12 +612,12 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             )}
                                         </div>
                                         <div className="w-[75px] shrink-0">
-                                            <InputField
+                                            <NumberInputField
+                                                preventValueChangeOnScroll
                                                 isReadOnly={product.item ? !isOneSizeFitsAll(product.item) : false}
                                                 form={form}
                                                 label={product.item && isOneSizeFitsAll(product.item) ? 'QUANTITY' : 'TOTAL'}
                                                 name={`products.${index}.totalQuantity` as const}
-                                                type="number"
                                                 variant="bordered"
                                                 size="sm"
                                                 labelPlacement="outside"
@@ -670,11 +625,11 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             />
                                         </div>
                                         <div className="w-[125px] shrink-0">
-                                            <InputField
+                                            <NumberInputField
+                                                preventValueChangeOnScroll
                                                 form={form}
                                                 label="UNIT PRICE"
                                                 name={`products.${index}.unitPrice` as const}
-                                                type="number"
                                                 variant="bordered"
                                                 size="sm"
                                                 labelPlacement="outside"
@@ -686,12 +641,12 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                             />
                                         </div>
                                         <div className="w-[125px] shrink-0">
-                                            <InputField
+                                            <NumberInputField
+                                                preventValueChangeOnScroll
                                                 isReadOnly
                                                 form={form}
                                                 label="SUBTOTAL"
                                                 name={`products.${index}.subtotal` as const}
-                                                type="number"
                                                 variant="bordered"
                                                 size="sm"
                                                 labelPlacement="outside"
@@ -709,10 +664,56 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                                 size="sm"
                                                 color="danger"
                                                 className="text-danger"
-                                                onPress={() => remove(index)}
+                                                onPress={onOpen}
                                             >
                                                 <HiTrash className="size-4" />
                                             </Button>
+                                            <Modal
+                                                isOpen={isOpen}
+                                                onOpenChange={onOpenChange}
+                                                isDismissable={false}
+                                                isKeyboardDismissDisabled={false}
+                                                hideCloseButton={true}
+                                            >
+                                                <ModalContent>
+                                                    {(onClose) => (
+                                                        <>
+                                                            <ModalHeader className="flex flex-col gap-1">
+                                                                Are you sure?
+                                                            </ModalHeader>
+                                                            <ModalBody>
+                                                                <p>
+                                                                    Deleting this product from the sales order is permanent and cannot be undone,
+                                                                    even if you decide to cancel editing this form.
+                                                                </p>
+                                                                <p>
+                                                                    Are you sure this is what you want to do?
+                                                                </p>
+                                                            </ModalBody>
+                                                            <ModalFooter>
+                                                                <Button
+                                                                    size="sm"
+                                                                    color="danger"
+                                                                    variant="light"
+                                                                    onPress={onClose}
+                                                                >
+                                                                    Cancel
+                                                                </Button>
+                                                                <Button
+                                                                    size="sm"
+                                                                    className="bg-brand-primary text-black"
+                                                                    onPress={async () => {
+                                                                        await handleRemoveProduct(product.id, index)
+                                                                        onClose()
+                                                                    }}
+                                                                >
+                                                                    Delete
+                                                                </Button>
+                                                            </ModalFooter>
+                                                        </>
+                                                    )}
+                                                </ModalContent>
+                                            </Modal>
                                         </div>
                                     </div>
                                 ))}
@@ -734,7 +735,7 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                 aria-label="Action event example"
                                 onAction={(key) =>
                                     append({
-                                        ...defaultProduct,
+                                        ...defaultSalesOrderProduct,
                                         item: String(key),
                                     })
                                 }
@@ -758,10 +759,10 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                 <div className="flex items-center justify-between gap-4">
                                     <p className="text-sm font-medium">DISCOUNT</p>
                                     <div className="w-[125px] flex-none">
-                                        <InputField
+                                        <NumberInputField
+                                            preventValueChangeOnScroll
                                             form={form}
                                             name="discount"
-                                            type="number"
                                             variant="bordered"
                                             size="sm"
                                             labelPlacement="outside-left"
@@ -781,10 +782,10 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                 <div className="flex items-center justify-between gap-4">
                                     <p className="text-sm font-medium">SHIPPING COST</p>
                                     <div className="w-[125px] flex-none">
-                                        <InputField
+                                        <NumberInputField
+                                            preventValueChangeOnScroll
                                             form={form}
                                             name="shippingPrice"
-                                            type="number"
                                             variant="bordered"
                                             size="sm"
                                             labelPlacement="outside-left"
@@ -799,11 +800,11 @@ export function SalesOrderForm({ salesOrder, mutate, onClose, showImportButton =
                                 <div className="flex items-center justify-between gap-4">
                                     <p className="text-sm font-medium">GRAND TOTAL</p>
                                     <div className="w-[125px] flex-none">
-                                        <InputField
+                                        <NumberInputField
+                                            preventValueChangeOnScroll
                                             isReadOnly
                                             form={form}
                                             name="grandTotal"
-                                            type="number"
                                             variant="bordered"
                                             size="sm"
                                             labelPlacement="outside-left"

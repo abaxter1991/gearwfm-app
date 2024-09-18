@@ -32,6 +32,7 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
     const salesOrders = await prisma.salesOrder.findMany({
         where: {
             ...dateRangeParams,
+            isArchived: false,
             OR: [
                 { referenceId: searchOptions },
                 { salesRepName: searchOptions },

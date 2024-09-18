@@ -9,7 +9,7 @@ type Params = {
 }
 
 export async function GET(request: NextRequest, { params }: Params) {
-    const salesOrderId = params.salesOrderId
+    const { salesOrderId } = params
 
     const salesOrder = await prisma.salesOrder.findUnique({
         where: {
@@ -27,6 +27,22 @@ export async function GET(request: NextRequest, { params }: Params) {
                 },
             },
         },
+    })
+
+    return NextResponse.json(salesOrder, { status: 200 })
+}
+
+export async function DELETE(request: NextRequest, { params }: Params) {
+    const { salesOrderId } = params
+
+    const salesOrder = await prisma.salesOrder.update({
+        where: {
+            id: salesOrderId,
+        },
+        data: {
+            isArchived: true,
+            archivedReason: 'User deleted sales order',
+        }
     })
 
     return NextResponse.json(salesOrder, { status: 200 })

@@ -1,4 +1,4 @@
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer'
+import { Page, Text, View, Image, Document, StyleSheet } from '@react-pdf/renderer'
 import type { SalesOrderAndRelations } from '~/types'
 
 type Props = {
@@ -171,7 +171,7 @@ export function DownloadableSalesOrder({ salesOrder }: Props) {
                                 <Text style={styles.fieldValue}>{product.color || ' '}</Text>
                             </View>
                             <View style={{ ...styles.fieldGroupNoLabel, width: '65' }}>
-                                <Text style={styles.fieldValue}>{product.mockupImageUrl || ' '}</Text>
+                                <Image style={styles.fieldValue} source={product.mockupImageUrl} />
                             </View>
                             <View style={{ ...styles.fieldGroupNoLabel, width: '100' }}>
                                 <Text style={styles.fieldValue}>{product.notes || ' '}</Text>

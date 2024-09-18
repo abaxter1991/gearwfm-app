@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import prisma from '~/prisma/client'
-import type { SalesOrderType } from '~/components/forms/sales-order-form'
+import type { SalesOrderFormData } from '~/types'
 
 export async function POST(request: Request) {
     try {
-        const salesOrder: SalesOrderType = await request.json()
+        const salesOrder: SalesOrderFormData = await request.json()
         const { id: _salesOrderId, isNewCustomer, orderDate, dueDate, products, ...restSalesOrder } = salesOrder
         const productsToAssemble: string[] = []
 
