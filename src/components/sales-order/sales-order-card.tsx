@@ -209,10 +209,9 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                     className="h-10"
                                 >
                                     <div className="flex flex-col items-center justify-center">
-                                        <p>
+                                        <p className="mb-0.5 border-b border-success-foreground">
                                             {assembledProduct.item}
                                         </p>
-                                        <Divider />
                                         <p>
                                             {getTotalForCategory(assembledProduct.item)}
                                         </p>
