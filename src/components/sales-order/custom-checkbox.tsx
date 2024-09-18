@@ -25,10 +25,11 @@ const checkbox = tv({
 
 type Props = CheckboxProps & {
     onUpdate: () => Promise<void>
+    className?: string
 }
 
-export function CustomCheckbox({ onUpdate, ...props }: Props) {
-    const { children, isSelected, isFocusVisible, getBaseProps, getInputProps } = useCheckbox({...props,})
+export function CustomCheckbox({ onUpdate, className = '', ...props }: Props) {
+    const { children, isSelected, isFocusVisible, getBaseProps, getInputProps } = useCheckbox({ ...props })
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -41,7 +42,7 @@ export function CustomCheckbox({ onUpdate, ...props }: Props) {
             </VisuallyHidden>
             <Chip
                 classNames={{
-                    base: styles.base(),
+                    base: cn(styles.base(), className),
                     content: styles.content(),
                 }}
                 color="primary"

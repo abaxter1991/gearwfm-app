@@ -30,6 +30,14 @@ export function SalesOrderCard({ salesOrderId }: Props) {
         return `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`
     }
 
+    function getTotalForCategory(category: string) {
+        if (salesOrder) {
+            return salesOrder.products
+                .filter((product) => product.item === category)
+                .reduce((sum, product) => sum + product.totalQuantity, 0)
+        }
+    }
+
     async function handleDownloadOrder() {
         downloadUrl(
             `${apiBaseUrl}/sales-order/${salesOrderId}/download`,
@@ -198,8 +206,17 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                     onUpdate={async () => {
                                         await updateSalesOrderAssembledProduct(salesOrder.id, assembledProduct.id, !assembledProduct.allAssembled)
                                     }}
+                                    className="h-10"
                                 >
-                                    {assembledProduct.item}
+                                    <div className="flex flex-col items-center justify-center">
+                                        <p>
+                                            {assembledProduct.item}
+                                        </p>
+                                        <Divider />
+                                        <p>
+                                            {getTotalForCategory(assembledProduct.item)}
+                                        </p>
+                                    </div>
                                 </CustomCheckbox>
                             ))}
                         </div>
