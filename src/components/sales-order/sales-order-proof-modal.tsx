@@ -32,7 +32,7 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
             <Button
                 size="sm"
                 onPress={onOpen}
-                className="w-28 bg-brand-primary text-black"
+                className="w-28 bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
                 startContent={<HiOutlineCheckCircle className={iconClasses} />}
             >
                 View Proof
@@ -57,6 +57,7 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
                                     size="sm"
                                     color="primary"
                                     className="border-brand-primary text-brand-primary"
+                                    onPress={() => window.print()}
                                 >
                                     <HiArrowDownTray className="size-6" />
                                 </Button>
