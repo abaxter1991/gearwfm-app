@@ -2,7 +2,7 @@
 
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
-import { SalesOrderForm } from '~/components/forms/sales-order-form'
+import { SalesOrderForm } from 'src/components/forms/sales-order-form'
 
 // TODO: Make this a server component
 export default function PublicNewSalesOrderPage() {
