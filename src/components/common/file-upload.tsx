@@ -63,6 +63,7 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
                 endpoint={endpoint}
                 config={{
                     mode: 'auto',
+                    cn: cn,
                 }}
                 appearance={{
                     container: 'w-full m-0 p-0 rounded-small border-2 border-brand-primary border-solid',
@@ -74,7 +75,7 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
                         'bg-transparent text-xs text-foreground',
                         'ut-uploading:w-full ut-uploading:cursor-not-allowed',
                         'focus-within:ring-brand-primary',
-                        'after:bg-brand-primary'
+                        'after:bg-brand-primary',
                     ),
                 }}
                 content={{
@@ -83,6 +84,9 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
                         // TODO: Replace with an animated loader.
                         return 'Loading...'
                     },
+                }}
+                onChange={(files) => {
+                    console.dir({ files })
                 }}
                 onClientUploadComplete={(res) => {
                     onChange(res?.[0]?.url)

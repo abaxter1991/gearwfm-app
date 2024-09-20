@@ -4,22 +4,24 @@ import type { FileRouter } from 'uploadthing/next'
 
 const f = createUploadthing()
 
-const authenticateUser = () => {
-    // NOTE: Returning the instantiated auth object does not actually verify an authenticated user.
-    // TODO: Implement a way to let only certain URL paths upload images when not authenticated.
-    //       All other paths that try to upload images need to require authentication.
-    const user = auth()
-    return user
+const getUserId = () => {
+    const { userId } = auth()
+    return userId ? userId : 'Anonymous'
+}
+
+const authenticateUserMiddleware = async () => {
+    const userId = getUserId()
+    return { userId }
 }
 
 export const ourFileRouter = {
     mockups: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
-        .middleware(authenticateUser)
+        .middleware(authenticateUserMiddleware)
         .onUploadComplete(async ({ metadata, file: _file }) => {
             return { uploadedBy: metadata.userId }
         }),
     devMockups: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
-        .middleware(authenticateUser)
+        .middleware(authenticateUserMiddleware)
         .onUploadComplete(async ({ metadata, file: _file }) => {
             return { uploadedBy: metadata.userId }
         }),
