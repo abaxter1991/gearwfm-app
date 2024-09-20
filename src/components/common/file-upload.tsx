@@ -28,7 +28,9 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
     if (value) {
         return (
             <div className="w-full">
-                <p className="pb-1.5 text-tiny">MOCKUP</p>
+                <p className="pb-1.5 text-tiny">
+                    MOCKUP
+                </p>
                 <div className="group relative flex w-full items-center justify-center">
                     <div className="relative size-8">
                         <Image
@@ -58,7 +60,9 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
 
     return (
         <div className="w-full">
-            <p className="pb-1.5 text-tiny">MOCKUP</p>
+            <p className="pb-1.5 text-tiny">
+                MOCKUP
+            </p>
             <UploadDropzone
                 endpoint={endpoint}
                 config={{
@@ -84,9 +88,6 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
                         // TODO: Replace with an animated loader.
                         return 'Loading...'
                     },
-                }}
-                onChange={(files) => {
-                    console.dir({ files })
                 }}
                 onClientUploadComplete={(res) => {
                     onChange(res?.[0]?.url)
