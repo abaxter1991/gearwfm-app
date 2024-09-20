@@ -85,8 +85,8 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                         </div>
                         <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                                <p className="text-end text-base">Due Date:</p>
-                                <p className="text-end text-lg">{formatDateString(String(salesOrder.dueDate))}</p>
+                                <p className="line-clamp-1 text-end text-base">Due Date:</p>
+                                <p className="line-clamp-1 text-end text-lg">{formatDateString(String(salesOrder.dueDate))}</p>
                             </div>
                             <p className="text-end text-sm text-zinc-800">Sales Rep: {salesOrder.salesRepName}</p>
                         </div>
