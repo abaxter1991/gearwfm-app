@@ -80,11 +80,14 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                 <CardHeader className="flex flex-col gap-1">
                     <div className="flex w-full items-center justify-between rounded-lg bg-gradient-to-br from-brand-primary to-cyan-400 p-2 text-black shadow-md">
                         <div className="flex flex-col">
-                            <h1 className="text-2xl">{salesOrder.companyName}</h1>
-                            <p className="text-sm text-zinc-800">REF#: {salesOrder.referenceId}</p>
+                            <h1 className="line-clamp-1 text-2xl">{salesOrder.companyName}</h1>
+                            <p className="line-clamp-1 text-sm text-zinc-800">REF#: {salesOrder.referenceId}</p>
                         </div>
                         <div className="flex flex-col">
-                            <p className="text-end text-xl">Due Date: {formatDateString(String(salesOrder.dueDate))}</p>
+                            <div className="flex items-center gap-2">
+                                <p className="text-end text-base">Due Date:</p>
+                                <p className="text-end text-xl">{formatDateString(String(salesOrder.dueDate))}</p>
+                            </div>
                             <p className="text-end text-sm text-zinc-800">Sales Rep: {salesOrder.salesRepName}</p>
                         </div>
                     </div>
@@ -241,13 +244,14 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                     </div>
                 </CardBody>
                 <Divider/>
-                <CardFooter className="justify-between">
-                    <Button
-                        size="sm"
-                        className="bg-gradient-to-br from-red-600 to-danger text-white shadow-md"
-                    >
-                        Authorize
-                    </Button>
+                {/*<CardFooter className="justify-between">*/}
+                <CardFooter className="justify-end">
+                    {/*<Button*/}
+                    {/*    size="sm"*/}
+                    {/*    className="bg-gradient-to-br from-red-600 to-danger text-white shadow-md"*/}
+                    {/*>*/}
+                    {/*    Authorize*/}
+                    {/*</Button>*/}
                     <div className="flex justify-end gap-2">
                         <Button
                             size="sm"
