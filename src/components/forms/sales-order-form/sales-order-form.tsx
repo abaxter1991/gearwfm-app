@@ -12,7 +12,7 @@ import { ActionButtons } from './action-buttons'
 import { ProductList } from './product-list'
 import { SalesOrderDetails } from './sales-order-details'
 import { SalesOrderSummary } from './sales-order-summary'
-import { defaultSalesOrder } from './index'
+import { defaultSalesOrder, mitchellsSalesOrder } from './index'
 import type { SalesOrderFormData } from '~/types'
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
@@ -25,7 +25,7 @@ type Props = {
 export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props) {
     const { data: salesOrder, mutate } = useSalesOrder(salesOrderId)
 
-    const form = useForm<SalesOrderFormData>({ defaultValues: defaultSalesOrder })
+    const form = useForm<SalesOrderFormData>({ defaultValues: !showImportButton ? defaultSalesOrder : mitchellsSalesOrder })
 
     const router = useRouter()
 
