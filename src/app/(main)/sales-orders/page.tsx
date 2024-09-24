@@ -61,7 +61,7 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
             },
         },
         orderBy: {
-            createdAt: 'asc',
+            createdAt: 'desc',
         },
     })
 
