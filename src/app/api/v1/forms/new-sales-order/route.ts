@@ -29,7 +29,7 @@ export async function POST(request: Request) {
                 isNewCustomer: Boolean(isNewCustomer),
                 orderDate: new Date(orderDate.year, orderDate.month - 1, orderDate.day),
                 dueDate: new Date(dueDate.year, dueDate.month - 1, dueDate.day),
-                status: 'NEW_ORDER',
+                status: 'DRAFT',
                 isDraft: true,
                 approvedProof: false,
                 partsOrdered: false,

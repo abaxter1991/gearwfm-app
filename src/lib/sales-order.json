@@ -26,7 +26,7 @@
         "millisecond": 0
     },
     "userId": "",
-    "status": "NEW_ORDER",
+    "status": "DRAFT",
     "isDraft": true,
     "isNewCustomer": false,
     "externalId": "",

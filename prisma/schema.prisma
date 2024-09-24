@@ -15,7 +15,7 @@ model SalesOrder {
     orderDate              DateTime                     @map("order_date")
     dueDate                DateTime                     @map("due_date")
     userId                 String                       @default("") @map("user_id")
-    status                 SalesOrderStatus             @default(NEW_ORDER)
+    status                 SalesOrderStatus             @default(DRAFT)
     isDraft                Boolean                      @default(true) @map("is_draft")
     isNewCustomer          Boolean                      @default(false) @map("is_new_customer")
     isArchived             Boolean                      @default(false) @map("is_archived")
@@ -93,7 +93,8 @@ model SalesOrderAssembledProduct {
 }
 
 enum SalesOrderStatus {
-    NEW_ORDER
-    DESIGN
-    PRODUCTION
+    DRAFT
+    PENDING
+    IN_PROGRESS
+    COMPLETED
 }
