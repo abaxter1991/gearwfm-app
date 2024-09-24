@@ -11,7 +11,7 @@ import { pusherClient } from '~/lib/pusher'
 import { useSalesOrder } from '~/lib/queries'
 import { downloadUrl } from '~/lib/utils'
 import { CustomCheckbox } from './custom-checkbox'
-// import { SalesOrderOptionsMenu } from './sales-order-options-menu'
+import { SalesOrderOptionsMenu } from './sales-order-options-menu'
 import type { SalesOrderAssembledProduct } from '@prisma/client'
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
@@ -78,28 +78,27 @@ export function SalesOrderCard({ salesOrderId }: Props) {
         salesOrder && (
             <Card className="h-[525px] w-full justify-self-center">
                 <CardHeader className="flex flex-col gap-1">
-                    <div className="flex w-full items-center justify-between rounded-lg bg-gradient-to-br from-brand-primary to-cyan-400 p-2 text-black shadow-md">
-                        <div className="flex flex-col">
-                            <h1 className="line-clamp-1 text-2xl">{salesOrder.companyName}</h1>
-                            <p className="line-clamp-1 text-sm text-zinc-800">REF#: {salesOrder.referenceId}</p>
+                    <div className="flex w-full items-center justify-between gap-2 overflow-hidden rounded-lg bg-gradient-to-br from-brand-primary to-cyan-400 p-2 text-black shadow-md">
+                        <div className="flex flex-col overflow-hidden">
+                            <h1 className="truncate text-2xl">{salesOrder.companyName}</h1>
+                            <p className="truncate text-sm text-zinc-800">REF#: {salesOrder.referenceId}</p>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex min-w-44 max-w-44 flex-col overflow-hidden">
                             <div className="flex flex-nowrap items-center gap-2">
                                 <p className="text-nowrap text-small">Due Date:</p>
                                 <p className="text-lg">{formatDateString(String(salesOrder.dueDate))}</p>
                             </div>
-                            <p className="line-clamp-1 text-sm text-zinc-800">Sales Rep: {salesOrder.salesRepName}</p>
+                            <p className="truncate text-sm text-zinc-800">Sales Rep: {salesOrder.salesRepName}</p>
                         </div>
                     </div>
-                    {/*<p className="text-sm">SO#: {salesOrder.externalId}</p>*/}
-                    {/*<div className="absolute right-0 top-0 p-2">*/}
-                    {/*    <SalesOrderOptionsMenu*/}
-                    {/*        salesOrderId={salesOrder.id}*/}
-                    {/*        onDelete={() => {*/}
-                    {/*            router.refresh()*/}
-                    {/*        }}*/}
-                    {/*    />*/}
-                    {/*</div>*/}
+                    <div className="absolute right-0 top-0 p-2">
+                        <SalesOrderOptionsMenu
+                            salesOrderId={salesOrder.id}
+                            onDelete={() => {
+                                router.refresh()
+                            }}
+                        />
+                    </div>
                 </CardHeader>
                 <CardBody className="justify-between pt-0">
                     <div className="flex justify-between gap-2">
