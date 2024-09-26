@@ -2,14 +2,12 @@
 
 import { parseDate, getLocalTimeZone, now, CalendarDate } from '@internationalized/date'
 import { Button, Card, CardBody, DateRangePicker, Input, Select, SelectItem } from '@nextui-org/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { HiMagnifyingGlass } from 'react-icons/hi2'
 import type { DateValue } from '@react-types/datepicker'
 import type { RangeValue } from '@react-types/shared'
 import type { KeyboardEvent } from 'react'
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 const today = now(getLocalTimeZone()).toDate()
 const todayString = new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()).toString()
@@ -22,7 +20,8 @@ const initialDateRange = {
 
 export function SearchBar() {
     const router = useRouter()
-    const searchParams = useSearchParams()!
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
 
     const [dateRange, setDateRange] = useState<RangeValue<DateValue>>(initialDateRange)
     const [searchDateBy, setSearchDateBy] = useState<string>('orderDate')
@@ -46,9 +45,12 @@ export function SearchBar() {
     }, [searchParams])
 
     const handleSearch = () => {
-        router.push('/')
-        const urlString = `${baseUrl}/sales-orders?startDate=${dateRange.start ? dateRange.start.toString() : ''}&endDate=${dateRange.end ? dateRange.end.toString() : ''}&searchDateBy=${searchDateBy}&search=${search}`
-        router.push(urlString)
+        const params = new URLSearchParams(searchParams.toString())
+        params.set('startDate', dateRange.start ? dateRange.start.toString() : '')
+        params.set('endDate', dateRange.end ? dateRange.end.toString() : '')
+        params.set('searchDateBy', searchDateBy)
+        params.set('search', search)
+        router.push(`${pathname}?${params.toString()}`)
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
