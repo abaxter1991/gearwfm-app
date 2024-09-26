@@ -209,21 +209,25 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                             </div>
                         </div>
                         <div className="flex w-1/2 flex-col gap-2">
-                        <Textarea
+                            <Textarea
                                 isReadOnly
                                 label="NOTES"
                                 value={salesOrder.notes || ''}
-                                minRows={9}
-                                maxRows={9}
+                                disableAutosize={true}
                                 className="w-full"
+                                classNames={{
+                                    input: 'resize-y h-40 min-h-5',
+                                }}
                             />
                             <Textarea
                                 isReadOnly
                                 label="TRACKING #"
                                 value={salesOrder.trackingNumber || ''}
-                                minRows={1}
-                                maxRows={1}
+                                disableAutosize={true}
                                 className="w-full"
+                                classNames={{
+                                    input: 'resize-y h-full min-h-5',
+                                }}
                             />
                         </div>
                     </div>
