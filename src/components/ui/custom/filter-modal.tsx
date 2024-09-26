@@ -2,6 +2,7 @@
 
 import {
     Button,
+    Chip,
     Divider,
     Modal,
     ModalBody,
@@ -58,10 +59,13 @@ export function FilterModal() {
                             </ModalHeader>
                             <Divider/>
                             <ModalBody>
-                                <BooleanFilter prefix="Customer" suffix="new" options={singularOptions} />
-                                <BooleanFilter prefix="Proof" suffix="approved" options={singularOptions} />
-                                <BooleanFilter prefix="All parts" suffix="ordered" options={pluralOptions} />
-                                <BooleanFilter prefix="All parts" suffix="received" options={pluralOptions} />
+                                <Chip size="sm" radius="sm" color="danger" variant="flat" className="self-center">
+                                    Filters are not working yet. This feature is under construction.
+                                </Chip>
+                                <BooleanFilter prefix="Customer" suffix="new" options={singularOptions}/>
+                                <BooleanFilter prefix="Proof" suffix="approved" options={singularOptions}/>
+                                <BooleanFilter prefix="All parts" suffix="ordered" options={pluralOptions}/>
+                                <BooleanFilter prefix="All parts" suffix="received" options={pluralOptions}/>
                             </ModalBody>
                             <Divider/>
                             <ModalFooter>
