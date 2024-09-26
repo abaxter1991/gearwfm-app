@@ -17,7 +17,7 @@ export function SalesOrderProofModal({ salesOrder }: Props) {
     const [currentPage, setCurrentPage] = useState(1)
     const [productsInView, setProductsInView] = useState<SalesOrderProduct[]>([])
 
-    const iconClasses = 'text-xl text-black pointer-events-none flex-shrink-0'
+    const iconClasses = 'pointer-events-none shrink-0 text-xl text-black'
 
     const itemsPerPage = 6
 

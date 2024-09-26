@@ -27,7 +27,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
 
     const [assembledProducts, setAssembledProducts] = useState<SalesOrderAssembledProduct[]>([])
 
-    const iconClasses = 'text-xl text-black pointer-events-none flex-shrink-0'
+    const iconClasses = 'pointer-events-none shrink-0 text-xl text-black'
 
     function formatDateString(dateString: string) {
         const date = new Date(dateString)

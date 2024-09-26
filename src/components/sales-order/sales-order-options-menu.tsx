@@ -17,7 +17,7 @@ type Props = {
 export function SalesOrderOptionsMenu({ salesOrderId, onDelete }: Props) {
     const { user } = useUser()
     const isAdmin = user?.fullName === 'Austin Baxter' || user?.fullName === 'Shawn Baxter'
-    const iconClasses = 'text-xl text-default-500 pointer-events-none flex-shrink-0'
+    const iconClasses = 'text-xl text-default-500 pointer-events-none shrink-0'
 
     return (
         <Dropdown placement="bottom-end">

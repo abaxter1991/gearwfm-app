@@ -1,4 +1,5 @@
 import { SalesOrderCard } from '~/components/sales-order/sales-order-card'
+import { FilterModal } from '~/components/ui/custom/filter-modal'
 import { SearchBar } from '~/components/ui/custom/search-bar'
 import { StatusTabs } from '~/components/ui/custom/status-tabs'
 import prisma from '~/prisma/client'
@@ -71,7 +72,10 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
 
     return (
         <div className="flex w-full flex-col gap-4">
-            <StatusTabs />
+            <div className="flex items-center gap-4">
+                <StatusTabs />
+                <FilterModal />
+            </div>
             <SearchBar />
             <div className="grid w-full grid-cols-1 gap-4 tablet:grid-cols-2 desktop:grid-cols-3">
                 {salesOrders.map((salesOrder) => (

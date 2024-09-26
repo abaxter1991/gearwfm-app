@@ -48,7 +48,7 @@ export function AuthorizeStatusModal({ salesOrder, mutate }: Props) {
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex items-center justify-between gap-1">
+                            <ModalHeader className="items-center justify-between gap-1">
                                 <h1 className="text-2xl">
                                     {salesOrder.companyName}
                                 </h1>
@@ -64,7 +64,7 @@ export function AuthorizeStatusModal({ salesOrder, mutate }: Props) {
                             <Divider/>
                             <ModalBody>
                                 <div className="flex flex-col gap-1">
-                                    <p>{salesOrder.companyName} currently has a status of {salesOrder.status}.</p>
+                                    <p>{salesOrder.companyName} currently has a status of {salesOrder.status.replace(/_/g, ' ')}.</p>
                                     <p>You can change this status by clicking on one of the available statuses below.</p>
                                     {errorMessage && (
                                         <p className="pt-8 text-danger">
@@ -74,7 +74,16 @@ export function AuthorizeStatusModal({ salesOrder, mutate }: Props) {
                                 </div>
                             </ModalBody>
                             <Divider/>
-                            <ModalFooter className="justify-center gap-2">
+                            <ModalFooter>
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    color="danger"
+                                    variant="bordered"
+                                    onPress={onClose}
+                                >
+                                    Cancel
+                                </Button>
                                 {statuses.map((status) => (
                                     <Button
                                         key={status.key}

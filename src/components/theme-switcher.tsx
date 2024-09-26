@@ -11,7 +11,7 @@ type Props = {
 }
 
 export const ThemeSwitcher = (props: Props) => {
-    const { iconClasses = 'pointer-events-none flex-shrink-0 text-xl text-default-500' } = props
+    const { iconClasses = 'pointer-events-none shrink-0 text-xl text-default-500' } = props
 
     const [mounted, setMounted] = useState(false)
     const { theme, setTheme } = useTheme()

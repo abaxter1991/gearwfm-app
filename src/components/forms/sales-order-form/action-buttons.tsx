@@ -14,21 +14,20 @@ export function ActionButtons({ submitButtonLabel, showCancelButton, isDisabled,
             {showCancelButton && (
                 <Button
                     type="button"
-                    variant="bordered"
-                    color="danger"
                     size="sm"
-                    className="text-danger"
+                    color="danger"
+                    variant="bordered"
                     onPress={onCancel}
                 >
                     Cancel
                 </Button>
             )}
             <Button
-                isDisabled={isDisabled}
-                variant="solid"
                 size="sm"
-                className="w-full bg-brand-primary text-black"
+                variant="solid"
+                isDisabled={isDisabled}
                 onPress={onSave}
+                className="w-full bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
             >
                 {submitButtonLabel}
             </Button>
