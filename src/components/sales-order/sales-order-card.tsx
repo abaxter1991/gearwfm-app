@@ -1,9 +1,10 @@
 'use client'
 
-import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Textarea } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Textarea } from '@nextui-org/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { HiArrowDownTray, HiPencilSquare } from 'react-icons/hi2'
+import { AuthorizeStatusModal } from '~/components/sales-order/authorize-status-modal'
 import { SalesOrderProofModal } from '~/components/sales-order/sales-order-proof-modal'
 import { updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct, updateSalesOrderPartsOrdered, updateSalesOrderProductsCounted, updateSalesOrderProductsShipped, updateSalesOrderPartsReceived } from '~/lib/actions'
 import { sortedCategoryKeys } from '~/lib/constants/product-categories'
@@ -105,6 +106,19 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                         <div className="flex w-1/2 flex-col">
                             <div className="flex w-full justify-between">
                                 <p>
+                                    Status:
+                                </p>
+                                <Chip
+                                    size="sm"
+                                    radius="sm"
+                                    color="warning"
+                                    className="capitalize"
+                                >
+                                    {salesOrder.status.replace(/_/g, ' ')}
+                                </Chip>
+                            </div>
+                            <div className="flex w-full justify-between">
+                                <p>
                                     SO#:
                                 </p>
                                 <p>
@@ -195,7 +209,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                             </div>
                         </div>
                         <div className="flex w-1/2 flex-col gap-2">
-                            <Textarea
+                        <Textarea
                                 isReadOnly
                                 label="NOTES"
                                 value={salesOrder.notes || ''}
@@ -243,14 +257,8 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                     </div>
                 </CardBody>
                 <Divider/>
-                {/*<CardFooter className="justify-between">*/}
-                <CardFooter className="justify-end">
-                    {/*<Button*/}
-                    {/*    size="sm"*/}
-                    {/*    className="bg-gradient-to-br from-red-600 to-danger text-white shadow-md"*/}
-                    {/*>*/}
-                    {/*    Authorize*/}
-                    {/*</Button>*/}
+                <CardFooter className="justify-between">
+                    <AuthorizeStatusModal salesOrder={salesOrder} mutate={mutate} />
                     <div className="flex justify-end gap-2">
                         <Button
                             size="sm"
