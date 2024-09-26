@@ -13,7 +13,7 @@ type Props = {
 export function SalesOrderDetails({ form, salesOrder, showImportButton }: Props) {
     return (
         <Card className="shrink-0">
-            <CardHeader className="w-full justify-between bg-brand-primary text-black">
+            <CardHeader className="w-full justify-between bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md">
                 {showImportButton ? (
                     <SalesOrderImportModal
                         onImport={(data) => {

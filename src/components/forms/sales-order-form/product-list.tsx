@@ -325,7 +325,7 @@ export function ProductList({ form }: Props) {
                                                         </Button>
                                                         <Button
                                                             size="sm"
-                                                            className="bg-brand-primary text-black"
+                                                            className="bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
                                                             onPress={async () => {
                                                                 await handleRemoveProduct(product.id, index)
                                                                 onClose()
@@ -350,7 +350,7 @@ export function ProductList({ form }: Props) {
                         <Button
                             variant="solid"
                             size="sm"
-                            className="bg-brand-primary text-black"
+                            className="bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
                         >
                             Add Product
                         </Button>

@@ -26,7 +26,7 @@ export function TopBar() {
                         <Button
                             variant="solid"
                             size="sm"
-                            className="bg-brand-primary text-black"
+                            className="bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
                         >
                             <Link href="/sales-orders/new-sales-order">New Order</Link>
                         </Button>

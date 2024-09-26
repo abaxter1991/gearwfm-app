@@ -1,12 +1,14 @@
 import { SalesOrderCard } from '~/components/sales-order/sales-order-card'
 import { SearchBar } from '~/components/ui/custom/search-bar'
+import { StatusTabs } from '~/components/ui/custom/status-tabs'
 import prisma from '~/prisma/client'
-import type { Prisma } from '@prisma/client'
+import type { Prisma, SalesOrderStatus } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
 type Props = {
     searchParams: {
+        status?: string
         startDate?: string
         endDate?: string
         searchDateBy?: string
@@ -15,8 +17,9 @@ type Props = {
 }
 
 export default async function SalesOrdersPage({ searchParams }: Props) {
-    const { startDate, endDate, searchDateBy, search } = searchParams
+    const { status, startDate, endDate, searchDateBy, search } = searchParams
 
+    const salesOrderStatus = status === 'all' ? undefined : status?.toUpperCase() as SalesOrderStatus | undefined
     const searchOptions: Prisma.StringFilter<"SalesOrder"> | string = { contains: search ? search : '', mode: 'insensitive' }
 
     let dateRangeParams = {}
@@ -32,6 +35,7 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
     const salesOrders = await prisma.salesOrder.findMany({
         where: {
             ...dateRangeParams,
+            status: salesOrderStatus,
             isArchived: false,
             OR: [
                 { referenceId: searchOptions },
@@ -66,7 +70,8 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
     })
 
     return (
-        <div className="flex w-full flex-col items-center gap-4">
+        <div className="flex w-full flex-col gap-4">
+            <StatusTabs />
             <SearchBar />
             <div className="grid w-full grid-cols-1 gap-4 tablet:grid-cols-2 desktop:grid-cols-3">
                 {salesOrders.map((salesOrder) => (

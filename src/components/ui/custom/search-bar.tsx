@@ -15,17 +15,18 @@ const today = now(getLocalTimeZone()).toDate()
 const todayString = new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()).toString()
 const firstDayOfYearString = new CalendarDate(today.getFullYear(), 1, 1).toString()
 
-export function SearchBar() {
-    const [dateRange, setDateRange] = useState<RangeValue<DateValue>>({
-        start: parseDate(firstDayOfYearString),
-        end: parseDate(todayString),
-    })
-    // const [dateRange, setDateRange] = useState<RangeValue<DateValue | null>>({ start: null, end: null })
-    const [searchDateBy, setSearchDateBy] = useState<string>('orderDate')
-    const [search, setSearch] = useState('')
+const initialDateRange = {
+    start: parseDate(firstDayOfYearString),
+    end: parseDate(todayString),
+}
 
+export function SearchBar() {
     const router = useRouter()
     const searchParams = useSearchParams()!
+
+    const [dateRange, setDateRange] = useState<RangeValue<DateValue>>(initialDateRange)
+    const [searchDateBy, setSearchDateBy] = useState<string>('orderDate')
+    const [search, setSearch] = useState('')
 
     const startDateString = searchParams.get('startDate')
     const endDateString = searchParams.get('endDate')
@@ -119,7 +120,7 @@ export function SearchBar() {
                             color="primary"
                             size="sm"
                             onPress={handleSearch}
-                            className="bg-brand-primary text-black"
+                            className="bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
                         >
                             Search
                         </Button>
