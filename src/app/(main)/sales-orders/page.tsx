@@ -39,6 +39,7 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
             status: salesOrderStatus,
             isArchived: false,
             OR: [
+                { id: searchOptions },
                 { referenceId: searchOptions },
                 { salesRepName: searchOptions },
                 { salesRepEmailAddress: searchOptions },

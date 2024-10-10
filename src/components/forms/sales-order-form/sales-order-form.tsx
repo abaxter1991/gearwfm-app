@@ -2,7 +2,7 @@
 
 import { CalendarDateTime } from '@internationalized/date'
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -28,6 +28,8 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
     const form = useForm<SalesOrderFormData>({ defaultValues: !showImportButton ? defaultSalesOrder : mitchellsSalesOrder })
 
     const router = useRouter()
+
+    const pathname = usePathname()
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -71,30 +73,9 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
         setIsSubmitting(true)
 
         if (salesOrder) {
-            const response = await axios.post(`${apiBaseUrl}/forms/update-sales-order`, data)
-            const errorMessage = response.data.message
-
-            if (errorMessage) {
-                toast(`Oops, something went wrong! ${errorMessage}`)
-                setIsSubmitting(false)
-                return
-            }
-
-            mutate()
-            handleFormResetAndClose()
-            toast('Sales order has been updated!')
+            await saveExistingSalesOrder(data)
         } else {
-            const response = await axios.post(`${apiBaseUrl}/forms/new-sales-order`, data)
-            const errorMessage = response.data.message
-
-            if (errorMessage) {
-                toast(`Oops, something went wrong! ${errorMessage}`)
-                setIsSubmitting(false)
-                return
-            }
-
-            form.reset()
-            toast('New sales order has been submitted!')
+            await submitNewSalesOrder(data)
         }
     })
 
@@ -102,6 +83,41 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
         form.reset()
         router.push('/sales-orders')
         setIsSubmitting(false)
+    }
+
+    function handleError(errorMessage: any) {
+        toast(`Oops, something went wrong! ${errorMessage}`)
+        setIsSubmitting(false)
+    }
+
+    async function saveExistingSalesOrder(data: SalesOrderFormData) {
+        const response = await axios.post(`${apiBaseUrl}/forms/update-sales-order`, data)
+        const errorMessage = response.data.message
+
+        if (errorMessage) {
+            handleError(errorMessage)
+            return
+        }
+
+        mutate()
+        handleFormResetAndClose()
+        toast('Sales order has been updated!')
+    }
+
+    async function submitNewSalesOrder(data: SalesOrderFormData) {
+        const response = await axios.post(`${apiBaseUrl}/forms/new-sales-order`, data)
+        const errorMessage = response.data.message
+
+        if (errorMessage) {
+            handleError(errorMessage)
+            return
+        }
+
+        setIsSubmitting(false)
+
+        form.reset()
+        toast('New sales order has been submitted!')
+        router.push(`${pathname}/success/${response.data.createdSalesOrder.id}`)
     }
 
     function updateTotalQuantity(productIndex: number) {

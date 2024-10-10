@@ -23,8 +23,10 @@ export function SalesOrderDetails({ form, salesOrder, showImportButton }: Props)
                 ) : (
                     <div />
                 )}
-                <h1 className="flex-none self-center text-2xl font-bold">Sales Order Form</h1>
-                {salesOrder && (
+                <h1 className="flex-none self-center text-2xl font-bold">
+                    Sales Order Form
+                </h1>
+                {salesOrder ? (
                     <div className="flex gap-4">
                         <InputField
                             form={form}
@@ -37,6 +39,8 @@ export function SalesOrderDetails({ form, salesOrder, showImportButton }: Props)
                             defaultValue={salesOrder.externalId}
                         />
                     </div>
+                ) : (
+                    <div />
                 )}
             </CardHeader>
             <CardBody className="gap-4">

@@ -23,7 +23,7 @@ export async function POST(request: Request) {
             return { item, allAssembled: false }
         })
 
-        await prisma.salesOrder.create({
+        const createdSalesOrder = await prisma.salesOrder.create({
             data: {
                 ...restSalesOrder,
                 isNewCustomer: Boolean(isNewCustomer),
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
             },
         })
 
-        return NextResponse.json({ salesOrder }, { status: 200 })
+        return NextResponse.json({ createdSalesOrder }, { status: 200 })
     } catch (error) {
         console.error('Failed to create sales order:', error)
         return NextResponse.json({ error, message: 'Internal Server Error' }, { status: 500 })
