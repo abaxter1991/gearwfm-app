@@ -171,7 +171,7 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
                     }
 
                     // Update value of the subtotal, and grandTotal fields when the totalQuantity field has been updated.
-                    if (name.includes('totalQuantity')) {
+                    if (name.includes('.totalQuantity')) {
                         updateSubTotal(Number(productIndex))
                         updateGrandTotal()
                     }
