@@ -1,11 +1,11 @@
 import { Card, CardBody } from '@nextui-org/react'
 import { NumberInputField } from '~/components/forms/fields'
+import type { SalesOrderFormSchema } from './index'
 import type { ReactNode } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import type { SalesOrderFormData } from '~/types'
 
 type Props = {
-    form: UseFormReturn<SalesOrderFormData, undefined>
+    form: UseFormReturn<SalesOrderFormSchema, undefined>
     actionButtons: ReactNode
 }
 
@@ -77,7 +77,6 @@ export function SalesOrderSummary({ form, actionButtons }: Props) {
                             />
                         </div>
                     </div>
-
                     {actionButtons}
                 </div>
             </CardBody>

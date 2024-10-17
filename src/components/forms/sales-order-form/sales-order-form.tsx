@@ -1,5 +1,6 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import { CalendarDateTime } from '@internationalized/date'
 import axios from 'axios'
 import { usePathname, useRouter } from 'next/navigation'
@@ -12,8 +13,8 @@ import { ActionButtons } from './action-buttons'
 import { ProductList } from './product-list'
 import { SalesOrderDetails } from './sales-order-details'
 import { SalesOrderSummary } from './sales-order-summary'
-import { defaultSalesOrder, mitchellsSalesOrder } from './index'
-import type { SalesOrderFormData } from '~/types'
+import { defaultSalesOrder, mitchellsSalesOrder, salesOrderFormSchema } from './index'
+import type { SalesOrderFormSchema } from './index'
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
@@ -25,13 +26,16 @@ type Props = {
 export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props) {
     const { data: salesOrder, mutate } = useSalesOrder(salesOrderId)
 
-    const form = useForm<SalesOrderFormData>({ defaultValues: !showImportButton ? defaultSalesOrder : mitchellsSalesOrder })
-
     const router = useRouter()
 
     const pathname = usePathname()
 
     const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const form = useForm<SalesOrderFormSchema>({
+        resolver: zodResolver(salesOrderFormSchema),
+        defaultValues: !showImportButton ? defaultSalesOrder : mitchellsSalesOrder,
+    })
 
     useEffect(() => {
         if (salesOrder) {
@@ -90,7 +94,7 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
         setIsSubmitting(false)
     }
 
-    async function saveExistingSalesOrder(data: SalesOrderFormData) {
+    async function saveExistingSalesOrder(data: SalesOrderFormSchema) {
         const response = await axios.post(`${apiBaseUrl}/forms/update-sales-order`, data)
         const errorMessage = response.data.message
 
@@ -104,7 +108,7 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
         toast('Sales order has been updated!')
     }
 
-    async function submitNewSalesOrder(data: SalesOrderFormData) {
+    async function submitNewSalesOrder(data: SalesOrderFormSchema) {
         const response = await axios.post(`${apiBaseUrl}/forms/new-sales-order`, data)
         const errorMessage = response.data.message
 

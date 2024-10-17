@@ -15,14 +15,14 @@ import { InputField, NumberInputField, TextAreaField } from '~/components/forms/
 import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
 import { productCategories } from '~/lib/constants/product-categories'
 import { defaultSalesOrderProduct } from './index'
+import type { SalesOrderFormSchema } from './index'
 import type { UseFormReturn } from 'react-hook-form'
-import type { SalesOrderFormData } from '~/types'
 
 const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
 type Props = {
-    form: UseFormReturn<SalesOrderFormData, undefined>
+    form: UseFormReturn<SalesOrderFormSchema, undefined>
 }
 
 export function ProductList({ form }: Props) {
