@@ -33,7 +33,7 @@ export const salesOrderFormSchema = z.object({
     products: z.array(
         z.object({
             id: z.string(),
-            item: z.string().trim(),
+            item: z.string(),
             fileName: z.string().trim(),
             style: z.string().trim(),
             color: z.string().trim(),
@@ -47,7 +47,7 @@ export const salesOrderFormSchema = z.object({
             quantityOf2XL: z.number().nonnegative(''),
             quantityOf3XL: z.number().nonnegative(''),
             quantityOf4XL: z.number().nonnegative(''),
-            totalQuantity: z.number().positive(''),
+            totalQuantity: z.number().nonnegative(''),
             unitPrice: z.number().nonnegative(''),
             subtotal: z.number().nonnegative(''),
         }),
@@ -55,7 +55,7 @@ export const salesOrderFormSchema = z.object({
     assembledProducts: z.array(
         z.object({
             id: z.string(),
-            item: z.string().trim(),
+            item: z.string(),
             allAssembled: z.boolean(),
         }),
     ),
