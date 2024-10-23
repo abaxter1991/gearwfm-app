@@ -2,7 +2,6 @@
 
 import {
     Button,
-    Chip,
     Divider,
     Modal,
     ModalBody,
@@ -13,25 +12,12 @@ import {
     SelectItem,
     useDisclosure,
 } from '@nextui-org/react'
-// import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useState } from 'react'
 import { HiOutlineFunnel } from 'react-icons/hi2'
 
 export function FilterModal() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
-
-    // const router = useRouter()
-    // const pathname = usePathname()
-    // const searchParams = useSearchParams()
-
-    const singularOptions = [
-        { label: 'IS', key: 'true' },
-        { label: 'IS NOT', key: 'false' },
-    ]
-
-    const pluralOptions = [
-        { label: 'ARE', key: 'true' },
-        { label: 'ARE NOT', key: 'false' },
-    ]
 
     return (
         <>
@@ -59,31 +45,19 @@ export function FilterModal() {
                             </ModalHeader>
                             <Divider/>
                             <ModalBody>
-                                <Chip size="sm" radius="sm" color="danger" variant="flat" className="self-center">
-                                    Filters are not working yet. This feature is under construction.
-                                </Chip>
-                                <BooleanFilter prefix="Customer" suffix="new" options={singularOptions}/>
-                                <BooleanFilter prefix="Proof" suffix="approved" options={singularOptions}/>
-                                <BooleanFilter prefix="All parts" suffix="ordered" options={pluralOptions}/>
-                                <BooleanFilter prefix="All parts" suffix="received" options={pluralOptions}/>
+                                <BooleanFilter name="isNewCustomer" prefix="Customer" suffix="new" optionType="singular" />
+                                <BooleanFilter name="approvedProof" prefix="Proof" suffix="approved" optionType="singular" />
+                                <BooleanFilter name="partsOrdered" prefix="All parts" suffix="ordered" optionType="plural" />
+                                <BooleanFilter name="partsReceived" prefix="All parts" suffix="received" optionType="plural" />
                             </ModalBody>
                             <Divider/>
                             <ModalFooter>
-                                <Button
-                                    type="button"
-                                    size="sm"
-                                    color="danger"
-                                    variant="bordered"
-                                    onPress={onClose}
-                                >
-                                    Cancel
-                                </Button>
                                 <Button
                                     size="sm"
                                     onPress={onClose}
                                     className="bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
                                 >
-                                    Set Filters
+                                    Done
                                 </Button>
                             </ModalFooter>
                         </>
@@ -95,25 +69,62 @@ export function FilterModal() {
 }
 
 type BooleanFilterProps = {
+    name: string
     prefix: string
     suffix: string
-    options: {
-        label: string,
-        key: string,
-    }[]
+    optionType: 'singular' | 'plural'
 }
 
-function BooleanFilter({ prefix, suffix, options }: BooleanFilterProps) {
+function BooleanFilter({ name, prefix, suffix, optionType }: BooleanFilterProps) {
+    const router = useRouter()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+
+    const [selected, setSelected] = useState<string | undefined>()
+
+    const searchParam = searchParams.get(name)
+
+    useEffect(() => {
+        if (searchParam) setSelected(searchParam)
+    }, [searchParams])
+
+    const handleFilterSelected = useCallback((name: string, value: string) => {
+        const params = new URLSearchParams(searchParams.toString())
+
+        if (value) {
+            setSelected(value)
+            params.set(name, value)
+        } else {
+            setSelected(undefined)
+            params.delete(name)
+        }
+
+        router.push(`${pathname}?${params.toString()}`)
+    }, [searchParams])
+
+    const optionObjects = {
+        singular: [
+            { label: 'IS', key: 'true' },
+            { label: 'IS NOT', key: 'false' },
+        ],
+        plural: [
+            { label: 'ARE', key: 'true' },
+            { label: 'ARE NOT', key: 'false' },
+        ],
+    }
+
+    const options = optionObjects[optionType]
+
     return (
         <div className="flex items-center gap-2">
             <p>{prefix}</p>
             <Select
                 size="sm"
                 variant="bordered"
-                // selectedKeys={[searchDateBy]}
-                // onChange={(event) => {
-                //     setSearchDateBy(event.target.value)
-                // }}
+                selectedKeys={selected && [selected]}
+                onChange={(event) => {
+                    handleFilterSelected(name, event.target.value)
+                }}
                 className="max-w-28"
                 classNames={{
                     // base: 'w-fit',
