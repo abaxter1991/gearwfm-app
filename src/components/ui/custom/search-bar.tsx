@@ -168,6 +168,9 @@ export function SearchBar() {
                             visibleMonths={2}
                             value={dateRange}
                             onChange={setDateRange}
+                            calendarProps={{
+                                focusedValue: dateRange?.start,
+                            }}
                             CalendarBottomContent={
                                 <div className="flex w-full items-center gap-1 overflow-x-scroll p-2">
                                     <Button size="sm" variant="bordered" className="shrink-0" onPress={handleSetToday}>Today</Button>
