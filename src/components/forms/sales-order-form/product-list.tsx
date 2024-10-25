@@ -280,7 +280,7 @@ export function ProductList({ form }: Props) {
                                         }
                                     />
                                 </div>
-                                <div className="shrink-0 self-end">
+                                <div className="shrink-0 self-center">
                                     <Button
                                         isIconOnly
                                         variant="light"
