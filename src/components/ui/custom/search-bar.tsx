@@ -10,14 +10,12 @@ import type { DateValue } from '@react-types/datepicker'
 import type { RangeValue } from '@react-types/shared'
 import type { KeyboardEvent } from 'react'
 
-const today = now(getLocalTimeZone()).toDate()
-const todayString = new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()).toString()
-const firstDayOfYearString = new CalendarDate(today.getFullYear(), 1, 1).toString()
-
-const initialDateRange = {
-    start: parseDate(firstDayOfYearString),
-    end: parseDate(todayString),
-}
+const today = now(getLocalTimeZone())
+const todayDate = today.toDate()
+const todayDateString = new CalendarDate(todayDate.getFullYear(), todayDate.getMonth() + 1, todayDate.getDate()).toString()
+const initialDate = startOfYear(today).toDate()
+const initialDateString = new CalendarDate(initialDate.getFullYear(), 1, 1).toString()
+const initialDateRange = { start: parseDate(initialDateString), end: parseDate(todayDateString) }
 
 export function SearchBar() {
     const router = useRouter()
@@ -28,6 +26,11 @@ export function SearchBar() {
     const [dateRange, setDateRange] = useState<RangeValue<DateValue>>(initialDateRange)
     const [searchDateBy, setSearchDateBy] = useState<string>('orderDate')
     const [search, setSearch] = useState<string>('')
+
+    const searchDateByItems = [
+        { key: 'orderDate', label: 'Order Date' },
+        { key: 'dueDate', label: 'Due Date' },
+    ]
 
     useEffect(() => {
         const startDateString = searchParams.get('startDate')
@@ -47,12 +50,11 @@ export function SearchBar() {
         if (!searchString) setSearch('')
     }, [searchParams])
 
-    const handleSearch = () => {
+    function handleSearch() {
         const params = new URLSearchParams(searchParams.toString())
         params.set('startDate', dateRange.start ? dateRange.start.toString() : '')
         params.set('endDate', dateRange.end ? dateRange.end.toString() : '')
         params.set('searchDateBy', searchDateBy)
-        // params.set('search', search)
 
         if (search === '') {
             params.delete('search')
@@ -63,98 +65,66 @@ export function SearchBar() {
         router.push(`${pathname}?${params.toString()}`)
     }
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    function handleKeyDown(e: KeyboardEvent) {
         if (e.key === 'Enter') {
             handleSearch()
         }
     }
 
-    const searchDateByItems = [
-        { key: 'orderDate', label: 'Order Date' },
-        { key: 'dueDate', label: 'Due Date' },
-    ]
+    function getDateString(date: Date) {
+        return new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate()).toString()
+    }
 
-    const handleSetToday = () => {
+    function formatAndSetDateRange(startDate: Date, endDate: Date) {
+        const startDateString = getDateString(startDate)
+        const endDateString = getDateString(endDate)
+
         setDateRange({
-            start: parseDate(todayString),
-            end: parseDate(todayString),
+            start: parseDate(startDateString),
+            end: parseDate(endDateString),
         })
     }
 
-    const handleSetLast7Days = () => {
-        const startDate = now(getLocalTimeZone()).subtract({ days: 7 }).toDate()
-        const startString = new CalendarDate(startDate.getFullYear(), startDate.getMonth() + 1, startDate.getDate()).toString()
-
-        setDateRange({
-            start: parseDate(startString),
-            end: parseDate(todayString),
-        })
+    function handleSetToday() {
+        formatAndSetDateRange(todayDate, todayDate)
     }
 
-    const handleSetWeekToDate = () => {
-        const startDate = startOfWeek(now(getLocalTimeZone()), locale).toDate()
-        const startString = new CalendarDate(startDate.getFullYear(), startDate.getMonth() + 1, startDate.getDate()).toString()
-
-        setDateRange({
-            start: parseDate(startString),
-            end: parseDate(todayString),
-        })
+    function handleSetLast7Days() {
+        const startDate = today.subtract({ days: 7 }).toDate()
+        formatAndSetDateRange(startDate, todayDate)
     }
 
-    const handleSetMonthToDate = () => {
-        const startDate = startOfMonth(now(getLocalTimeZone())).toDate()
-        const startString = new CalendarDate(startDate.getFullYear(), startDate.getMonth() + 1, startDate.getDate()).toString()
-
-        setDateRange({
-            start: parseDate(startString),
-            end: parseDate(todayString),
-        })
+    function handleSetWeekToDate() {
+        const startDate = startOfWeek(today, locale).toDate()
+        formatAndSetDateRange(startDate, todayDate)
     }
 
-    const handleSetYearToDate = () => {
-        const startDate = startOfYear(now(getLocalTimeZone())).toDate()
-        const startString = new CalendarDate(startDate.getFullYear(), startDate.getMonth() + 1, startDate.getDate()).toString()
-
-        setDateRange({
-            start: parseDate(startString),
-            end: parseDate(todayString),
-        })
+    function handleSetMonthToDate() {
+        const startDate = startOfMonth(today).toDate()
+        formatAndSetDateRange(startDate, todayDate)
     }
 
-    const handleSetLastWeek = () => {
-        const startDate = startOfWeek(now(getLocalTimeZone()).subtract({ weeks: 1 }), locale).toDate()
-        const startString = new CalendarDate(startDate.getFullYear(), startDate.getMonth() + 1, startDate.getDate()).toString()
-        const endDate = endOfWeek(now(getLocalTimeZone()).subtract({ weeks: 1 }), locale).toDate()
-        const endString = new CalendarDate(endDate.getFullYear(), endDate.getMonth() + 1, endDate.getDate()).toString()
-
-        setDateRange({
-            start: parseDate(startString),
-            end: parseDate(endString),
-        })
+    function handleSetYearToDate() {
+        const startDate = startOfYear(today).toDate()
+        formatAndSetDateRange(startDate, todayDate)
     }
 
-    const handleSetLastMonth = () => {
-        const startDate = startOfMonth(now(getLocalTimeZone()).subtract({ months: 1 })).toDate()
-        const startString = new CalendarDate(startDate.getFullYear(), startDate.getMonth() + 1, startDate.getDate()).toString()
-        const endDate = endOfMonth(now(getLocalTimeZone()).subtract({ months: 1 })).toDate()
-        const endString = new CalendarDate(endDate.getFullYear(), endDate.getMonth() + 1, endDate.getDate()).toString()
-
-        setDateRange({
-            start: parseDate(startString),
-            end: parseDate(endString),
-        })
+    function handleSetLastWeek() {
+        const startDate = startOfWeek(today.subtract({ weeks: 1 }), locale).toDate()
+        const endDate = endOfWeek(today.subtract({ weeks: 1 }), locale).toDate()
+        formatAndSetDateRange(startDate, endDate)
     }
 
-    const handleSetLastYear = () => {
-        const startDate = startOfYear(now(getLocalTimeZone()).subtract({ years: 1 })).toDate()
-        const startString = new CalendarDate(startDate.getFullYear(), startDate.getMonth() + 1, startDate.getDate()).toString()
-        const endDate = endOfYear(now(getLocalTimeZone()).subtract({ years: 1 })).toDate()
-        const endString = new CalendarDate(endDate.getFullYear(), endDate.getMonth() + 1, endDate.getDate()).toString()
+    function handleSetLastMonth() {
+        const startDate = startOfMonth(today.subtract({ months: 1 })).toDate()
+        const endDate = endOfMonth(today.subtract({ months: 1 })).toDate()
+        formatAndSetDateRange(startDate, endDate)
+    }
 
-        setDateRange({
-            start: parseDate(startString),
-            end: parseDate(endString),
-        })
+    function handleSetLastYear() {
+        const startDate = startOfYear(today.subtract({ years: 1 })).toDate()
+        const endDate = endOfYear(today.subtract({ years: 1 })).toDate()
+        formatAndSetDateRange(startDate, endDate)
     }
 
     return (
