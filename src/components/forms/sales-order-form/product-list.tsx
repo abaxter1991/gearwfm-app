@@ -12,6 +12,7 @@ import { useFieldArray, useWatch } from 'react-hook-form'
 import { HiTrash } from 'react-icons/hi2'
 import { FileUpload } from '~/components/common/file-upload'
 import { InputField, NumberInputField, TextAreaField } from '~/components/forms/fields'
+import { SalesOrderImportModal } from '~/components/sales-order/sales-order-import-modal'
 import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
 import { productCategories } from '~/lib/constants/product-categories'
 import { defaultSalesOrderProduct } from './index'
@@ -23,9 +24,10 @@ const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
 type Props = {
     form: UseFormReturn<SalesOrderFormSchema, undefined>
+    showImportButton?: boolean
 }
 
-export function ProductList({ form }: Props) {
+export function ProductList({ form, showImportButton }: Props) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     const { fields: products, append, remove } = useFieldArray({
@@ -372,6 +374,18 @@ export function ProductList({ form }: Props) {
                         ))}
                     </DropdownMenu>
                 </Dropdown>
+                {showImportButton && (
+                    <SalesOrderImportModal
+                        onImport={(data) => {
+                            for (const product of data) {
+                                append({
+                                    ...defaultSalesOrderProduct,
+                                    ...product,
+                                })
+                            }
+                        }}
+                    />
+                )}
             </div>
         </>
     )

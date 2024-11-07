@@ -1,6 +1,7 @@
+'use client'
+
 import { Card, CardBody, CardHeader } from '@nextui-org/react'
 import { CheckboxField, DatePickerField, InputField, TextAreaField } from '~/components/forms/fields'
-import { SalesOrderImportModal } from '~/components/sales-order/sales-order-import-modal'
 import type { SalesOrderFormSchema } from './index'
 import type { UseFormReturn } from 'react-hook-form'
 import type { SalesOrderAndRelations } from '~/types'
@@ -8,22 +9,13 @@ import type { SalesOrderAndRelations } from '~/types'
 type Props = {
     form: UseFormReturn<SalesOrderFormSchema, undefined>
     salesOrder: SalesOrderAndRelations | undefined
-    showImportButton?: boolean
 }
 
-export function SalesOrderDetails({ form, salesOrder, showImportButton }: Props) {
+export function SalesOrderDetails({ form, salesOrder }: Props) {
     return (
         <Card className="shrink-0">
             <CardHeader className="w-full justify-between bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md">
-                {showImportButton ? (
-                    <SalesOrderImportModal
-                        onImport={(data) => {
-                            form.setValue('products', data)
-                        }}
-                    />
-                ) : (
-                    <div />
-                )}
+                <div />
                 <h1 className="flex-none self-center text-2xl font-bold">
                     Sales Order Form
                 </h1>

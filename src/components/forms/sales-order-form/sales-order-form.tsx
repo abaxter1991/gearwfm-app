@@ -199,9 +199,11 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
                     <SalesOrderDetails
                         form={form}
                         salesOrder={salesOrder}
+                    />
+                    <ProductList
+                        form={form}
                         showImportButton={showImportButton}
                     />
-                    <ProductList form={form} />
                     <SalesOrderSummary
                         form={form}
                         actionButtons={<ActionButtons

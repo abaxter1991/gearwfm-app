@@ -21,6 +21,7 @@ export function SalesOrderImportModal({ onImport }: Props) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     const [importedData, setImportedData] = useState<any>([])
+    const [isLoading, setIsLoading] = useState(false)
 
     return (
         <>
@@ -41,8 +42,10 @@ export function SalesOrderImportModal({ onImport }: Props) {
                             <ModalBody className="p-6">
                                 <CsvReader
                                     onCsvLoaded={async (csvData) => {
+                                        setIsLoading(true)
                                         const cleanedData = await parseCsvData(csvData)
                                         setImportedData(cleanedData)
+                                        setIsLoading(false)
                                     }}
                                 />
                             </ModalBody>
@@ -68,7 +71,7 @@ export function SalesOrderImportModal({ onImport }: Props) {
                                         onClose()
                                     }}
                                 >
-                                    Import
+                                    {isLoading ? 'Loading...' : 'Import'}
                                 </Button>
                             </ModalFooter>
                         </>
