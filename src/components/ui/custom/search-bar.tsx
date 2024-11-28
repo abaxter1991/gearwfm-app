@@ -25,6 +25,7 @@ export function SearchBar() {
 
     const [dateRange, setDateRange] = useState<RangeValue<DateValue>>(initialDateRange)
     const [searchDateBy, setSearchDateBy] = useState<string>('orderDate')
+    const [sortDateBy, setSortDateBy] = useState<string>('desc')
     const [search, setSearch] = useState<string>('')
 
     const searchDateByItems = [
@@ -32,10 +33,16 @@ export function SearchBar() {
         { key: 'dueDate', label: 'Due Date' },
     ]
 
+    const sortDateByItems = [
+        { key: 'asc', label: 'Oldest to Newest' },
+        { key: 'desc', label: 'Newest to Oldest' },
+    ]
+
     useEffect(() => {
         const startDateString = searchParams.get('startDate')
         const endDateString = searchParams.get('endDate')
         const searchDateByString = searchParams.get('searchDateBy')
+        const sortDateByString = searchParams.get('sortDateBy')
         const searchString = searchParams.get('search')
 
         if (startDateString && endDateString) {
@@ -46,6 +53,7 @@ export function SearchBar() {
         }
 
         if (searchDateByString) setSearchDateBy(searchDateByString)
+        if (sortDateByString) setSortDateBy(sortDateByString)
         if (searchString) setSearch(searchString)
         if (!searchString) setSearch('')
     }, [searchParams])
@@ -55,6 +63,7 @@ export function SearchBar() {
         params.set('startDate', dateRange.start ? dateRange.start.toString() : '')
         params.set('endDate', dateRange.end ? dateRange.end.toString() : '')
         params.set('searchDateBy', searchDateBy)
+        params.set('sortDateBy', sortDateBy)
 
         if (search === '') {
             params.delete('search')
@@ -172,6 +181,31 @@ export function SearchBar() {
                         }}
                     >
                         {searchDateByItems.map((item) => (
+                            <SelectItem
+                                key={item.key}
+                                textValue={item.label}
+                            >
+                                {item.label}
+                            </SelectItem>
+                        ))}
+                    </Select>
+                    <Select
+                        label="Sort Date By"
+                        variant="flat"
+                        placeholder="Choose a filter..."
+                        labelPlacement="outside"
+                        selectedKeys={[sortDateBy]}
+                        onChange={(event) => {
+                            setSortDateBy(event.target.value)
+                        }}
+                        className="max-w-48"
+                        classNames={{
+                            value: 'text-foreground',
+                            listboxWrapper: 'overscroll-contain',
+                            popoverContent: 'w-auto',
+                        }}
+                    >
+                        {sortDateByItems.map((item) => (
                             <SelectItem
                                 key={item.key}
                                 textValue={item.label}

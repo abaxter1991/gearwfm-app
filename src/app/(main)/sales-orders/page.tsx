@@ -14,6 +14,7 @@ type Props = {
         startDate?: string
         endDate?: string
         searchDateBy?: string
+        sortDateBy?: 'asc' | 'desc'
         search?: string
         isNewCustomer?: string
         approvedProof?: string
@@ -28,6 +29,7 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
         startDate,
         endDate,
         searchDateBy,
+        sortDateBy,
         search,
         isNewCustomer,
         approvedProof,
@@ -39,6 +41,7 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
     const salesOrderStatus = status === 'all' ? defaultsalesOrderStatus : status?.toUpperCase() as SalesOrderStatus | Prisma.EnumSalesOrderStatusFilter
     const searchOptions: Prisma.StringFilter<"SalesOrder"> | string = { contains: search ? search : '', mode: 'insensitive' }
     const productSearchOptions: Prisma.StringFilter<"SalesOrderProduct"> | string = { contains: search ? search : '', mode: 'insensitive' }
+    const sortDateByOption = sortDateBy ? sortDateBy : 'desc'
 
     let dateRangeParams = {}
 
@@ -114,7 +117,7 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
             },
         },
         orderBy: {
-            createdAt: 'desc',
+            createdAt: sortDateByOption,
         },
     })
 

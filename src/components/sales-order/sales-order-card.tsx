@@ -83,13 +83,17 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                         <div className="flex flex-col overflow-hidden">
                             <h1 className="truncate text-2xl">{salesOrder.companyName}</h1>
                             <p className="truncate text-sm text-zinc-800">REF#: {salesOrder.referenceId}</p>
+                            <p className="truncate text-sm text-zinc-800">Sales Rep: {salesOrder.salesRepName}</p>
                         </div>
                         <div className="flex min-w-44 max-w-44 flex-col overflow-hidden">
                             <div className="flex flex-nowrap items-center gap-2">
-                                <p className="text-nowrap text-small">Due Date:</p>
-                                <p className="text-lg">{formatDateString(String(salesOrder.dueDate))}</p>
+                                <p className="text-nowrap text-small">Order Date:</p>
+                                <p className="text-lg">{formatDateString(String(salesOrder.orderDate))}</p>
                             </div>
-                            <p className="truncate text-sm text-zinc-800">Sales Rep: {salesOrder.salesRepName}</p>
+                            <div className="flex flex-nowrap items-center gap-2">
+                                <p className="text-nowrap text-small">Due Date:</p>
+                                <p className="text-xl font-bold">{formatDateString(String(salesOrder.dueDate))}</p>
+                            </div>
                         </div>
                     </div>
                     <div className="absolute right-0 top-0 p-2">
