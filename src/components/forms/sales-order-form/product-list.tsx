@@ -11,23 +11,26 @@ import axios from 'axios'
 import { useFieldArray, useWatch } from 'react-hook-form'
 import { HiTrash } from 'react-icons/hi2'
 import { FileUpload } from '~/components/common/file-upload'
-import { InputField, NumberInputField, TextAreaField } from '~/components/forms/fields'
+import { CheckboxField, InputField, NumberInputField, SizeInputField, TextAreaField } from '~/components/forms/fields'
 import { SalesOrderImportModal } from '~/components/sales-order/sales-order-import-modal'
 import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
+import { updatePartSizeReceived } from '~/lib/actions'
 import { productCategories } from '~/lib/constants/product-categories'
 import { defaultSalesOrderProduct } from './index'
 import type { SalesOrderFormSchema } from './index'
 import type { UseFormReturn } from 'react-hook-form'
+import type { SalesOrderAndRelations } from '~/types'
 
 const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
 type Props = {
     form: UseFormReturn<SalesOrderFormSchema, undefined>
+    salesOrder: SalesOrderAndRelations | undefined
     showImportButton?: boolean
 }
 
-export function ProductList({ form, showImportButton }: Props) {
+export function ProductList({ form, salesOrder, showImportButton }: Props) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     const { fields: products, append, remove } = useFieldArray({
@@ -214,16 +217,47 @@ export function ProductList({ form, showImportButton }: Props) {
                                                     key={`${index}-${sizeField.label}`}
                                                     className="w-[75px] flex-auto"
                                                 >
-                                                    <NumberInputField
-                                                        preventValueChangeOnScroll
-                                                        form={form}
-                                                        label={sizeField.label}
-                                                        name={`products.${index}.${sizeField.name}` as const}
-                                                        variant="bordered"
-                                                        size="sm"
-                                                        labelPlacement="outside"
-                                                        min={0}
-                                                    />
+                                                    {/*TODO: Only show the checkbox if the input is greater than 0*/}
+                                                    {/*{salesOrder && product[sizeField.name] > 0 ? (*/}
+                                                    {salesOrder ? (
+                                                        <SizeInputField
+                                                            preventValueChangeOnScroll
+                                                            form={form}
+                                                            label={sizeField.label}
+                                                            name={`products.${index}.${sizeField.name}` as const}
+                                                            variant="bordered"
+                                                            size="sm"
+                                                            labelPlacement="outside"
+                                                            min={0}
+                                                            checkboxContent={(
+                                                                <CheckboxField
+                                                                    form={form}
+                                                                    name={`products.${index}.${sizeField.receivedFieldName}` as const}
+                                                                    size="sm"
+                                                                    color="danger"
+                                                                    classNames={{
+                                                                        base: 'px-0',
+                                                                        wrapper: 'mx-0',
+                                                                    }}
+                                                                    onChange={async () => {
+                                                                        console.dir({ salesOrderId: salesOrder.id, productId: product.id, fieldName: sizeField.receivedFieldName })
+                                                                        await updatePartSizeReceived(salesOrder.id, product.id, sizeField.receivedFieldName, !product[sizeField.receivedFieldName])
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        />
+                                                    ) : (
+                                                        <NumberInputField
+                                                            preventValueChangeOnScroll
+                                                            form={form}
+                                                            label={sizeField.label}
+                                                            name={`products.${index}.${sizeField.name}` as const}
+                                                            variant="bordered"
+                                                            size="sm"
+                                                            labelPlacement="outside"
+                                                            min={0}
+                                                        />
+                                                    )}
                                                 </div>
                                             ) : (
                                                 <div

@@ -2,6 +2,8 @@
 
 import { pusherServer } from '~/lib/pusher'
 import prisma from '~/prisma/client'
+import type { Prisma } from '@prisma/client'
+import type { ProductReceivedFieldKeys } from '~/types'
 
 export async function updateSalesOrderApprovedProof(salesOrderId: string, approvedProof: boolean) {
     await prisma.salesOrder.update({
@@ -52,6 +54,20 @@ export async function updateSalesOrderAssembledProduct(salesOrderId: string, ass
     await prisma.salesOrderAssembledProduct.update({
         where: { id: assembledProductId },
         data: { allAssembled: allAssembled },
+    })
+
+    await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
+}
+
+export async function updatePartSizeReceived(salesOrderId: string, productId: string, sizeField: ProductReceivedFieldKeys, received: boolean) {
+    console.dir({ salesOrderId, productId, sizeField, received })
+
+    const dataToUpdate: Prisma.SalesOrderProductUpdateInput = {}
+    dataToUpdate[sizeField] = received
+
+    await prisma.salesOrderProduct.update({
+        where: { id: productId },
+        data: dataToUpdate,
     })
 
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })

@@ -1,11 +1,19 @@
-const xsField = { label: 'XS', name: 'quantityOfXS' }
-const smField = { label: 'SM', name: 'quantityOfSM' }
-const mdField = { label: 'MD', name: 'quantityOfMD' }
-const lgField = { label: 'LG', name: 'quantityOfLG' }
-const xlField = { label: 'XL', name: 'quantityOfXL' }
-const xl2Field = { label: '2XL', name: 'quantityOf2XL' }
-const xl3Field = { label: '3XL', name: 'quantityOf3XL' }
-const xl4Field = { label: '4XL', name: 'quantityOf4XL' }
+import type { PartSize, ProductReceivedFieldKeys, ProductQuantityFieldKeys } from '~/types'
+
+type SizeField = {
+    label: PartSize
+    name: ProductQuantityFieldKeys
+    receivedFieldName: ProductReceivedFieldKeys
+}
+
+const xsField: SizeField = { label: 'XS', name: 'quantityOfXS', receivedFieldName: 'receivedXS' }
+const smField: SizeField = { label: 'SM', name: 'quantityOfSM', receivedFieldName: 'receivedSM' }
+const mdField: SizeField = { label: 'MD', name: 'quantityOfMD', receivedFieldName: 'receivedMD' }
+const lgField: SizeField = { label: 'LG', name: 'quantityOfLG', receivedFieldName: 'receivedLG' }
+const xlField: SizeField = { label: 'XL', name: 'quantityOfXL', receivedFieldName: 'receivedXL' }
+const xl2Field: SizeField = { label: '2XL', name: 'quantityOf2XL', receivedFieldName: 'received2XL' }
+const xl3Field: SizeField = { label: '3XL', name: 'quantityOf3XL', receivedFieldName: 'received3XL' }
+const xl4Field: SizeField = { label: '4XL', name: 'quantityOf4XL', receivedFieldName: 'received4XL' }
 
 const defaultSizeFields = {
     XS: { ...xsField, show: false },

@@ -73,6 +73,33 @@ model SalesOrderProduct {
     unitPrice      Float       @default(0.00) @map("unit_price")
     subtotal       Float       @default(0.00)
     //
+    receivedXS     Boolean     @default(false) @map("received_xs")
+    receivedSM     Boolean     @default(false) @map("received_sm")
+    receivedMD     Boolean     @default(false) @map("received_md")
+    receivedLG     Boolean     @default(false) @map("received_lg")
+    receivedXL     Boolean     @default(false) @map("received_xl")
+    received2XL    Boolean     @default(false) @map("received_2xl")
+    received3XL    Boolean     @default(false) @map("received_3xl")
+    received4XL    Boolean     @default(false) @map("received_4xl")
+    //
+    printedXS      Boolean     @default(false) @map("printed_xs")
+    printedSM      Boolean     @default(false) @map("printed_sm")
+    printedMD      Boolean     @default(false) @map("printed_md")
+    printedLG      Boolean     @default(false) @map("printed_lg")
+    printedXL      Boolean     @default(false) @map("printed_xl")
+    printed2XL     Boolean     @default(false) @map("printed_2xl")
+    printed3XL     Boolean     @default(false) @map("printed_3xl")
+    printed4XL     Boolean     @default(false) @map("printed_4xl")
+    //
+    countedXS      Boolean     @default(false) @map("counted_xs")
+    countedSM      Boolean     @default(false) @map("counted_sm")
+    countedMD      Boolean     @default(false) @map("counted_md")
+    countedLG      Boolean     @default(false) @map("counted_lg")
+    countedXL      Boolean     @default(false) @map("counted_xl")
+    counted2XL     Boolean     @default(false) @map("counted_2xl")
+    counted3XL     Boolean     @default(false) @map("counted_3xl")
+    counted4XL     Boolean     @default(false) @map("counted_4xl")
+    //
     salesOrder     SalesOrder? @relation(fields: [salesOrderId], references: [id])
     salesOrderId   String?     @map("sales_order_id")
 
