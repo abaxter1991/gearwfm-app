@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { Form } from '~/components/ui/form'
+import { pusherClient } from '~/lib/pusher'
 import { useSalesOrder } from '~/lib/queries'
 import { ActionButtons } from './action-buttons'
 import { ProductList } from './product-list'
@@ -191,6 +192,18 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
 
         return () => subscription.unsubscribe()
     }, [form.watch])
+
+    useEffect(() => {
+        if (salesOrder) {
+            pusherClient
+                .subscribe(salesOrder.id)
+                .bind('sales-order-updated', async () => mutate())
+
+            return () => {
+                pusherClient.unsubscribe(salesOrder.id)
+            }
+        }
+    }, [])
 
     return (
         <Form {...form}>
