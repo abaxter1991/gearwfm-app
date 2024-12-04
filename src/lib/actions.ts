@@ -60,8 +60,6 @@ export async function updateSalesOrderAssembledProduct(salesOrderId: string, ass
 }
 
 export async function updatePartSizeReceived(salesOrderId: string, productId: string, sizeField: ProductReceivedFieldKeys, received: boolean) {
-    console.dir({ salesOrderId, productId, sizeField, received })
-
     const dataToUpdate: Prisma.SalesOrderProductUpdateInput = {}
     dataToUpdate[sizeField] = received
 

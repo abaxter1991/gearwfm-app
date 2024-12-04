@@ -34,13 +34,32 @@ export async function POST(request: Request) {
         })
 
         await Promise.all(products.map(async (product) => {
-            const { id: productId, ...restProduct } = product
+            const {
+                id: productId,
+                receivedXS,
+                receivedSM,
+                receivedMD,
+                receivedLG,
+                receivedXL,
+                received2XL,
+                received3XL,
+                received4XL,
+                ...restProduct
+            } = product
 
             await prisma.salesOrderProduct.upsert({
                 where: { id: productId },
                 update: { ...restProduct },
                 create: {
                     ...restProduct,
+                    receivedXS: Boolean(receivedXS),
+                    receivedSM: Boolean(receivedSM),
+                    receivedMD: Boolean(receivedMD),
+                    receivedLG: Boolean(receivedLG),
+                    receivedXL: Boolean(receivedXL),
+                    received2XL: Boolean(received2XL),
+                    received3XL: Boolean(received3XL),
+                    received4XL: Boolean(received4XL),
                     salesOrder: {
                         connect: {
                             id: salesOrderId,
