@@ -4,8 +4,8 @@ import {
     Button,
     Card, CardBody,
     Dropdown, DropdownItem, DropdownMenu, DropdownTrigger,
-    Modal, ModalBody, ModalContent, ModalFooter, ModalHeader,
-    Select, SelectItem, useDisclosure,
+    // Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure,
+    Select, SelectItem,
 } from '@nextui-org/react'
 import axios from 'axios'
 import { useFieldArray, useWatch } from 'react-hook-form'
@@ -31,7 +31,7 @@ type Props = {
 }
 
 export function ProductList({ form, salesOrder, showImportButton }: Props) {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+    // const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     const { fields: products, append, remove } = useFieldArray({
         name: 'products',
@@ -218,8 +218,8 @@ export function ProductList({ form, salesOrder, showImportButton }: Props) {
                                                     className="w-[75px] flex-auto"
                                                 >
                                                     {/*TODO: Only show the checkbox if the input is greater than 0*/}
-                                                    {/*{salesOrder && product[sizeField.name] > 0 ? (*/}
-                                                    {salesOrder ? (
+                                                    {/*{salesOrder && product.id && product[sizeField.name] > 0 ? (*/}
+                                                    {salesOrder && product.id ? (
                                                         <SizeInputField
                                                             preventValueChangeOnScroll
                                                             form={form}
@@ -240,7 +240,6 @@ export function ProductList({ form, salesOrder, showImportButton }: Props) {
                                                                         wrapper: 'mx-0',
                                                                     }}
                                                                     onChange={async () => {
-                                                                        console.dir({ salesOrderId: salesOrder.id, productId: product.id, fieldName: sizeField.receivedFieldName })
                                                                         await updatePartSizeReceived(salesOrder.id, product.id, sizeField.receivedFieldName, !product[sizeField.receivedFieldName])
                                                                     }}
                                                                 />
@@ -323,57 +322,74 @@ export function ProductList({ form, salesOrder, showImportButton }: Props) {
                                         size="sm"
                                         color="danger"
                                         className="text-danger"
-                                        onPress={onOpen}
+                                        onPress={async () => {
+                                            await handleRemoveProduct(product.id, index)
+                                        }}
                                     >
                                         <HiTrash className="size-4"/>
                                     </Button>
-                                    <Modal
-                                        isOpen={isOpen}
-                                        onOpenChange={onOpenChange}
-                                        isDismissable={false}
-                                        isKeyboardDismissDisabled={false}
-                                        hideCloseButton={true}
-                                    >
-                                        <ModalContent>
-                                            {(onClose) => (
-                                                <>
-                                                    <ModalHeader className="flex flex-col gap-1">
-                                                        Are you sure?
-                                                    </ModalHeader>
-                                                    <ModalBody>
-                                                        <p>
-                                                            Deleting this product from the sales order is
-                                                            permanent and cannot be undone,
-                                                            even if you decide to cancel editing this form.
-                                                        </p>
-                                                        <p>
-                                                            Are you sure this is what you want to do?
-                                                        </p>
-                                                    </ModalBody>
-                                                    <ModalFooter>
-                                                        <Button
-                                                            size="sm"
-                                                            color="danger"
-                                                            variant="light"
-                                                            onPress={onClose}
-                                                        >
-                                                            Cancel
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            className="bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
-                                                            onPress={async () => {
-                                                                await handleRemoveProduct(product.id, index)
-                                                                onClose()
-                                                            }}
-                                                        >
-                                                            Delete
-                                                        </Button>
-                                                    </ModalFooter>
-                                                </>
-                                            )}
-                                        </ModalContent>
-                                    </Modal>
+                                    {/*<Button*/}
+                                    {/*    isIconOnly*/}
+                                    {/*    variant="light"*/}
+                                    {/*    size="sm"*/}
+                                    {/*    color="danger"*/}
+                                    {/*    className="text-danger"*/}
+                                    {/*    onPress={onOpen}*/}
+                                    {/*>*/}
+                                    {/*    /!*<HiTrash className="size-4"/>*!/*/}
+                                    {/*    {product.id.substr(product.id.length - 4)}*/}
+                                    {/*</Button>*/}
+                                    {/*<Modal*/}
+                                    {/*    isOpen={isOpen}*/}
+                                    {/*    onOpenChange={onOpenChange}*/}
+                                    {/*    isDismissable={false}*/}
+                                    {/*    isKeyboardDismissDisabled={false}*/}
+                                    {/*    hideCloseButton={true}*/}
+                                    {/*>*/}
+                                    {/*    <ModalContent>*/}
+                                    {/*        {(onClose) => (*/}
+                                    {/*            <>*/}
+                                    {/*                <ModalHeader className="flex flex-col gap-1">*/}
+                                    {/*                    Are you sure?*/}
+                                    {/*                </ModalHeader>*/}
+                                    {/*                <ModalBody>*/}
+                                    {/*                    <p>*/}
+                                    {/*                        Deleting this product from the sales order is*/}
+                                    {/*                        permanent and cannot be undone,*/}
+                                    {/*                        even if you decide to cancel editing this form.*/}
+                                    {/*                    </p>*/}
+                                    {/*                    <p>*/}
+                                    {/*                        Are you sure this is what you want to do?*/}
+                                    {/*                    </p>*/}
+                                    {/*                    <p>*/}
+                                    {/*                        {product.id.substr(product.id.length - 4)}*/}
+                                    {/*                    </p>*/}
+                                    {/*                </ModalBody>*/}
+                                    {/*                <ModalFooter>*/}
+                                    {/*                    <Button*/}
+                                    {/*                        size="sm"*/}
+                                    {/*                        color="danger"*/}
+                                    {/*                        variant="light"*/}
+                                    {/*                        onPress={onClose}*/}
+                                    {/*                    >*/}
+                                    {/*                        Cancel*/}
+                                    {/*                    </Button>*/}
+                                    {/*                    <Button*/}
+                                    {/*                        size="sm"*/}
+                                    {/*                        className="bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"*/}
+                                    {/*                        onPress={async () => {*/}
+                                    {/*                            console.log({ 'ID: ': product.id, 'RHFID: ': product.rhfId})*/}
+                                    {/*                            await handleRemoveProduct(product.id, index)*/}
+                                    {/*                            onClose()*/}
+                                    {/*                        }}*/}
+                                    {/*                    >*/}
+                                    {/*                        Delete*/}
+                                    {/*                    </Button>*/}
+                                    {/*                </ModalFooter>*/}
+                                    {/*            </>*/}
+                                    {/*        )}*/}
+                                    {/*    </ModalContent>*/}
+                                    {/*</Modal>*/}
                                 </div>
                             </div>
                         ))}

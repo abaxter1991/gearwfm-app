@@ -23,13 +23,15 @@ export async function updateSalesOrderPartsOrdered(salesOrderId: string, partsOr
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
 }
 
-export async function updateSalesOrderPartsReceived(salesOrderId: string, partsReceived: boolean) {
+export async function updateSalesOrderPartsReceived(salesOrderId: string, partsReceived: boolean, runTrigger = true) {
     await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { partsReceived: partsReceived },
     })
 
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
+    if (runTrigger) {
+        await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
+    }
 }
 
 export async function updateSalesOrderProductsCounted(salesOrderId: string, productsCounted: boolean) {
@@ -67,6 +69,40 @@ export async function updatePartSizeReceived(salesOrderId: string, productId: st
         where: { id: productId },
         data: dataToUpdate,
     })
+
+    const salesOrder = await prisma.salesOrder.findUnique({
+        where: { id: salesOrderId },
+        include: { products: true },
+    })
+
+    const allTrue = (arr: boolean[]): boolean => {
+        return arr.every(value => value === true)
+    }
+
+    const allPartsReceived: boolean[] = []
+
+    if (salesOrder) {
+        for (const product of salesOrder.products) {
+            const {
+                receivedXS,
+                receivedSM,
+                receivedMD,
+                receivedLG,
+                receivedXL,
+                received2XL,
+                received3XL,
+                received4XL,
+            } = product
+
+            allPartsReceived.push(allTrue([receivedXS, receivedSM, receivedMD, receivedLG, receivedXL, received2XL, received3XL, received4XL]))
+        }
+    }
+
+    if (allTrue(allPartsReceived)) {
+        await updateSalesOrderPartsReceived(salesOrderId, true, false)
+    } else {
+        await updateSalesOrderPartsReceived(salesOrderId, false, false)
+    }
 
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
 }

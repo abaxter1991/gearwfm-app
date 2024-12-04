@@ -87,21 +87,19 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
                 { billingAddress: searchOptions },
                 { notes: searchOptions },
                 { trackingNumber: searchOptions },
-                {
-                    products: {
-                        some: {
-                            OR: [
-                                { id: productSearchOptions },
-                                { item: productSearchOptions },
-                                { fileName: productSearchOptions },
-                                { style: productSearchOptions },
-                                { color: productSearchOptions },
-                                { mockupImageUrl: productSearchOptions },
-                                { notes: productSearchOptions },
-                            ],
-                        },
+                { products: {
+                    some: {
+                        OR: [
+                            { id: productSearchOptions },
+                            { item: productSearchOptions },
+                            { fileName: productSearchOptions },
+                            { style: productSearchOptions },
+                            { color: productSearchOptions },
+                            { mockupImageUrl: productSearchOptions },
+                            { notes: productSearchOptions },
+                        ],
                     },
-                },
+                }},
             ],
         },
         include: {

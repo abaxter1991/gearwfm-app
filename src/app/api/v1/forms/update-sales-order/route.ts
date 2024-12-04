@@ -49,7 +49,17 @@ export async function POST(request: Request) {
 
             await prisma.salesOrderProduct.upsert({
                 where: { id: productId },
-                update: { ...restProduct },
+                update: {
+                    ...restProduct,
+                    receivedXS: Boolean(receivedXS),
+                    receivedSM: Boolean(receivedSM),
+                    receivedMD: Boolean(receivedMD),
+                    receivedLG: Boolean(receivedLG),
+                    receivedXL: Boolean(receivedXL),
+                    received2XL: Boolean(received2XL),
+                    received3XL: Boolean(received3XL),
+                    received4XL: Boolean(received4XL),
+                },
                 create: {
                     ...restProduct,
                     receivedXS: Boolean(receivedXS),
