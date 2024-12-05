@@ -162,34 +162,8 @@ export function ProductRow({ form, salesOrder, product, index, getSizeFields, is
                                         salesOrderId={salesOrder.id}
                                         productId={product.id}
                                         sizeField={sizeField}
-                                        received={product[sizeField.receivedFieldName]}
                                         index={index}
                                     />
-                                    // <SizeInputField
-                                    //     preventValueChangeOnScroll
-                                    //     form={form}
-                                    //     label={sizeField.label}
-                                    //     name={`products.${index}.${sizeField.name}` as const}
-                                    //     variant="bordered"
-                                    //     size="sm"
-                                    //     labelPlacement="outside"
-                                    //     min={0}
-                                    //     checkboxContent={(
-                                    //         <CheckboxField
-                                    //             form={form}
-                                    //             name={`products.${index}.${sizeField.receivedFieldName}` as const}
-                                    //             size="sm"
-                                    //             color="danger"
-                                    //             classNames={{
-                                    //                 base: 'px-0',
-                                    //                 wrapper: 'mx-0',
-                                    //             }}
-                                    //             onChange={async () => {
-                                    //                 await updatePartSizeReceived(salesOrder.id, product.id, sizeField.receivedFieldName, !product[sizeField.receivedFieldName])
-                                    //             }}
-                                    //         />
-                                    //     )}
-                                    // />
                                 ) : (
                                     <NumberInputField
                                         preventValueChangeOnScroll

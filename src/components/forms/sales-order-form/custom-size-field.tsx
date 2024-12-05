@@ -15,11 +15,10 @@ type Props = {
     salesOrderId: string
     productId: string
     sizeField: SizeField
-    received: boolean
     index: number
 }
 
-export function CustomSizeField({ form, salesOrderId, productId, sizeField, received, index }: Props) {
+export function CustomSizeField({ form, salesOrderId, productId, sizeField, index }: Props) {
     const { data: product, mutate } = useSalesOrderProduct(productId)
 
     useEffect(() => {
