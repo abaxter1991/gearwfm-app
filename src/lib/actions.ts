@@ -3,7 +3,7 @@
 import { pusherServer } from '~/lib/pusher'
 import prisma from '~/prisma/client'
 import type { Prisma } from '@prisma/client'
-import type { ProductReceivedFieldKeys } from '~/types'
+import type { ProductReceivedFieldName, PusherTriggerDataForProductReceived } from '~/types'
 
 export async function updateSalesOrderApprovedProof(salesOrderId: string, approvedProof: boolean) {
     await prisma.salesOrder.update({
@@ -61,9 +61,9 @@ export async function updateSalesOrderAssembledProduct(salesOrderId: string, ass
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
 }
 
-export async function updatePartSizeReceived(salesOrderId: string, productId: string, sizeField: ProductReceivedFieldKeys, received: boolean) {
+export async function updatePartSizeReceived(salesOrderId: string, productId: string, receivedFieldName: ProductReceivedFieldName, received: boolean) {
     const dataToUpdate: Prisma.SalesOrderProductUpdateInput = {}
-    dataToUpdate[sizeField] = received
+    dataToUpdate[receivedFieldName] = received
 
     await prisma.salesOrderProduct.update({
         where: { id: productId },
@@ -104,5 +104,9 @@ export async function updatePartSizeReceived(salesOrderId: string, productId: st
         await updateSalesOrderPartsReceived(salesOrderId, false, false)
     }
 
+    const pusherChannel = `${salesOrderId}-${productId}-${receivedFieldName}`
+    const pusherDataForProductReceived: PusherTriggerDataForProductReceived = { salesOrderId, productId, receivedFieldName, received }
+
+    await pusherServer.trigger(pusherChannel, 'product-received-updated', pusherDataForProductReceived)
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
 }

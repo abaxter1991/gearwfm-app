@@ -1,10 +1,4 @@
-import type { PartSize, ProductReceivedFieldKeys, ProductQuantityFieldKeys } from '~/types'
-
-type SizeField = {
-    label: PartSize
-    name: ProductQuantityFieldKeys
-    receivedFieldName: ProductReceivedFieldKeys
-}
+import type { ProductCategory, SizeField, SizeFields } from '~/types'
 
 const xsField: SizeField = { label: 'XS', name: 'quantityOfXS', receivedFieldName: 'receivedXS' }
 const smField: SizeField = { label: 'SM', name: 'quantityOfSM', receivedFieldName: 'receivedSM' }
@@ -15,7 +9,7 @@ const xl2Field: SizeField = { label: '2XL', name: 'quantityOf2XL', receivedField
 const xl3Field: SizeField = { label: '3XL', name: 'quantityOf3XL', receivedFieldName: 'received3XL' }
 const xl4Field: SizeField = { label: '4XL', name: 'quantityOf4XL', receivedFieldName: 'received4XL' }
 
-const defaultSizeFields = {
+const defaultSizeFields: SizeFields = {
     XS: { ...xsField, show: false },
     SM: { ...smField, show: false },
     MD: { ...mdField, show: false },
@@ -26,7 +20,7 @@ const defaultSizeFields = {
     XL4: { ...xl4Field, show: false },
 }
 
-export const productCategories = [
+export const productCategories: ProductCategory[] = [
     {
         key: 'TEE',
         label: 'T-Shirt',

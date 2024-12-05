@@ -105,12 +105,12 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
         include: {
             products: {
                 orderBy: {
-                    createdAt: 'asc',
+                    id: 'asc',
                 },
             },
             assembledProducts: {
                 orderBy: {
-                    createdAt: 'asc',
+                    id: 'asc',
                 },
             },
         },

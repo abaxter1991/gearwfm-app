@@ -8,6 +8,18 @@ type Params = {
     }
 }
 
+export async function GET(request: NextRequest, { params }: Params) {
+    const { productId } = params
+
+    const product = await prisma.salesOrderProduct.findUnique({
+        where: {
+            id: productId,
+        },
+    })
+
+    return NextResponse.json(product, { status: 200 })
+}
+
 export async function DELETE(request: NextRequest, { params }: Params) {
     const { productId } = params
 

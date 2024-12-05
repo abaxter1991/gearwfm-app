@@ -18,12 +18,12 @@ export async function GET(request: NextRequest, { params }: Params) {
         include: {
             products: {
                 orderBy: {
-                    createdAt: 'asc',
+                    id: 'asc',
                 },
             },
             assembledProducts: {
                 orderBy: {
-                    createdAt: 'asc',
+                    id: 'asc',
                 },
             },
         },

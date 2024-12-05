@@ -2,8 +2,40 @@ import type { DateValue } from '@internationalized/date'
 import type { SalesOrder, SalesOrderAssembledProduct, SalesOrderProduct } from '@prisma/client'
 
 export type PartSize = 'XS' | 'SM' | 'MD' | 'LG' | 'XL' | '2XL' | '3XL' | '4XL'
-export type ProductQuantityFieldKeys = 'quantityOfXS' | 'quantityOfSM' | 'quantityOfMD' | 'quantityOfLG' | 'quantityOfXL' | 'quantityOf2XL' | 'quantityOf3XL' | 'quantityOf4XL'
-export type ProductReceivedFieldKeys = 'receivedXS' | 'receivedSM' | 'receivedMD' | 'receivedLG' | 'receivedXL' | 'received2XL' | 'received3XL' | 'received4XL'
+export type ProductQuantityFieldName = 'quantityOfXS' | 'quantityOfSM' | 'quantityOfMD' | 'quantityOfLG' | 'quantityOfXL' | 'quantityOf2XL' | 'quantityOf3XL' | 'quantityOf4XL'
+export type ProductReceivedFieldName = 'receivedXS' | 'receivedSM' | 'receivedMD' | 'receivedLG' | 'receivedXL' | 'received2XL' | 'received3XL' | 'received4XL'
+
+export type PusherTriggerDataForProductReceived = {
+    salesOrderId: string
+    productId: string
+    receivedFieldName: ProductReceivedFieldName
+    received: boolean
+}
+
+export type SizeField = {
+    label: PartSize
+    name: ProductQuantityFieldName
+    receivedFieldName: ProductReceivedFieldName
+    show?: boolean
+}
+
+export type SizeFields = {
+    XS: SizeField
+    SM: SizeField
+    MD: SizeField
+    LG: SizeField
+    XL: SizeField
+    XL2: SizeField
+    XL3: SizeField
+    XL4: SizeField
+}
+
+export type ProductCategory = {
+    key: string
+    label: string
+    group: string
+    sizeFields: SizeFields
+}
 
 export type SalesOrderAndRelations = SalesOrder & {
     products: SalesOrderProduct[]
