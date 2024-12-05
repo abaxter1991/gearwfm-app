@@ -9,7 +9,7 @@ import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/f
 import { productCategories } from '~/lib/constants/product-categories'
 import { CustomSizeField } from './custom-size-field'
 import type { SalesOrderFormSchema } from './index'
-import type { UseFormReturn } from 'react-hook-form'
+import type { FieldArrayWithId, UseFormReturn } from 'react-hook-form'
 import type { SizeFields, SalesOrderAndRelations } from '~/types'
 
 const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
@@ -17,7 +17,7 @@ const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
 type Props = {
     form: UseFormReturn<SalesOrderFormSchema, undefined>
     salesOrder: SalesOrderAndRelations | undefined
-    product: any
+    product: FieldArrayWithId<SalesOrderFormSchema, 'products', 'rhfid'>
     index: number
     getSizeFields: (index: number) => SizeFields | never[]
     isOneSizeFitsAll: (key: string) => boolean
