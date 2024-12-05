@@ -17,7 +17,7 @@ const isProduction = process.env.NEXT_PUBLIC_ENV === 'production'
 type Props = {
     form: UseFormReturn<SalesOrderFormSchema, undefined>
     salesOrder: SalesOrderAndRelations | undefined
-    product: FieldArrayWithId<SalesOrderFormSchema, 'products', 'rhfid'>
+    product: FieldArrayWithId<SalesOrderFormSchema, 'products'>
     index: number
     getSizeFields: (index: number) => SizeFields | never[]
     isOneSizeFitsAll: (key: string) => boolean
