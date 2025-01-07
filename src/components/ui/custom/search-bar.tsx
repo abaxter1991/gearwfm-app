@@ -14,7 +14,7 @@ const today = now(getLocalTimeZone())
 const todayDate = today.toDate()
 const todayDateString = new CalendarDate(todayDate.getFullYear(), todayDate.getMonth() + 1, todayDate.getDate()).toString()
 const initialDate = startOfYear(today).toDate()
-const initialDateString = new CalendarDate(initialDate.getFullYear(), 1, 1).toString()
+const initialDateString = new CalendarDate(initialDate.getFullYear() - 1, 1, 1).toString()
 const initialDateRange = { start: parseDate(initialDateString), end: parseDate(todayDateString) }
 
 export function SearchBar() {
