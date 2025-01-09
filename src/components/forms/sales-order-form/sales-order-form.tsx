@@ -151,7 +151,7 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
         const { discount, shippingPrice, products } = formValues
         const subtotalSum = products.reduce((total, product) => total + product.subtotal, 0)
         const discountAmount = subtotalSum * (discount / 100)
-        const grandTotal = subtotalSum - discountAmount + Number(shippingPrice)
+        const grandTotal = Number(Number(subtotalSum - discountAmount + Number(shippingPrice)).toFixed(2))
         form.setValue('grandTotal', grandTotal)
     }
 
