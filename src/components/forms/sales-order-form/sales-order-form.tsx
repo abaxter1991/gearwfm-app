@@ -186,6 +186,11 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
                         updateGrandTotal()
                     }
                 }
+
+                // Update value of the grandTotal field when a product row is deleted.
+                if (name === 'products') {
+                    updateGrandTotal()
+                }
             }
         })
 
