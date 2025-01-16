@@ -1,5 +1,5 @@
 import type { DateValue } from '@internationalized/date'
-import type { SalesOrder, SalesOrderAssembledProduct, SalesOrderProduct } from '@prisma/client'
+import type { SalesOrder, SalesOrderAssembledProduct, SalesOrderProduct, SalesOrderStatus } from '@prisma/client'
 
 export type PartSize = 'XS' | 'SM' | 'MD' | 'LG' | 'XL' | '2XL' | '3XL' | '4XL'
 export type ProductQuantityFieldName = 'quantityOfXS' | 'quantityOfSM' | 'quantityOfMD' | 'quantityOfLG' | 'quantityOfXL' | 'quantityOf2XL' | 'quantityOf3XL' | 'quantityOf4XL'
@@ -115,4 +115,9 @@ export type SalesOrderAssembledProductFormData = {
     id: string
     item: string
     allAssembled: boolean
+}
+
+export type SalesOrderStatusOptions = {
+    name: string
+    key: SalesOrderStatus
 }

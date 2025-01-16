@@ -9,21 +9,21 @@ import { SalesOrderProofModal } from '~/components/sales-order/sales-order-proof
 import { updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct, updateSalesOrderPartsOrdered, updateSalesOrderProductsCounted, updateSalesOrderProductsShipped, updateSalesOrderPartsReceived } from '~/lib/actions'
 import { sortedCategoryKeys } from '~/lib/constants/product-categories'
 import { pusherClient } from '~/lib/pusher'
-import { useSalesOrder } from '~/lib/queries'
 import { downloadUrl } from '~/lib/utils'
 import { CustomCheckbox } from './custom-checkbox'
 import { SalesOrderOptionsMenu } from './sales-order-options-menu'
 import type { SalesOrderAssembledProduct } from '@prisma/client'
+import type { SalesOrderAndRelations } from '~/types'
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
 type Props = {
-    salesOrderId: string
+    salesOrder: SalesOrderAndRelations
 }
 
-export function SalesOrderCard({ salesOrderId }: Props) {
-    const { data: salesOrder, mutate } = useSalesOrder(salesOrderId)
+export function SalesOrderCard({ salesOrder }: Props) {
     const router = useRouter()
+    const [displayedSalesOrder, setDisplayedSalesOrder] = useState<SalesOrderAndRelations>(salesOrder)
 
     const [assembledProducts, setAssembledProducts] = useState<SalesOrderAssembledProduct[]>([])
 
@@ -35,8 +35,8 @@ export function SalesOrderCard({ salesOrderId }: Props) {
     }
 
     function getTotalForCategory(category: string) {
-        if (salesOrder) {
-            return salesOrder.products
+        if (displayedSalesOrder) {
+            return displayedSalesOrder.products
                 .filter((product) => product.item === category)
                 .reduce((sum, product) => sum + product.totalQuantity, 0)
         }
@@ -44,27 +44,27 @@ export function SalesOrderCard({ salesOrderId }: Props) {
 
     async function handleDownloadOrder() {
         downloadUrl(
-            `${apiBaseUrl}/sales-order/${salesOrderId}/download`,
+            `${apiBaseUrl}/sales-order/${displayedSalesOrder.id}/download`,
             'gear-wfm-sales-order.pdf',
         )
     }
 
     useEffect(() => {
         pusherClient
-            .subscribe(salesOrderId)
-            .bind('sales-order-updated', async () => mutate())
+            .subscribe(displayedSalesOrder.id)
+            .bind('sales-order-updated', async (updatedSalesOrder: SalesOrderAndRelations) => setDisplayedSalesOrder(updatedSalesOrder))
 
         return () => {
-            pusherClient.unsubscribe(salesOrderId)
+            pusherClient.unsubscribe(displayedSalesOrder.id)
         }
     }, [])
 
     useEffect(() => {
-        if (salesOrder) {
+        if (displayedSalesOrder) {
             const sortedAssembledProducts: SalesOrderAssembledProduct[] = []
 
             sortedCategoryKeys.forEach((categoryKey) => {
-                const foundAssembledProduct = salesOrder.assembledProducts.find((assembledProduct) => assembledProduct.item === categoryKey)
+                const foundAssembledProduct = displayedSalesOrder.assembledProducts.find((assembledProduct) => assembledProduct.item === categoryKey)
 
                 if (foundAssembledProduct) {
                     sortedAssembledProducts.push(foundAssembledProduct)
@@ -73,32 +73,32 @@ export function SalesOrderCard({ salesOrderId }: Props) {
 
             setAssembledProducts(sortedAssembledProducts)
         }
-    }, [salesOrder])
+    }, [displayedSalesOrder])
 
     return (
-        salesOrder && (
+        displayedSalesOrder && (
             <Card className="h-[525px] w-full justify-self-center">
                 <CardHeader className="flex flex-col gap-1">
                     <div className="flex w-full items-center justify-between gap-2 overflow-hidden rounded-lg bg-gradient-to-br from-brand-primary to-cyan-400 p-2 text-black shadow-md">
                         <div className="flex flex-col overflow-hidden">
-                            <h1 className="truncate text-2xl">{salesOrder.companyName}</h1>
-                            <p className="truncate text-sm text-zinc-800">REF#: {salesOrder.referenceId}</p>
-                            <p className="truncate text-sm text-zinc-800">Sales Rep: {salesOrder.salesRepName}</p>
+                            <h1 className="truncate text-2xl">{displayedSalesOrder.companyName}</h1>
+                            <p className="truncate text-sm text-zinc-800">REF#: {displayedSalesOrder.referenceId}</p>
+                            <p className="truncate text-sm text-zinc-800">Sales Rep: {displayedSalesOrder.salesRepName}</p>
                         </div>
                         <div className="flex min-w-44 max-w-44 flex-col overflow-hidden">
                             <div className="flex flex-nowrap items-center gap-2">
                                 <p className="text-nowrap text-small">Order Date:</p>
-                                <p className="text-lg">{formatDateString(String(salesOrder.orderDate))}</p>
+                                <p className="text-lg">{formatDateString(String(displayedSalesOrder.orderDate))}</p>
                             </div>
                             <div className="flex flex-nowrap items-center gap-2">
                                 <p className="text-nowrap text-small">Due Date:</p>
-                                <p className="text-xl font-bold">{formatDateString(String(salesOrder.dueDate))}</p>
+                                <p className="text-xl font-bold">{formatDateString(String(displayedSalesOrder.dueDate))}</p>
                             </div>
                         </div>
                     </div>
                     <div className="absolute right-0 top-0 p-2">
                         <SalesOrderOptionsMenu
-                            salesOrderId={salesOrder.id}
+                            salesOrderId={displayedSalesOrder.id}
                             onDelete={() => {
                                 router.refresh()
                             }}
@@ -118,7 +118,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                     color="warning"
                                     className="capitalize"
                                 >
-                                    {salesOrder.status.replace(/_/g, ' ')}
+                                    {displayedSalesOrder.status.replace(/_/g, ' ')}
                                 </Chip>
                             </div>
                             <div className="flex w-full justify-between">
@@ -126,7 +126,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                     SO#:
                                 </p>
                                 <p>
-                                    {salesOrder.externalId}
+                                    {displayedSalesOrder.externalId}
                                 </p>
                             </div>
                             <div className="flex w-full justify-between pb-3">
@@ -147,9 +147,9 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                         <CustomCheckbox
                                             color="success"
                                             size="sm"
-                                            isSelected={salesOrder.approvedProof}
+                                            isSelected={displayedSalesOrder.approvedProof}
                                             onUpdate={async () => {
-                                                await updateSalesOrderApprovedProof(salesOrder.id, !salesOrder.approvedProof)
+                                                await updateSalesOrderApprovedProof(displayedSalesOrder.id, !displayedSalesOrder.approvedProof)
                                             }}
                                         >
                                             Proof
@@ -164,9 +164,9 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                         <CustomCheckbox
                                             color="success"
                                             size="sm"
-                                            isSelected={salesOrder.partsOrdered}
+                                            isSelected={displayedSalesOrder.partsOrdered}
                                             onUpdate={async () => {
-                                                await updateSalesOrderPartsOrdered(salesOrder.id, !salesOrder.partsOrdered)
+                                                await updateSalesOrderPartsOrdered(displayedSalesOrder.id, !displayedSalesOrder.partsOrdered)
                                             }}
                                         >
                                             Ordered
@@ -174,9 +174,9 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                         <CustomCheckbox
                                             color="success"
                                             size="sm"
-                                            isSelected={salesOrder.partsReceived}
+                                            isSelected={displayedSalesOrder.partsReceived}
                                             onUpdate={async () => {
-                                                await updateSalesOrderPartsReceived(salesOrder.id, !salesOrder.partsReceived)
+                                                await updateSalesOrderPartsReceived(displayedSalesOrder.id, !displayedSalesOrder.partsReceived)
                                             }}
                                         >
                                             Received
@@ -191,9 +191,9 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                         <CustomCheckbox
                                             color="success"
                                             size="sm"
-                                            isSelected={salesOrder.productsCounted}
+                                            isSelected={displayedSalesOrder.productsCounted}
                                             onUpdate={async () => {
-                                                await updateSalesOrderProductsCounted(salesOrder.id, !salesOrder.productsCounted)
+                                                await updateSalesOrderProductsCounted(displayedSalesOrder.id, !displayedSalesOrder.productsCounted)
                                             }}
                                         >
                                             Counted
@@ -201,9 +201,9 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                         <CustomCheckbox
                                             color="success"
                                             size="sm"
-                                            isSelected={salesOrder.productsShipped}
+                                            isSelected={displayedSalesOrder.productsShipped}
                                             onUpdate={async () => {
-                                                await updateSalesOrderProductsShipped(salesOrder.id, !salesOrder.productsShipped)
+                                                await updateSalesOrderProductsShipped(displayedSalesOrder.id, !displayedSalesOrder.productsShipped)
                                             }}
                                         >
                                             Shipped
@@ -216,7 +216,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                             <Textarea
                                 isReadOnly
                                 label="NOTES"
-                                value={salesOrder.notes || ''}
+                                value={displayedSalesOrder.notes || ''}
                                 disableAutosize={true}
                                 className="w-full"
                                 classNames={{
@@ -226,7 +226,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                             <Textarea
                                 isReadOnly
                                 label="TRACKING #"
-                                value={salesOrder.trackingNumber || ''}
+                                value={displayedSalesOrder.trackingNumber || ''}
                                 disableAutosize={true}
                                 className="w-full"
                                 classNames={{
@@ -247,7 +247,11 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                                     size="sm"
                                     isSelected={assembledProduct.allAssembled}
                                     onUpdate={async () => {
-                                        await updateSalesOrderAssembledProduct(salesOrder.id, assembledProduct.id, !assembledProduct.allAssembled)
+                                        await updateSalesOrderAssembledProduct(
+                                            displayedSalesOrder.id,
+                                            assembledProduct.id,
+                                            !assembledProduct.allAssembled,
+                                        )
                                     }}
                                     className="h-10"
                                 >
@@ -266,7 +270,7 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                 </CardBody>
                 <Divider/>
                 <CardFooter className="justify-between">
-                    <AuthorizeStatusModal salesOrder={salesOrder} mutate={mutate} />
+                    <AuthorizeStatusModal salesOrder={displayedSalesOrder} />
                     <div className="flex justify-end gap-2">
                         <Button
                             size="sm"
@@ -278,13 +282,13 @@ export function SalesOrderCard({ salesOrderId }: Props) {
                         </Button>
                         <Button
                             size="sm"
-                            onPress={() => router.push(`/sales-orders/${salesOrderId}`)}
+                            onPress={() => router.push(`/sales-orders/${displayedSalesOrder.id}`)}
                             className="w-28 bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
                             startContent={<HiPencilSquare className={iconClasses}/>}
                         >
                             View Order
                         </Button>
-                        <SalesOrderProofModal salesOrder={salesOrder}/>
+                        <SalesOrderProofModal salesOrder={displayedSalesOrder}/>
                     </div>
                 </CardFooter>
             </Card>

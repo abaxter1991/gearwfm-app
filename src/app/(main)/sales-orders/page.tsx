@@ -131,7 +131,7 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
                 {salesOrders.map((salesOrder) => (
                     <SalesOrderCard
                         key={salesOrder.id}
-                        salesOrderId={salesOrder.id}
+                        salesOrder={salesOrder}
                     />
                 ))}
             </div>

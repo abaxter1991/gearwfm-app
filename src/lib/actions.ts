@@ -2,54 +2,87 @@
 
 import { pusherServer } from '~/lib/pusher'
 import prisma from '~/prisma/client'
-import type { Prisma } from '@prisma/client'
+import type { Prisma, SalesOrderStatus } from '@prisma/client'
 import type { ProductReceivedFieldName, PusherTriggerDataForProductReceived } from '~/types'
 
-export async function updateSalesOrderApprovedProof(salesOrderId: string, approvedProof: boolean) {
-    await prisma.salesOrder.update({
+export async function updateSalesOrderStatus(salesOrderId: string, status: SalesOrderStatus) {
+    const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
-        data: { approvedProof: approvedProof },
+        data: { status: status },
+        include: {
+            products: { orderBy: { id: 'asc' } },
+            assembledProducts: { orderBy: { id: 'asc' } },
+        },
     })
 
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
+    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
+}
+
+export async function updateSalesOrderApprovedProof(salesOrderId: string, approvedProof: boolean) {
+    const updatedSalesOrder = await prisma.salesOrder.update({
+        where: { id: salesOrderId },
+        data: { approvedProof: approvedProof },
+        include: {
+            products: { orderBy: { id: 'asc' } },
+            assembledProducts: { orderBy: { id: 'asc' } },
+        },
+    })
+
+    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
 }
 
 export async function updateSalesOrderPartsOrdered(salesOrderId: string, partsOrdered: boolean) {
-    await prisma.salesOrder.update({
+    const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { partsOrdered: partsOrdered },
+        include: {
+            products: { orderBy: { id: 'asc' } },
+            assembledProducts: { orderBy: { id: 'asc' } },
+        },
     })
 
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
+    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
 }
 
 export async function updateSalesOrderPartsReceived(salesOrderId: string, partsReceived: boolean, runTrigger = true) {
-    await prisma.salesOrder.update({
+    const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { partsReceived: partsReceived },
+        include: {
+            products: { orderBy: { id: 'asc' } },
+            assembledProducts: { orderBy: { id: 'asc' } },
+        },
     })
 
     if (runTrigger) {
-        await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
+        await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
     }
 }
 
 export async function updateSalesOrderProductsCounted(salesOrderId: string, productsCounted: boolean) {
-    await prisma.salesOrder.update({
+    const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { productsCounted: productsCounted },
+        include: {
+            products: { orderBy: { id: 'asc' } },
+            assembledProducts: { orderBy: { id: 'asc' } },
+        },
     })
 
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
+    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
 }
 
 export async function updateSalesOrderProductsShipped(salesOrderId: string, productsShipped: boolean) {
-    await prisma.salesOrder.update({
+    const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { productsShipped: productsShipped },
+        include: {
+            products: { orderBy: { id: 'asc' } },
+            assembledProducts: { orderBy: { id: 'asc' } },
+        },
     })
 
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
+    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
 }
 
 export async function updateSalesOrderAssembledProduct(salesOrderId: string, assembledProductId: string, allAssembled: boolean) {
@@ -58,7 +91,12 @@ export async function updateSalesOrderAssembledProduct(salesOrderId: string, ass
         data: { allAssembled: allAssembled },
     })
 
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
+    const updatedSalesOrder = await prisma.salesOrder.findUnique({
+        where: { id: salesOrderId },
+        include: { products: true },
+    })
+
+    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
 }
 
 export async function updatePartSizeReceived(salesOrderId: string, productId: string, receivedFieldName: ProductReceivedFieldName, received: boolean) {
@@ -70,7 +108,7 @@ export async function updatePartSizeReceived(salesOrderId: string, productId: st
         data: dataToUpdate,
     })
 
-    const salesOrder = await prisma.salesOrder.findUnique({
+    const updatedSalesOrder = await prisma.salesOrder.findUnique({
         where: { id: salesOrderId },
         include: { products: true },
     })
@@ -81,8 +119,8 @@ export async function updatePartSizeReceived(salesOrderId: string, productId: st
 
     const allPartsReceived: boolean[] = []
 
-    if (salesOrder) {
-        for (const product of salesOrder.products) {
+    if (updatedSalesOrder) {
+        for (const product of updatedSalesOrder.products) {
             const {
                 receivedXS,
                 receivedSM,
@@ -108,5 +146,5 @@ export async function updatePartSizeReceived(salesOrderId: string, productId: st
     const pusherDataForProductReceived: PusherTriggerDataForProductReceived = { salesOrderId, productId, receivedFieldName, received }
 
     await pusherServer.trigger(pusherChannel, 'product-received-updated', pusherDataForProductReceived)
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', { salesOrderId })
+    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
 }
