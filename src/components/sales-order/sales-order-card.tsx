@@ -23,8 +23,8 @@ type Props = {
 
 export function SalesOrderCard({ salesOrder }: Props) {
     const router = useRouter()
-    const [displayedSalesOrder, setDisplayedSalesOrder] = useState<SalesOrderAndRelations>(salesOrder)
 
+    const [displayedSalesOrder, setDisplayedSalesOrder] = useState<SalesOrderAndRelations>(salesOrder)
     const [assembledProducts, setAssembledProducts] = useState<SalesOrderAssembledProduct[]>([])
 
     const iconClasses = 'pointer-events-none shrink-0 text-xl text-black'
