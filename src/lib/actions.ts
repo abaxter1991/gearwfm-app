@@ -93,7 +93,10 @@ export async function updateSalesOrderAssembledProduct(salesOrderId: string, ass
 
     const updatedSalesOrder = await prisma.salesOrder.findUnique({
         where: { id: salesOrderId },
-        include: { products: true },
+        include: {
+            products: { orderBy: { id: 'asc' } },
+            assembledProducts: { orderBy: { id: 'asc' } },
+        },
     })
 
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
@@ -110,7 +113,10 @@ export async function updatePartSizeReceived(salesOrderId: string, productId: st
 
     const updatedSalesOrder = await prisma.salesOrder.findUnique({
         where: { id: salesOrderId },
-        include: { products: true },
+        include: {
+            products: { orderBy: { id: 'asc' } },
+            assembledProducts: { orderBy: { id: 'asc' } },
+        },
     })
 
     const allTrue = (arr: boolean[]): boolean => {

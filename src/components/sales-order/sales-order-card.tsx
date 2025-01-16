@@ -24,7 +24,7 @@ type Props = {
 export function SalesOrderCard({ salesOrder }: Props) {
     const router = useRouter()
 
-    const [displayedSalesOrder, setDisplayedSalesOrder] = useState<SalesOrderAndRelations>(salesOrder)
+    const [displayedSalesOrder, setDisplayedSalesOrder] = useState<SalesOrderAndRelations>()
     const [assembledProducts, setAssembledProducts] = useState<SalesOrderAssembledProduct[]>([])
 
     const iconClasses = 'pointer-events-none shrink-0 text-xl text-black'
@@ -44,23 +44,30 @@ export function SalesOrderCard({ salesOrder }: Props) {
 
     async function handleDownloadOrder() {
         downloadUrl(
-            `${apiBaseUrl}/sales-order/${displayedSalesOrder.id}/download`,
+            `${apiBaseUrl}/sales-order/${salesOrder.id}/download`,
             'gear-wfm-sales-order.pdf',
         )
     }
 
     useEffect(() => {
         pusherClient
-            .subscribe(displayedSalesOrder.id)
+            .subscribe(salesOrder.id)
             .bind('sales-order-updated', async (updatedSalesOrder: SalesOrderAndRelations) => setDisplayedSalesOrder(updatedSalesOrder))
 
         return () => {
-            pusherClient.unsubscribe(displayedSalesOrder.id)
+            pusherClient.unsubscribe(salesOrder.id)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (salesOrder) {
+            setDisplayedSalesOrder(salesOrder)
         }
     }, [])
 
     useEffect(() => {
         if (displayedSalesOrder) {
+            console.dir(displayedSalesOrder)
             const sortedAssembledProducts: SalesOrderAssembledProduct[] = []
 
             sortedCategoryKeys.forEach((categoryKey) => {
@@ -98,7 +105,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                     </div>
                     <div className="absolute right-0 top-0 p-2">
                         <SalesOrderOptionsMenu
-                            salesOrderId={displayedSalesOrder.id}
+                            salesOrderId={salesOrder.id}
                             onDelete={() => {
                                 router.refresh()
                             }}
@@ -149,7 +156,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                             size="sm"
                                             isSelected={displayedSalesOrder.approvedProof}
                                             onUpdate={async () => {
-                                                await updateSalesOrderApprovedProof(displayedSalesOrder.id, !displayedSalesOrder.approvedProof)
+                                                await updateSalesOrderApprovedProof(salesOrder.id, !displayedSalesOrder.approvedProof)
                                             }}
                                         >
                                             Proof
@@ -166,7 +173,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                             size="sm"
                                             isSelected={displayedSalesOrder.partsOrdered}
                                             onUpdate={async () => {
-                                                await updateSalesOrderPartsOrdered(displayedSalesOrder.id, !displayedSalesOrder.partsOrdered)
+                                                await updateSalesOrderPartsOrdered(salesOrder.id, !displayedSalesOrder.partsOrdered)
                                             }}
                                         >
                                             Ordered
@@ -176,7 +183,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                             size="sm"
                                             isSelected={displayedSalesOrder.partsReceived}
                                             onUpdate={async () => {
-                                                await updateSalesOrderPartsReceived(displayedSalesOrder.id, !displayedSalesOrder.partsReceived)
+                                                await updateSalesOrderPartsReceived(salesOrder.id, !displayedSalesOrder.partsReceived)
                                             }}
                                         >
                                             Received
@@ -193,7 +200,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                             size="sm"
                                             isSelected={displayedSalesOrder.productsCounted}
                                             onUpdate={async () => {
-                                                await updateSalesOrderProductsCounted(displayedSalesOrder.id, !displayedSalesOrder.productsCounted)
+                                                await updateSalesOrderProductsCounted(salesOrder.id, !displayedSalesOrder.productsCounted)
                                             }}
                                         >
                                             Counted
@@ -203,7 +210,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                             size="sm"
                                             isSelected={displayedSalesOrder.productsShipped}
                                             onUpdate={async () => {
-                                                await updateSalesOrderProductsShipped(displayedSalesOrder.id, !displayedSalesOrder.productsShipped)
+                                                await updateSalesOrderProductsShipped(salesOrder.id, !displayedSalesOrder.productsShipped)
                                             }}
                                         >
                                             Shipped
@@ -248,7 +255,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                     isSelected={assembledProduct.allAssembled}
                                     onUpdate={async () => {
                                         await updateSalesOrderAssembledProduct(
-                                            displayedSalesOrder.id,
+                                            salesOrder.id,
                                             assembledProduct.id,
                                             !assembledProduct.allAssembled,
                                         )
@@ -282,7 +289,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                         </Button>
                         <Button
                             size="sm"
-                            onPress={() => router.push(`/sales-orders/${displayedSalesOrder.id}`)}
+                            onPress={() => router.push(`/sales-orders/${salesOrder.id}`)}
                             className="w-28 bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
                             startContent={<HiPencilSquare className={iconClasses}/>}
                         >
