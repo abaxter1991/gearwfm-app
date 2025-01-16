@@ -67,7 +67,6 @@ export function SalesOrderCard({ salesOrder }: Props) {
 
     useEffect(() => {
         if (displayedSalesOrder) {
-            console.dir(displayedSalesOrder)
             const sortedAssembledProducts: SalesOrderAssembledProduct[] = []
 
             sortedCategoryKeys.forEach((categoryKey) => {
