@@ -411,6 +411,22 @@ export const productCategories: ProductCategory[] = [
             ...defaultSizeFields,
         },
     },
+    {
+        key: 'MUG',
+        label: 'Mug',
+        group: 'Other Gear',
+        sizeFields: {
+            ...defaultSizeFields,
+        },
+    },
+    {
+        key: 'KEY',
+        label: 'Key',
+        group: 'Other Gear',
+        sizeFields: {
+            ...defaultSizeFields,
+        },
+    },
 ]
 
 export const sortedCategoryKeys = productCategories.map((productCategory) => productCategory.key)
