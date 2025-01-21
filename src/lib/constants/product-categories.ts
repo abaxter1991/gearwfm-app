@@ -421,7 +421,7 @@ export const productCategories: ProductCategory[] = [
     },
     {
         key: 'KEY',
-        label: 'Key',
+        label: 'Keychain',
         group: 'Other Gear',
         sizeFields: {
             ...defaultSizeFields,
