@@ -396,6 +396,14 @@ export const productCategories: ProductCategory[] = [
         },
     },
     {
+        key: 'PTCH',
+        label: 'Patch',
+        group: 'Gear',
+        sizeFields: {
+            ...defaultSizeFields,
+        },
+    },
+    {
         key: 'STKR',
         label: 'Sticker',
         group: 'Gear',
