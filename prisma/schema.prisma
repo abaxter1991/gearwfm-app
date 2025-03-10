@@ -37,6 +37,7 @@ model SalesOrder {
     discount               Int                          @default(0)
     shippingPrice          Float                        @default(0.00) @map("shipping_price")
     grandTotal             Float                        @default(0.00) @map("grand_total")
+    // isPaid                 Boolean                      @default(false) @map("is_paid")
     approvedProof          Boolean                      @default(false) @map("approved_proof")
     partsOrdered           Boolean                      @default(false) @map("parts_ordered")
     partsReceived          Boolean                      @default(false) @map("parts_received")

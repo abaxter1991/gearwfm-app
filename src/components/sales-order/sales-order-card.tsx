@@ -1,5 +1,6 @@
 'use client'
 
+import { useUser } from '@clerk/nextjs'
 import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Textarea } from '@nextui-org/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -22,6 +23,8 @@ type Props = {
 }
 
 export function SalesOrderCard({ salesOrder }: Props) {
+    const { user } = useUser()
+    const isAdmin = user?.fullName === 'Austin Baxter' || user?.fullName === 'Shawn Baxter' || user?.fullName === 'Spencer Lambert'
     const router = useRouter()
 
     const [displayedSalesOrder, setDisplayedSalesOrder] = useState<SalesOrderAndRelations>()
@@ -275,29 +278,43 @@ export function SalesOrderCard({ salesOrder }: Props) {
                     </div>
                 </CardBody>
                 <Divider/>
-                <CardFooter className="justify-between">
-                    <AuthorizeStatusModal salesOrder={displayedSalesOrder} />
-                    <div className="flex justify-end gap-2">
-                        <Button
-                            size="sm"
-                            onPress={handleDownloadOrder}
-                            className="w-28 bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
-                            startContent={<HiArrowDownTray className={iconClasses}/>}
-                        >
-                            Download
-                        </Button>
-                        <Button
-                            size="sm"
-                            onPress={() => router.push(`/sales-orders/${salesOrder.id}`)}
-                            className="w-28 bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
-                            startContent={<HiPencilSquare className={iconClasses}/>}
-                        >
-                            View Order
-                        </Button>
-                        <SalesOrderProofModal salesOrder={displayedSalesOrder}/>
+                <CardFooter className="flex-col">
+                    <div className="flex w-full justify-between">
+                        <AuthorizeStatusModal salesOrder={displayedSalesOrder}/>
+                        <div className="flex justify-end gap-2">
+                            <Button
+                                size="sm"
+                                onPress={handleDownloadOrder}
+                                className="w-28 bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
+                                startContent={<HiArrowDownTray className={iconClasses}/>}
+                            >
+                                Download
+                            </Button>
+                            <Button
+                                size="sm"
+                                onPress={() => router.push(`/sales-orders/${salesOrder.id}`)}
+                                className="w-28 bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md"
+                                startContent={<HiPencilSquare className={iconClasses}/>}
+                            >
+                                View Order
+                            </Button>
+                            <SalesOrderProofModal salesOrder={displayedSalesOrder}/>
+                        </div>
                     </div>
+
+                    {isAdmin ? (
+                        <div className="flex w-full py-3">
+                            <Button
+                                size="sm"
+                                // onPress={handleDownloadOrder}
+                                className="w-full bg-success text-base font-bold text-black shadow-md"
+                            >
+                                {Number(salesOrder.grandTotal).toLocaleString('us-US', { style: 'currency', currency: 'USD' })}
+                            </Button>
+                        </div>
+                    ) : null}
                 </CardFooter>
             </Card>
-        )
-    )
+)
+)
 }
