@@ -1,4 +1,4 @@
-import { Button, Chip, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'
+import { Button, Chip, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react'
 import { useState } from 'react'
 import { updateSalesOrderStatus } from '~/lib/actions'
 import type { SalesOrderAndRelations, SalesOrderStatusOptions } from '~/types'
@@ -92,5 +92,5 @@ export function AuthorizeStatusModal({ salesOrder }: Props) {
                 </ModalContent>
             </Modal>
         </>
-    )
+    );
 }

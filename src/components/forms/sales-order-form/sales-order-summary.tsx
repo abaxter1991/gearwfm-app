@@ -1,4 +1,4 @@
-import { Card, CardBody } from '@nextui-org/react'
+import { Card, CardBody } from '@heroui/react'
 import { NumberInputField } from '~/components/forms/fields'
 import type { SalesOrderFormSchema } from './index'
 import type { ReactNode } from 'react'

@@ -1,6 +1,6 @@
-import { Button as NextUIButton, extendVariants } from '@nextui-org/react'
+import { Button as HeroUIButton, extendVariants } from '@heroui/react'
 
-export const Button = extendVariants(NextUIButton, {
+export const Button = extendVariants(HeroUIButton, {
     variants: {
         color: {
             brand: 'text-[#000] bg-brand-primary',

@@ -4,11 +4,11 @@ import {
     Button,
     Card, CardBody,
     Dropdown, DropdownItem, DropdownMenu, DropdownTrigger,
-} from '@nextui-org/react'
+} from '@heroui/react'
 import axios from 'axios'
 import { useFieldArray, useWatch } from 'react-hook-form'
 import { SalesOrderImportModal } from '~/components/sales-order/sales-order-import-modal'
-import { productCategories } from '~/lib/constants/product-categories'
+import { isOneSizeFitsAll, productCategories } from '~/lib/constants/product-categories'
 import { ProductRow } from './product-row'
 import { defaultSalesOrderProduct } from './index'
 import type { SalesOrderFormSchema } from './index'
@@ -53,24 +53,6 @@ export function ProductList({ form, salesOrder, showImportButton }: Props) {
 
         const productCategory = productCategories.find((category) => category.key === key)
         return productCategory ? productCategory.sizeFields : []
-    }
-
-    function isOneSizeFitsAll(key: string) {
-        const sizeFields = productCategories.find((category) => category.key === key)?.sizeFields
-
-        if (sizeFields) {
-            let response = true
-
-            Object.values(sizeFields).forEach((sizeField) => {
-                if (sizeField.show) {
-                    response = false
-                }
-            })
-
-            return response
-        }
-
-        return true
     }
 
     return (

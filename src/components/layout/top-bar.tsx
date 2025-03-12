@@ -1,5 +1,5 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
-import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@nextui-org/react'
+import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@heroui/react'
 import Link from 'next/link'
 import { GearWFMCogIcon } from '~/components/icons/gear-wfm-cog-icon'
 import { ThemeSwitcher } from '~/components/theme-switcher'
@@ -13,12 +13,16 @@ export function TopBar() {
             }}
         >
             <NavbarBrand>
-                <div className="transition duration-500 ease-in-out hover:translate-y-2 hover:scale-110">
-                    <Link href="/sales-orders">
-                        <GearWFMCogIcon className="size-12 fill-brand-primary drop-shadow-lg hover:animate-spin-5s" />
-                    </Link>
-                </div>
-                <p className="self-end pl-2 align-bottom text-2xl font-bold italic text-inherit">GearWFM</p>
+                <Link href="/">
+                    <div className="group flex">
+                        <div className="transition duration-500 ease-in-out hover:translate-y-2 hover:scale-110">
+                            <GearWFMCogIcon className="size-12 fill-brand-primary drop-shadow-lg group-hover:animate-spin-5s" />
+                        </div>
+                        <p className="self-end pl-2 align-bottom text-2xl font-bold italic text-inherit">
+                            GearWFM
+                        </p>
+                    </div>
+                </Link>
             </NavbarBrand>
             <NavbarContent justify="end">
                 <NavbarItem>

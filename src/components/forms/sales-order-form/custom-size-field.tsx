@@ -1,6 +1,6 @@
 'use client'
 
-import { Checkbox } from '@nextui-org/react'
+import { Checkbox } from '@heroui/react'
 import { useEffect } from 'react'
 import { SizeInputField } from '~/components/forms/fields'
 import { updatePartSizeReceived } from '~/lib/actions'

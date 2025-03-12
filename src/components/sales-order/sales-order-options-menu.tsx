@@ -1,7 +1,7 @@
 'use client'
 
 import { useUser } from '@clerk/nextjs'
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from '@nextui-org/react'
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from '@heroui/react'
 import axios from 'axios'
 import { HiArrowDownTray, HiEllipsisVertical, HiLink, HiPencilSquare, HiTrash } from 'react-icons/hi2'
 import { cn, downloadUrl } from '~/lib/utils'

@@ -9,10 +9,10 @@ export async function updateSalesOrderStatus(salesOrderId: string, status: Sales
     const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { status: status },
-        include: {
-            products: { orderBy: { id: 'asc' } },
-            assembledProducts: { orderBy: { id: 'asc' } },
-        },
+        // include: {
+        //     products: { orderBy: { id: 'asc' } },
+        //     assembledProducts: { orderBy: { id: 'asc' } },
+        // },
     })
 
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
@@ -22,10 +22,10 @@ export async function updateSalesOrderApprovedProof(salesOrderId: string, approv
     const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { approvedProof: approvedProof },
-        include: {
-            products: { orderBy: { id: 'asc' } },
-            assembledProducts: { orderBy: { id: 'asc' } },
-        },
+        // include: {
+        //     products: { orderBy: { id: 'asc' } },
+        //     assembledProducts: { orderBy: { id: 'asc' } },
+        // },
     })
 
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
@@ -35,10 +35,10 @@ export async function updateSalesOrderPartsOrdered(salesOrderId: string, partsOr
     const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { partsOrdered: partsOrdered },
-        include: {
-            products: { orderBy: { id: 'asc' } },
-            assembledProducts: { orderBy: { id: 'asc' } },
-        },
+        // include: {
+        //     products: { orderBy: { id: 'asc' } },
+        //     assembledProducts: { orderBy: { id: 'asc' } },
+        // },
     })
 
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
@@ -48,10 +48,10 @@ export async function updateSalesOrderPartsReceived(salesOrderId: string, partsR
     const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { partsReceived: partsReceived },
-        include: {
-            products: { orderBy: { id: 'asc' } },
-            assembledProducts: { orderBy: { id: 'asc' } },
-        },
+        // include: {
+        //     products: { orderBy: { id: 'asc' } },
+        //     assembledProducts: { orderBy: { id: 'asc' } },
+        // },
     })
 
     if (runTrigger) {
@@ -63,10 +63,10 @@ export async function updateSalesOrderProductsCounted(salesOrderId: string, prod
     const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { productsCounted: productsCounted },
-        include: {
-            products: { orderBy: { id: 'asc' } },
-            assembledProducts: { orderBy: { id: 'asc' } },
-        },
+        // include: {
+        //     products: { orderBy: { id: 'asc' } },
+        //     assembledProducts: { orderBy: { id: 'asc' } },
+        // },
     })
 
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
@@ -76,10 +76,10 @@ export async function updateSalesOrderProductsShipped(salesOrderId: string, prod
     const updatedSalesOrder = await prisma.salesOrder.update({
         where: { id: salesOrderId },
         data: { productsShipped: productsShipped },
-        include: {
-            products: { orderBy: { id: 'asc' } },
-            assembledProducts: { orderBy: { id: 'asc' } },
-        },
+        // include: {
+        //     products: { orderBy: { id: 'asc' } },
+        //     assembledProducts: { orderBy: { id: 'asc' } },
+        // },
     })
 
     await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
@@ -94,7 +94,7 @@ export async function updateSalesOrderAssembledProduct(salesOrderId: string, ass
     const updatedSalesOrder = await prisma.salesOrder.findUnique({
         where: { id: salesOrderId },
         include: {
-            products: { orderBy: { id: 'asc' } },
+            // products: { orderBy: { id: 'asc' } },
             assembledProducts: { orderBy: { id: 'asc' } },
         },
     })
@@ -111,7 +111,7 @@ export async function updatePartSizeReceived(salesOrderId: string, productId: st
         data: dataToUpdate,
     })
 
-    const updatedSalesOrder = await prisma.salesOrder.findUnique({
+    const salesOrder = await prisma.salesOrder.findUnique({
         where: { id: salesOrderId },
         include: {
             products: { orderBy: { id: 'asc' } },
@@ -125,8 +125,10 @@ export async function updatePartSizeReceived(salesOrderId: string, productId: st
 
     const allPartsReceived: boolean[] = []
 
-    if (updatedSalesOrder) {
-        for (const product of updatedSalesOrder.products) {
+    if (salesOrder) {
+        const { products, assembledProducts: _assembledProducts, ...restSalesOrder } = salesOrder
+
+        for (const product of products) {
             const {
                 receivedXS,
                 receivedSM,
@@ -140,17 +142,17 @@ export async function updatePartSizeReceived(salesOrderId: string, productId: st
 
             allPartsReceived.push(allTrue([receivedXS, receivedSM, receivedMD, receivedLG, receivedXL, received2XL, received3XL, received4XL]))
         }
+
+        if (allTrue(allPartsReceived)) {
+            await updateSalesOrderPartsReceived(salesOrderId, true, false)
+        } else {
+            await updateSalesOrderPartsReceived(salesOrderId, false, false)
+        }
+
+        const pusherChannel = `${salesOrderId}-${productId}-${receivedFieldName}`
+        const pusherDataForProductReceived: PusherTriggerDataForProductReceived = { salesOrderId, productId, receivedFieldName, received }
+
+        await pusherServer.trigger(pusherChannel, 'product-received-updated', pusherDataForProductReceived)
+        await pusherServer.trigger(salesOrderId, 'sales-order-updated', restSalesOrder)
     }
-
-    if (allTrue(allPartsReceived)) {
-        await updateSalesOrderPartsReceived(salesOrderId, true, false)
-    } else {
-        await updateSalesOrderPartsReceived(salesOrderId, false, false)
-    }
-
-    const pusherChannel = `${salesOrderId}-${productId}-${receivedFieldName}`
-    const pusherDataForProductReceived: PusherTriggerDataForProductReceived = { salesOrderId, productId, receivedFieldName, received }
-
-    await pusherServer.trigger(pusherChannel, 'product-received-updated', pusherDataForProductReceived)
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
 }

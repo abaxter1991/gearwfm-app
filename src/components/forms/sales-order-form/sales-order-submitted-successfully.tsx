@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Link, Tooltip } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Link, Tooltip } from '@heroui/react'
 import { usePathname } from 'next/navigation'
 import { toast } from 'sonner'
 import { useSalesOrder } from '~/lib/queries'

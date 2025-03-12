@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, useDisclosure } from '@nextui-org/react'
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, useDisclosure } from '@heroui/react'
 import axios from 'axios'
 import { useState } from 'react'
 import { CsvReader } from '~/components/common/csv-reader'

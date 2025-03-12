@@ -1,6 +1,5 @@
 const path = require('path')
 
-/** @type {import('eslint').Linter.Config} */
 const eslintConfig = {
     extends: ['next', 'next/core-web-vitals', 'eslint:recommended', 'plugin:import/recommended', 'plugin:tailwindcss/recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
     globals: {

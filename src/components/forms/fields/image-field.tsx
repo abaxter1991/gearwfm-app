@@ -1,8 +1,8 @@
-import { Button, Input } from '@nextui-org/react'
+import { Button, Input } from '@heroui/react'
 import { HiPhoto } from 'react-icons/hi2'
 import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
 import { cn } from '~/lib/utils'
-import type { InputProps } from '@nextui-org/react'
+import type { InputProps } from '@heroui/react'
 import type { UseFormReturn } from 'react-hook-form'
 
 type Props = Omit<InputProps, 'form' | 'type'> & {

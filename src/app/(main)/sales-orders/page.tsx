@@ -9,7 +9,7 @@ import type { Prisma, SalesOrderStatus } from '@prisma/client'
 export const dynamic = 'force-dynamic'
 
 type Props = {
-    searchParams: {
+    searchParams: Promise<{
         status?: string
         startDate?: string
         endDate?: string
@@ -20,10 +20,11 @@ type Props = {
         approvedProof?: string
         partsOrdered?: string
         partsReceived?: string
-    }
+    }>
 }
 
-export default async function SalesOrdersPage({ searchParams }: Props) {
+export default async function SalesOrdersPage(props: Props) {
+    const searchParams = await props.searchParams;
     const {
         status,
         startDate,
@@ -46,10 +47,25 @@ export default async function SalesOrdersPage({ searchParams }: Props) {
     let dateRangeParams = {}
 
     if (startDate && endDate) {
+        const start = new Date(startDate)
+        const end = new Date(endDate)
+
+        const startUTCDate = new Date(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate())
+        const endUTCDate = new Date(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate())
+
+        // TODO: startUTCDate and endUTCDate is a dumb way to manipulate the UTC offset to match the format of the dates stored in the database.
+        //       If these dates aren't manipulated in this way, then when searching for an order on the same day that it was created, you won't
+        //       be able to find it unless you change the end date in the date range component to 1 or more days in the future.
+        //       Instead of manipulating the data here, figure out how to store the dates in the database with a time of 0.
+        //       For example: 2025-01-01T00:00:00.000Z
+        //       A date formatted like this example is what should be passed into prismas create / update functions using the orderDate and dueDate
+        //       variables in the new-sales-order/route.ts and update-sales-order/route.ts API route files. This will eliminate the issue mentioned
+        //       above and this dumb manipulation of the start and end dates can be removed from this file.
+
         if (searchDateBy == 'orderDate') {
-            dateRangeParams = { orderDate: { gte: new Date(startDate), lte: new Date(endDate) } }
+            dateRangeParams = { orderDate: { gte: startUTCDate, lte: endUTCDate } }
         } else if (searchDateBy == 'dueDate') {
-            dateRangeParams = { dueDate: { gte: new Date(startDate), lte: new Date(endDate) } }
+            dateRangeParams = { dueDate: { gte: startUTCDate, lte: endUTCDate } }
         }
     }
 

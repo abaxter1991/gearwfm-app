@@ -1,14 +1,7 @@
-'use client'
-
-import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react'
+import { Card, CardBody, CardHeader, Divider } from '@heroui/react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
-export default function HomePage() {
-    const router = useRouter()
-
-    router.push('/sales-orders')
-
+export default async function HomePage() {
     return (
         <div className="flex h-full justify-center p-24">
             <Link href="/sales-orders">

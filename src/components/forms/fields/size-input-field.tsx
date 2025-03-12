@@ -1,7 +1,7 @@
-import { Input } from '@nextui-org/react'
+import { Input } from '@heroui/react'
 import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
 import { cn } from '~/lib/utils'
-import type { InputProps } from '@nextui-org/react'
+import type { InputProps } from '@heroui/react'
 import type { ReactNode, WheelEvent } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 
@@ -55,19 +55,17 @@ export default function SizeInputField(fieldProps: Props) {
                 render={({field, fieldState}) => (
                     <FormItem>
                         <FormControl>
-                            <>
-                                <Input
-                                    {...field}
-                                    {...form.register(name, {valueAsNumber: true})}
-                                    {...props}
-                                    type="number"
-                                    label={labelContent}
-                                    classNames={props.isReadOnly ? readOnlyClassNames : customClassNames}
-                                    isInvalid={fieldState.invalid}
-                                    errorMessage={fieldState.error?.message}
-                                    onWheel={handleOnWheel}
-                                />
-                            </>
+                            <Input
+                                {...field}
+                                {...form.register(name, {valueAsNumber: true})}
+                                {...props}
+                                type="number"
+                                label={labelContent}
+                                classNames={props.isReadOnly ? readOnlyClassNames : customClassNames}
+                                isInvalid={fieldState.invalid}
+                                errorMessage={fieldState.error?.message}
+                                onWheel={handleOnWheel}
+                            />
                         </FormControl>
                         <FormMessage/>
                     </FormItem>

@@ -1,7 +1,7 @@
 import {
     Button,
     Select, SelectItem,
-} from '@nextui-org/react'
+} from '@heroui/react'
 import { HiTrash } from 'react-icons/hi2'
 import { FileUpload } from '~/components/common/file-upload'
 import { InputField, NumberInputField, TextAreaField } from '~/components/forms/fields'

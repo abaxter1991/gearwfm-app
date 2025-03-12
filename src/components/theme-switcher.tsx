@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/react'
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { HiComputerDesktop as SystemModeIcon, HiMoon as DarkModeIcon, HiSun as LightModeIcon } from 'react-icons/hi2'
@@ -52,21 +52,21 @@ export const ThemeSwitcher = (props: Props) => {
                     <DropdownItem
                         key="light"
                         startContent={<LightModeIcon className={iconClassName} />}
-                        onClick={() => setTheme('light')}
+                        onPress={() => setTheme('light')}
                     >
                         Light
                     </DropdownItem>
                     <DropdownItem
                         key="dark"
                         startContent={<DarkModeIcon className={iconClassName} />}
-                        onClick={() => setTheme('dark')}
+                        onPress={() => setTheme('dark')}
                     >
                         Dark
                     </DropdownItem>
                     <DropdownItem
                         key="system"
                         startContent={<SystemModeIcon className={iconClassName} />}
-                        onClick={() => setTheme('system')}
+                        onPress={() => setTheme('system')}
                     >
                         System
                     </DropdownItem>

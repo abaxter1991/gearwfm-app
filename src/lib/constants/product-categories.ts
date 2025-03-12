@@ -438,3 +438,22 @@ export const productCategories: ProductCategory[] = [
 ]
 
 export const sortedCategoryKeys = productCategories.map((productCategory) => productCategory.key)
+
+export function isOneSizeFitsAll(key: string) {
+    const sizeFields = productCategories.find((category) => category.key === key)?.sizeFields
+
+    if (sizeFields) {
+        let response = true
+
+        Object.values(sizeFields).forEach((sizeField) => {
+            if (sizeField.show) {
+                response = false
+            }
+        })
+
+        return response
+    }
+
+    return true
+}
+

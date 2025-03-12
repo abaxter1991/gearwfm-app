@@ -1,7 +1,7 @@
 'use client'
 
+import { Button, Card, CardBody, DateRangePicker, Input, Select, SelectItem } from '@heroui/react'
 import { parseDate, getLocalTimeZone, now, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, endOfYear, CalendarDate } from '@internationalized/date'
-import { Button, Card, CardBody, DateRangePicker, Input, Select, SelectItem } from '@nextui-org/react'
 import { useLocale } from '@react-aria/i18n'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -146,7 +146,7 @@ export function SearchBar() {
                             labelPlacement="outside"
                             visibleMonths={2}
                             value={dateRange}
-                            onChange={setDateRange}
+                            onChange={(value) => setDateRange(value ? value : initialDateRange)}
                             calendarProps={{
                                 focusedValue: dateRange?.start,
                             }}

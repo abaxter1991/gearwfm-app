@@ -1,7 +1,6 @@
-import { nextui } from '@nextui-org/react'
+import { heroui } from '@heroui/react'
 import { withUt } from 'uploadthing/tw'
 import type { Config } from 'tailwindcss'
-import { semanticColors } from '@nextui-org/react'
 
 const config: Config = {
     darkMode: 'class',
@@ -9,7 +8,7 @@ const config: Config = {
         './src/app/**/*.{js,ts,jsx,tsx,md,mdx}',
         './src/pages/**/*.{js,ts,jsx,tsx,md,mdx}',
         './src/components/**/*.{js,ts,jsx,tsx,md,mdx}',
-        './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+        "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
         extend: {
@@ -59,9 +58,9 @@ const config: Config = {
         },
     },
     plugins: [
-        nextui(),
-        // TODO: Verify with client if he would like to use the default danger/red colors from NextUI or change it back to TailwindCSS red colors.
-        // nextui({
+        heroui(),
+        // TODO: Verify with client if he would like to use the default danger/red colors from HeroUI or change it back to TailwindCSS red colors.
+        // heroui({
         //     themes: {
         //         light: {
         //             extend: 'light',

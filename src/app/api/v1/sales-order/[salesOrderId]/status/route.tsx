@@ -2,13 +2,14 @@ import { NextResponse } from 'next/server'
 import prisma from '~/prisma/client'
 import type { NextRequest } from 'next/server'
 
-type Params = {
-    params: {
+type Props = {
+    params: Promise<{
         salesOrderId: string
-    }
+    }>
 }
 
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(request: NextRequest, props: Props) {
+    const params = await props.params;
     try {
         const { salesOrderId } = params
         const { status } = await request.json()

@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@nextui-org/react'
+import { Button } from '@heroui/react'
 import axios from 'axios'
 import Image from 'next/image'
 import { HiTrash } from 'react-icons/hi2'
@@ -48,7 +48,7 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
                             color="danger"
                             size="sm"
                             className="bg-transparent text-danger"
-                            onClick={handleDeleteImage}
+                            onPress={handleDeleteImage}
                         >
                             <HiTrash className="size-6" />
                         </Button>

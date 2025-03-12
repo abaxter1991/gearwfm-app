@@ -1,12 +1,13 @@
 import { SalesOrderSubmittedSuccessfully } from 'src/components/forms/sales-order-form/sales-order-submitted-successfully'
 
 type Props = {
-    params: {
+    params: Promise<{
         salesOrderId: string
-    }
+    }>
 }
 
-export default function PublicImportableSalesOrderSubmittedSuccessfullyPage({ params }: Props) {
+export default async function PublicImportableSalesOrderSubmittedSuccessfullyPage(props: Props) {
+    const params = await props.params;
     const { salesOrderId } = params
 
     return <SalesOrderSubmittedSuccessfully salesOrderId={salesOrderId} />

@@ -1,6 +1,6 @@
 'use client'
 
-import { NextUIProvider } from '@nextui-org/react'
+import { HeroUIProvider } from '@heroui/react'
 import { useRouter } from 'next/navigation'
 import { SwrProvider } from './swr-provider'
 import { ThemeProvider } from './theme-provider'
@@ -15,7 +15,7 @@ export function AppProvider({ children }: Props) {
 
     return (
         <SwrProvider>
-            <NextUIProvider navigate={router.push}>
+            <HeroUIProvider navigate={router.push}>
                 <ThemeProvider
                     enableSystem
                     disableTransitionOnChange
@@ -25,7 +25,7 @@ export function AppProvider({ children }: Props) {
                 >
                     {children}
                 </ThemeProvider>
-            </NextUIProvider>
+            </HeroUIProvider>
         </SwrProvider>
     )
 }

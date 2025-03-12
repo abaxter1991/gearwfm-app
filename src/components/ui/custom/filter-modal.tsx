@@ -11,7 +11,7 @@ import {
     Select,
     SelectItem,
     useDisclosure,
-} from '@nextui-org/react'
+} from '@heroui/react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { HiOutlineFunnel } from 'react-icons/hi2'

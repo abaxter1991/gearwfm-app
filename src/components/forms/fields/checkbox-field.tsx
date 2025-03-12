@@ -1,8 +1,8 @@
-import { Checkbox } from '@nextui-org/react'
+import { Checkbox } from '@heroui/react'
 import { type ReactNode } from 'react'
 import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
 import { cn } from '~/lib/utils'
-import type { CheckboxProps } from '@nextui-org/react'
+import type { CheckboxProps } from '@heroui/react'
 import type { UseFormReturn } from 'react-hook-form'
 
 type Props = Omit<CheckboxProps, 'form'> & {

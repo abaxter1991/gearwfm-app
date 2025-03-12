@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, useDisclosure } from '@nextui-org/react'
+import { Button, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, useDisclosure } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { HiArrowDownTray, HiOutlineCheckCircle } from 'react-icons/hi2'
 import { ProductProofDetail } from './product-proof-detail'

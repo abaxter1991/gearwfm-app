@@ -1,7 +1,7 @@
-import { Chip, Spinner, tv, useCheckbox, VisuallyHidden } from '@nextui-org/react'
+import { Chip, Spinner, tv, useCheckbox, VisuallyHidden } from '@heroui/react'
 import { useState } from 'react'
 import { cn } from '~/lib/utils'
-import type { CheckboxProps } from '@nextui-org/react'
+import type { CheckboxProps } from '@heroui/react'
 
 const checkbox = tv({
     slots: {

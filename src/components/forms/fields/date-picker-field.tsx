@@ -1,7 +1,7 @@
-import { DatePicker } from '@nextui-org/react'
+import { DatePicker } from '@heroui/react'
 import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
 import { cn } from '~/lib/utils'
-import type { DatePickerProps } from '@nextui-org/react'
+import type { DatePickerProps } from '@heroui/react'
 import type { UseFormReturn } from 'react-hook-form'
 
 type Props = Omit<DatePickerProps, 'form' | 'value' | 'onChange'> & {

@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Card, CardBody } from '@nextui-org/react'
+import { Button, Card, CardBody } from '@heroui/react'
 import { useMemo } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { cn } from '~/lib/utils'
@@ -32,7 +32,7 @@ export function FileDropzoneField({ accept, onDrop }: FileDropzoneProps) {
                     <Button
                         color="default"
                         size="sm"
-                        onClick={open}
+                        onPress={open}
                     >
                         Select File
                     </Button>

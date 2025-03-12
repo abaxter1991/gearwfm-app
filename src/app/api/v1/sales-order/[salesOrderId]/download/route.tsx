@@ -4,13 +4,14 @@ import { DownloadableSalesOrder } from '~/components/sales-order/downloadable-sa
 import prisma from '~/prisma/client'
 import type { NextRequest } from 'next/server'
 
-type Params = {
-    params: {
+type Props = {
+    params: Promise<{
         salesOrderId: string
-    }
+    }>
 }
 
-export async function GET(request: NextRequest, { params }: Params) {
+export async function GET(request: NextRequest, props: Props) {
+    const params = await props.params;
     const { salesOrderId } = params
 
     const salesOrder = await prisma.salesOrder.findUnique({

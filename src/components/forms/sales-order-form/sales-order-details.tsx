@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardBody, CardHeader } from '@nextui-org/react'
+import { Card, CardBody, CardHeader } from '@heroui/react'
 import { CheckboxField, DatePickerField, InputField, TextAreaField } from '~/components/forms/fields'
 import type { SalesOrderFormSchema } from './index'
 import type { UseFormReturn } from 'react-hook-form'

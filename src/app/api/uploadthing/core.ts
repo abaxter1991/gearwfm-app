@@ -4,13 +4,13 @@ import type { FileRouter } from 'uploadthing/next'
 
 const f = createUploadthing()
 
-const getUserId = () => {
-    const { userId } = auth()
+const getUserId = async () => {
+    const { userId } = await auth()
     return userId ? userId : 'Anonymous'
 }
 
 const authenticateUserMiddleware = async () => {
-    const userId = getUserId()
+    const userId = await getUserId()
     return { userId }
 }
 

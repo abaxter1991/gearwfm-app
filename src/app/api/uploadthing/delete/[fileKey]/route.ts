@@ -4,8 +4,8 @@ type Params = {
     fileKey: string
 }
 
-export async function DELETE(request: Request, context: { params: Params }) {
-    const fileKey = context.params.fileKey
+export async function DELETE(request: Request, context: { params: Promise<Params> }) {
+    const fileKey = (await context.params).fileKey
     const utApi = new UTApi()
 
     await utApi.deleteFiles(fileKey)

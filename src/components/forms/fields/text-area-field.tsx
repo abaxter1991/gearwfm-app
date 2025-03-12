@@ -1,7 +1,7 @@
-import { Textarea } from '@nextui-org/react'
+import { Textarea } from '@heroui/react'
 import { FormControl, FormField, FormItem, FormMessage } from '~/components/ui/form'
 import { cn } from '~/lib/utils'
-import type { TextAreaProps } from '@nextui-org/react'
+import type { TextAreaProps } from '@heroui/react'
 import type { UseFormReturn } from 'react-hook-form'
 
 type Props = Omit<TextAreaProps, 'form'> & {
