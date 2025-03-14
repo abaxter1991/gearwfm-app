@@ -24,7 +24,7 @@ type Props = {
 
 export function SalesOrderCard({ salesOrder }: Props) {
     const { user } = useUser()
-    const isAdmin = user?.fullName === 'Austin Baxters' || user?.fullName === 'Shawn Baxter' || user?.fullName === 'Spencer Lambert'
+    const isAdmin = user?.fullName === 'Austin Baxter' || user?.fullName === 'Shawn Baxter' || user?.fullName === 'Spencer Lambert'
     const router = useRouter()
 
     const [displayedSalesOrder, setDisplayedSalesOrder] = useState<SalesOrderAndRelations>()
