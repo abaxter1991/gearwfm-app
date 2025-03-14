@@ -5,87 +5,48 @@ import prisma from '~/prisma/client'
 import type { Prisma, SalesOrderStatus } from '@prisma/client'
 import type { ProductReceivedFieldName, PusherTriggerDataForProductReceived } from '~/types'
 
-export async function updateSalesOrderStatus(salesOrderId: string, status: SalesOrderStatus) {
-    const updatedSalesOrder = await prisma.salesOrder.update({
-        where: { id: salesOrderId },
-        data: { status: status },
-        // include: {
-        //     products: { orderBy: { id: 'asc' } },
-        //     assembledProducts: { orderBy: { id: 'asc' } },
-        // },
-    })
+async function updateSalesOrder(salesOrderId: string, fieldName: keyof Prisma.SalesOrderUpdateInput, value: boolean | SalesOrderStatus, triggerEvent: boolean = true) {
+    const data: Prisma.SalesOrderUpdateInput = {}
+    data[fieldName] = value
 
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
-}
+    const updatedSalesOrder = await prisma.salesOrder.update({ where: { id: salesOrderId }, data })
 
-export async function updateSalesOrderApprovedProof(salesOrderId: string, approvedProof: boolean) {
-    const updatedSalesOrder = await prisma.salesOrder.update({
-        where: { id: salesOrderId },
-        data: { approvedProof: approvedProof },
-        // include: {
-        //     products: { orderBy: { id: 'asc' } },
-        //     assembledProducts: { orderBy: { id: 'asc' } },
-        // },
-    })
-
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
-}
-
-export async function updateSalesOrderPartsOrdered(salesOrderId: string, partsOrdered: boolean) {
-    const updatedSalesOrder = await prisma.salesOrder.update({
-        where: { id: salesOrderId },
-        data: { partsOrdered: partsOrdered },
-        // include: {
-        //     products: { orderBy: { id: 'asc' } },
-        //     assembledProducts: { orderBy: { id: 'asc' } },
-        // },
-    })
-
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
-}
-
-export async function updateSalesOrderPartsReceived(salesOrderId: string, partsReceived: boolean, runTrigger = true) {
-    const updatedSalesOrder = await prisma.salesOrder.update({
-        where: { id: salesOrderId },
-        data: { partsReceived: partsReceived },
-        // include: {
-        //     products: { orderBy: { id: 'asc' } },
-        //     assembledProducts: { orderBy: { id: 'asc' } },
-        // },
-    })
-
-    if (runTrigger) {
-        await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
+    if (triggerEvent) {
+        await triggerSalesOrderUpdate(salesOrderId, updatedSalesOrder)
     }
+
+    return updatedSalesOrder
 }
 
-export async function updateSalesOrderProductsCounted(salesOrderId: string, productsCounted: boolean) {
-    const updatedSalesOrder = await prisma.salesOrder.update({
-        where: { id: salesOrderId },
-        data: { productsCounted: productsCounted },
-        // include: {
-        //     products: { orderBy: { id: 'asc' } },
-        //     assembledProducts: { orderBy: { id: 'asc' } },
-        // },
-    })
-
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
+async function triggerSalesOrderUpdate(salesOrderId: string, data: any, event: string = 'sales-order-updated') {
+    await pusherServer.trigger(salesOrderId, event, data)
 }
 
-export async function updateSalesOrderProductsShipped(salesOrderId: string, productsShipped: boolean) {
-    const updatedSalesOrder = await prisma.salesOrder.update({
-        where: { id: salesOrderId },
-        data: { productsShipped: productsShipped },
-        // include: {
-        //     products: { orderBy: { id: 'asc' } },
-        //     assembledProducts: { orderBy: { id: 'asc' } },
-        // },
-    })
-
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
+export async function changeStatus(salesOrderId: string, status: SalesOrderStatus) {
+    await updateSalesOrder(salesOrderId, 'status', status);
 }
 
-export async function updateSalesOrderAssembledProduct(salesOrderId: string, assembledProductId: string, allAssembled: boolean) {
+export async function toggleApprovedProof(salesOrderId: string, approvedProof: boolean) {
+    await updateSalesOrder(salesOrderId, 'approvedProof', approvedProof);
+}
+
+export async function togglePartsOrdered(salesOrderId: string, partsOrdered: boolean) {
+    await updateSalesOrder(salesOrderId, 'partsOrdered', partsOrdered);
+}
+
+export async function togglePartsReceived(salesOrderId: string, partsReceived: boolean, triggerEvent = true) {
+    await updateSalesOrder(salesOrderId, 'partsReceived', partsReceived, triggerEvent);
+}
+
+export async function toggleProductsCounted(salesOrderId: string, productsCounted: boolean) {
+    await updateSalesOrder(salesOrderId, 'productsCounted', productsCounted);
+}
+
+export async function toggleProductsShipped(salesOrderId: string, productsShipped: boolean) {
+    await updateSalesOrder(salesOrderId, 'productsShipped', productsShipped);
+}
+
+export async function toggleAllAssembled(salesOrderId: string, assembledProductId: string, allAssembled: boolean) {
     await prisma.salesOrderAssembledProduct.update({
         where: { id: assembledProductId },
         data: { allAssembled: allAssembled },
@@ -94,15 +55,14 @@ export async function updateSalesOrderAssembledProduct(salesOrderId: string, ass
     const updatedSalesOrder = await prisma.salesOrder.findUnique({
         where: { id: salesOrderId },
         include: {
-            // products: { orderBy: { id: 'asc' } },
             assembledProducts: { orderBy: { id: 'asc' } },
         },
     })
 
-    await pusherServer.trigger(salesOrderId, 'sales-order-updated', updatedSalesOrder)
+    await pusherServer.trigger(salesOrderId, 'assembled-product-toggled', updatedSalesOrder)
 }
 
-export async function updatePartSizeReceived(salesOrderId: string, productId: string, receivedFieldName: ProductReceivedFieldName, received: boolean) {
+export async function togglePartSizeReceived(salesOrderId: string, productId: string, receivedFieldName: ProductReceivedFieldName, received: boolean) {
     const dataToUpdate: Prisma.SalesOrderProductUpdateInput = {}
     dataToUpdate[receivedFieldName] = received
 
@@ -144,9 +104,9 @@ export async function updatePartSizeReceived(salesOrderId: string, productId: st
         }
 
         if (allTrue(allPartsReceived)) {
-            await updateSalesOrderPartsReceived(salesOrderId, true, false)
+            await togglePartsReceived(salesOrderId, true, false)
         } else {
-            await updateSalesOrderPartsReceived(salesOrderId, false, false)
+            await togglePartsReceived(salesOrderId, false, false)
         }
 
         const pusherChannel = `${salesOrderId}-${productId}-${receivedFieldName}`

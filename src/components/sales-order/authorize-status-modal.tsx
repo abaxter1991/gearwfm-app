@@ -1,6 +1,6 @@
 import { Button, Chip, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react'
 import { useState } from 'react'
-import { updateSalesOrderStatus } from '~/lib/actions'
+import { changeStatus } from '~/lib/actions'
 import type { SalesOrderAndRelations, SalesOrderStatusOptions } from '~/types'
 
 type Props = {
@@ -78,7 +78,7 @@ export function AuthorizeStatusModal({ salesOrder }: Props) {
                                         onPress={async () => {
                                             setStatusPressed(status.key)
                                             setIsLoading(true)
-                                            await updateSalesOrderStatus(salesOrder.id, status.key)
+                                            await changeStatus(salesOrder.id, status.key)
                                             setIsLoading(false)
                                             onClose()
                                         }}

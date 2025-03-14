@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { HiArrowDownTray, HiPencilSquare } from 'react-icons/hi2'
 import { AuthorizeStatusModal } from '~/components/sales-order/authorize-status-modal'
 import { SalesOrderProofModal } from '~/components/sales-order/sales-order-proof-modal'
-import { updateSalesOrderApprovedProof, updateSalesOrderAssembledProduct, updateSalesOrderPartsOrdered, updateSalesOrderProductsCounted, updateSalesOrderProductsShipped, updateSalesOrderPartsReceived } from '~/lib/actions'
+import { toggleApprovedProof, toggleAllAssembled, togglePartsOrdered, toggleProductsCounted, toggleProductsShipped, togglePartsReceived } from '~/lib/actions'
 import { sortedCategoryKeys } from '~/lib/constants/product-categories'
 import { pusherClient } from '~/lib/pusher'
 import { downloadUrl } from '~/lib/utils'
@@ -58,14 +58,22 @@ export function SalesOrderCard({ salesOrder }: Props) {
             .bind(
                 'sales-order-updated',
                 async (updatedSalesOrder: SalesOrderAndRelations) => {
-                    if (updatedSalesOrder.assembledProducts) {
-                        setAssembledProducts(updatedSalesOrder.assembledProducts)
-                    }
-
                     const cleanedSalesOrder = {
                         ...updatedSalesOrder,
-                        products: displayedSalesOrder ? displayedSalesOrder.products : [],
-                        assembledProducts: assembledProducts,
+                        products: displayedSalesOrder ? displayedSalesOrder.products : salesOrder.products,
+                        assembledProducts: displayedSalesOrder ? displayedSalesOrder.assembledProducts : salesOrder.assembledProducts,
+                    }
+
+                    setDisplayedSalesOrder(cleanedSalesOrder)
+                },
+            )
+            .bind(
+                'assembled-product-toggled',
+                async (updatedSalesOrder: SalesOrderAndRelations) => {
+                    const cleanedSalesOrder = {
+                        ...updatedSalesOrder,
+                        products: displayedSalesOrder ? displayedSalesOrder.products : salesOrder.products,
+                        assembledProducts: updatedSalesOrder.assembledProducts,
                     }
 
                     setDisplayedSalesOrder(cleanedSalesOrder)
@@ -171,7 +179,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                     size="sm"
                                     isSelected={displayedSalesOrder.approvedProof}
                                     onUpdate={async () => {
-                                        await updateSalesOrderApprovedProof(salesOrder.id, !displayedSalesOrder.approvedProof)
+                                        await toggleApprovedProof(salesOrder.id, !displayedSalesOrder.approvedProof)
                                     }}
                                 >
                                     Proof
@@ -188,7 +196,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                     size="sm"
                                     isSelected={displayedSalesOrder.partsOrdered}
                                     onUpdate={async () => {
-                                        await updateSalesOrderPartsOrdered(salesOrder.id, !displayedSalesOrder.partsOrdered)
+                                        await togglePartsOrdered(salesOrder.id, !displayedSalesOrder.partsOrdered)
                                     }}
                                 >
                                     Ordered
@@ -198,7 +206,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                     size="sm"
                                     isSelected={displayedSalesOrder.partsReceived}
                                     onUpdate={async () => {
-                                        await updateSalesOrderPartsReceived(salesOrder.id, !displayedSalesOrder.partsReceived)
+                                        await togglePartsReceived(salesOrder.id, !displayedSalesOrder.partsReceived)
                                     }}
                                 >
                                     Received
@@ -215,7 +223,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                     size="sm"
                                     isSelected={displayedSalesOrder.productsCounted}
                                     onUpdate={async () => {
-                                        await updateSalesOrderProductsCounted(salesOrder.id, !displayedSalesOrder.productsCounted)
+                                        await toggleProductsCounted(salesOrder.id, !displayedSalesOrder.productsCounted)
                                     }}
                                 >
                                     Counted
@@ -225,7 +233,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                                     size="sm"
                                     isSelected={displayedSalesOrder.productsShipped}
                                     onUpdate={async () => {
-                                        await updateSalesOrderProductsShipped(salesOrder.id, !displayedSalesOrder.productsShipped)
+                                        await toggleProductsShipped(salesOrder.id, !displayedSalesOrder.productsShipped)
                                     }}
                                 >
                                     Shipped
@@ -269,7 +277,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                             size="sm"
                             isSelected={assembledProduct.allAssembled}
                             onUpdate={async () => {
-                                await updateSalesOrderAssembledProduct(
+                                await toggleAllAssembled(
                                     salesOrder.id,
                                     assembledProduct.id,
                                     !assembledProduct.allAssembled,

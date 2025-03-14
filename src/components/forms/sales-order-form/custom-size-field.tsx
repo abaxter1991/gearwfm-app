@@ -3,7 +3,7 @@
 import { Checkbox } from '@heroui/react'
 import { useEffect } from 'react'
 import { SizeInputField } from '~/components/forms/fields'
-import { updatePartSizeReceived } from '~/lib/actions'
+import { togglePartSizeReceived } from '~/lib/actions'
 import { pusherClient } from '~/lib/pusher'
 import { useSalesOrderProduct } from '~/lib/queries'
 import type { SalesOrderFormSchema } from './index'
@@ -55,7 +55,7 @@ export function CustomSizeField({ form, salesOrderId, productId, sizeField, inde
                         }}
                         isSelected={product[sizeField.receivedFieldName]}
                         onChange={async () => {
-                            await updatePartSizeReceived(salesOrderId, productId, sizeField.receivedFieldName, !product[sizeField.receivedFieldName])
+                            await togglePartSizeReceived(salesOrderId, productId, sizeField.receivedFieldName, !product[sizeField.receivedFieldName])
                         }}
                     />
                 )}
