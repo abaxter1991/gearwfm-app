@@ -46,6 +46,10 @@ export async function toggleProductsShipped(salesOrderId: string, productsShippe
     await updateSalesOrder(salesOrderId, 'productsShipped', productsShipped);
 }
 
+export async function toggleIsPaid(salesOrderId: string, isPaid: boolean) {
+    await updateSalesOrder(salesOrderId, 'isPaid', isPaid);
+}
+
 export async function toggleAllAssembled(salesOrderId: string, assembledProductId: string, allAssembled: boolean) {
     await prisma.salesOrderAssembledProduct.update({
         where: { id: assembledProductId },

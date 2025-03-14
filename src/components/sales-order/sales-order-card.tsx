@@ -7,11 +7,12 @@ import { useEffect, useState } from 'react'
 import { HiArrowDownTray, HiPencilSquare } from 'react-icons/hi2'
 import { AuthorizeStatusModal } from '~/components/sales-order/authorize-status-modal'
 import { SalesOrderProofModal } from '~/components/sales-order/sales-order-proof-modal'
-import { toggleApprovedProof, toggleAllAssembled, togglePartsOrdered, toggleProductsCounted, toggleProductsShipped, togglePartsReceived } from '~/lib/actions'
+import { toggleApprovedProof, toggleAllAssembled, toggleIsPaid, togglePartsOrdered, toggleProductsCounted, toggleProductsShipped, togglePartsReceived } from '~/lib/actions'
 import { sortedCategoryKeys } from '~/lib/constants/product-categories'
 import { pusherClient } from '~/lib/pusher'
 import { cn, downloadUrl } from '~/lib/utils'
 import { CustomCheckbox } from './custom-checkbox'
+import { IsPaidButtonToggle } from './is-paid-button-toggle'
 import { SalesOrderOptionsMenu } from './sales-order-options-menu'
 import type { SalesOrderAssembledProduct } from '@prisma/client'
 import type { SalesOrderAndRelations } from '~/types'
@@ -107,11 +108,9 @@ export function SalesOrderCard({ salesOrder }: Props) {
         }
     }, [displayedSalesOrder])
 
-    const salesOrderCardClasses = cn('w-full justify-self-center', isAdmin ? 'h-[585px]' : 'h-[530px]')
-
     return (
         displayedSalesOrder && (
-            <Card className={salesOrderCardClasses}>
+            <Card className="w-full justify-self-center">
                 <CardHeader className="flex flex-col gap-1">
                     <div className="flex w-full items-center justify-between gap-2 overflow-hidden rounded-lg bg-gradient-to-br from-brand-primary to-cyan-400 p-2 text-black shadow-md">
                         <div className="flex flex-col overflow-hidden">
@@ -139,7 +138,7 @@ export function SalesOrderCard({ salesOrder }: Props) {
                         />
                     </div>
                 </CardHeader>
-                <CardBody className="justify-between pt-0">
+                <CardBody className="h-[375px] justify-between pt-0">
                     <div className="flex justify-between gap-2">
                         <div className="flex w-1/2 flex-col">
                             <div className="flex w-full justify-between">
@@ -328,14 +327,15 @@ export function SalesOrderCard({ salesOrder }: Props) {
                     </div>
 
                     {isAdmin ? (
-                        <div className="flex w-full py-3">
-                            <Button
-                                size="sm"
-                                // onPress={handleDownloadOrder}
-                                className="w-full bg-success text-base font-bold text-black shadow-md"
+                        <div className="flex w-full pt-3">
+                            <IsPaidButtonToggle
+                                onPress={async () => {
+                                    await toggleIsPaid(salesOrder.id, !displayedSalesOrder.isPaid)
+                                }}
+                                className={cn('w-full text-base font-bold text-black shadow-md', displayedSalesOrder.isPaid ? 'bg-success' : 'bg-default-400')}
                             >
                                 {Number(salesOrder.grandTotal).toLocaleString('us-US', { style: 'currency', currency: 'USD' })}
-                            </Button>
+                            </IsPaidButtonToggle>
                         </div>
                     ) : null}
                 </CardFooter>
