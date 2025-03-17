@@ -12,6 +12,7 @@ export function StatusTabs() {
     const handleTabSelected = useCallback((name: string, value: string) => {
         const params = new URLSearchParams(searchParams.toString())
         params.set(name, value)
+        params.set('page', '1')
         router.push(`${pathname}?${params.toString()}`)
     }, [searchParams])
 

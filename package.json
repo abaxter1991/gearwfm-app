@@ -17,6 +17,7 @@
   },
   "scripts": {
     "dev": "next dev",
+    "dev:scan": "next dev & npx react-scan@latest localhost:3000",
     "dev:inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
@@ -58,6 +59,7 @@
     "react-dropzone": "^14.3.8",
     "react-icons": "^5.5.0",
     "react-papaparse": "^4.4.0",
+    "react-scan": "^0.3.2",
     "sonner": "^2.0.1",
     "swr": "^2.3.3",
     "tailwind-merge": "^2.6.0",

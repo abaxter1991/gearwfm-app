@@ -1,3 +1,4 @@
+import PaginationBar from '~/components/common/pagination-bar'
 import { SalesOrderCard } from '~/components/sales-order/sales-order-card'
 import { FilterModal } from '~/components/ui/custom/filter-modal'
 import { ResetSearchParamsButton } from '~/components/ui/custom/reset-search-params-button'
@@ -10,6 +11,7 @@ export const dynamic = 'force-dynamic'
 
 type Props = {
     searchParams: Promise<{
+        page?: string
         status?: string
         startDate?: string
         endDate?: string
@@ -26,6 +28,7 @@ type Props = {
 export default async function SalesOrdersPage(props: Props) {
     const searchParams = await props.searchParams;
     const {
+        page,
         status,
         startDate,
         endDate,
@@ -80,30 +83,32 @@ export default async function SalesOrdersPage(props: Props) {
         }
     }
 
-    const salesOrders = await prisma.salesOrder.findMany({
-        where: {
-            ...dateRangeParams,
-            status: salesOrderStatus,
-            isArchived: false,
-            isNewCustomer: stringToBoolean(isNewCustomer),
-            approvedProof: stringToBoolean(approvedProof),
-            partsOrdered: stringToBoolean(partsOrdered),
-            partsReceived: stringToBoolean(partsReceived),
-            OR: [
-                { id: searchOptions },
-                { referenceId: searchOptions },
-                { salesRepName: searchOptions },
-                { salesRepEmailAddress: searchOptions },
-                { customerServiceRepName: searchOptions },
-                { companyName: searchOptions },
-                { contactName: searchOptions },
-                { phoneNumber: searchOptions },
-                { emailAddress: searchOptions },
-                { shippingAddress: searchOptions },
-                { billingAddress: searchOptions },
-                { notes: searchOptions },
-                { trackingNumber: searchOptions },
-                { products: {
+    const currentPage = page ? Number(page) : 1
+    const limitPerPage = 24
+
+    const whereInput: Prisma.SalesOrderWhereInput = {
+        ...dateRangeParams,
+        status: salesOrderStatus,
+        isArchived: false,
+        isNewCustomer: stringToBoolean(isNewCustomer),
+        approvedProof: stringToBoolean(approvedProof),
+        partsOrdered: stringToBoolean(partsOrdered),
+        partsReceived: stringToBoolean(partsReceived),
+        OR: [
+            { id: searchOptions },
+            { referenceId: searchOptions },
+            { salesRepName: searchOptions },
+            { salesRepEmailAddress: searchOptions },
+            { customerServiceRepName: searchOptions },
+            { companyName: searchOptions },
+            { contactName: searchOptions },
+            { phoneNumber: searchOptions },
+            { emailAddress: searchOptions },
+            { shippingAddress: searchOptions },
+            { billingAddress: searchOptions },
+            { notes: searchOptions },
+            { trackingNumber: searchOptions },
+            { products: {
                     some: {
                         OR: [
                             { id: productSearchOptions },
@@ -116,8 +121,13 @@ export default async function SalesOrdersPage(props: Props) {
                         ],
                     },
                 }},
-            ],
-        },
+        ],
+    }
+
+    const salesOrders = await prisma.salesOrder.findMany({
+        take: limitPerPage,
+        skip: limitPerPage * (currentPage - 1),
+        where: whereInput,
         include: {
             products: {
                 orderBy: {
@@ -135,6 +145,8 @@ export default async function SalesOrdersPage(props: Props) {
         },
     })
 
+    const totalSalesOrders = await prisma.salesOrder.count({ where: whereInput })
+
     return (
         <div className="flex w-full flex-col gap-4">
             <div className="flex items-center gap-4">
@@ -150,6 +162,9 @@ export default async function SalesOrdersPage(props: Props) {
                         salesOrder={salesOrder}
                     />
                 ))}
+            </div>
+            <div className="flex justify-center">
+                <PaginationBar totalPages={Math.ceil(totalSalesOrders / limitPerPage)} />
             </div>
         </div>
     )
