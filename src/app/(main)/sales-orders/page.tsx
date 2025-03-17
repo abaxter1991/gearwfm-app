@@ -26,7 +26,8 @@ type Props = {
 }
 
 export default async function SalesOrdersPage(props: Props) {
-    const searchParams = await props.searchParams;
+    const searchParams = await props.searchParams
+
     const {
         page,
         status,
