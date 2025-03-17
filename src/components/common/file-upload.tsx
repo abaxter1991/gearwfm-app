@@ -80,15 +80,16 @@ export function FileUpload({ endpoint, onChange, value }: Props) {
                         'ut-uploading:w-full ut-uploading:cursor-not-allowed',
                         'focus-within:ring-brand-primary',
                         'after:bg-brand-primary',
+                        'data-[state=ready]:bg-transparent data-[state=readying]:bg-transparent',
                     ),
                 }}
-                content={{
-                    button({ ready }) {
-                        if (ready) return 'Find Image'
-                        // TODO: Replace with an animated loader.
-                        return 'Loading...'
-                    },
-                }}
+                // content={{
+                //     button({ ready }) {
+                //         if (ready) return 'Find Image'
+                //         // TODO: Replace with an animated loader.
+                //         return 'Loading...'
+                //     },
+                // }}
                 onClientUploadComplete={(res) => {
                     onChange(res?.[0]?.url)
                 }}
