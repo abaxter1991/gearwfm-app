@@ -15,7 +15,7 @@ model SalesOrder {
     orderDate              DateTime                     @map("order_date")
     dueDate                DateTime                     @map("due_date")
     userId                 String                       @default("") @map("user_id")
-    status                 SalesOrderStatus             @default(DRAFT)
+    status                 SalesOrderStatus             @default(QUOTE)
     // TODO: Remove isDraft. The status field will be used to programatically determine if the sales order is a draft.
     isDraft                Boolean                      @default(true) @map("is_draft")
     isNewCustomer          Boolean                      @default(false) @map("is_new_customer")
@@ -124,8 +124,8 @@ model SalesOrderAssembledProduct {
 enum SalesOrderStatus {
     QUOTE
     DRAFT
+    DESIGN_REVIEW
     PENDING
-    IN_DESIGN
     IN_PRODUCTION
     IN_PROGRESS
     COMPLETED
