@@ -5,7 +5,7 @@ import prisma from '~/prisma/client'
 export async function AwaitingPaymentChip() {
     const user = await currentUser()
 
-    const isAdmin = user?.fullName === 'Austin Baxters' || user?.fullName === 'Shawn Baxter' || user?.fullName === 'Spencer Lambert'
+    const isAdmin = user?.fullName === 'Austin Baxter' || user?.fullName === 'Shawn Baxter' || user?.fullName === 'Spencer Lambert'
 
     const salesOrders = await prisma.salesOrder.findMany()
 
