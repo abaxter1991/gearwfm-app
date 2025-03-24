@@ -122,8 +122,11 @@ model SalesOrderAssembledProduct {
 }
 
 enum SalesOrderStatus {
+    QUOTE
     DRAFT
     PENDING
+    IN_DESIGN
+    IN_PRODUCTION
     IN_PROGRESS
     COMPLETED
 }
