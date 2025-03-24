@@ -1,5 +1,6 @@
 import PaginationBar from '~/components/common/pagination-bar'
 import { SalesOrderCard } from '~/components/sales-order/sales-order-card'
+import { AwaitingPaymentChip } from '~/components/ui/custom/awaiting-payment-chip'
 import { FilterModal } from '~/components/ui/custom/filter-modal'
 import { ResetSearchParamsButton } from '~/components/ui/custom/reset-search-params-button'
 import { SearchBar } from '~/components/ui/custom/search-bar'
@@ -150,10 +151,13 @@ export default async function SalesOrdersPage(props: Props) {
 
     return (
         <div className="flex w-full flex-col gap-4">
-            <div className="flex items-center gap-4">
-                <StatusTabs />
-                <FilterModal />
-                <ResetSearchParamsButton />
+            <div className="flex w-full items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <StatusTabs />
+                    <FilterModal />
+                    <ResetSearchParamsButton />
+                </div>
+                <AwaitingPaymentChip />
             </div>
             <SearchBar />
             <div className="grid w-full grid-cols-1 gap-4 tablet:grid-cols-2 desktop:grid-cols-3">
