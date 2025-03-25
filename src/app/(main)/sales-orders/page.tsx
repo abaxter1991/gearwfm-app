@@ -43,8 +43,10 @@ export default async function SalesOrdersPage(props: Props) {
         partsReceived,
     } = searchParams
 
-    const defaultSalesOrderStatus: Prisma.EnumSalesOrderStatusFilter = { not: 'COMPLETED' }
-    const salesOrderStatus = status === 'all' ? defaultSalesOrderStatus : status?.toUpperCase() as SalesOrderStatus | Prisma.EnumSalesOrderStatusFilter
+    console.log({ status })
+
+    const defaultSalesOrderStatus: Prisma.EnumSalesOrderStatusFilter = { notIn: ['QUOTE', 'COMPLETED'] }
+    const salesOrderStatus = (!status || status === 'all') ? defaultSalesOrderStatus : status?.toUpperCase() as SalesOrderStatus | Prisma.EnumSalesOrderStatusFilter
     const searchOptions: Prisma.StringFilter<"SalesOrder"> | string = { contains: search ? search : '', mode: 'insensitive' }
     const productSearchOptions: Prisma.StringFilter<"SalesOrderProduct"> | string = { contains: search ? search : '', mode: 'insensitive' }
     const sortDateByOption = sortDateBy ? sortDateBy : 'desc'
