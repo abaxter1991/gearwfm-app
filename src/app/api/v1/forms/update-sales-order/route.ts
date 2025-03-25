@@ -28,8 +28,8 @@ export async function POST(request: Request) {
             data: {
                 ...restSalesOrder,
                 isNewCustomer: Boolean(isNewCustomer),
-                orderDate: new Date(orderDate.year, orderDate.month - 1, orderDate.day),
-                dueDate: new Date(dueDate.year, dueDate.month - 1, dueDate.day),
+                orderDate: orderDate ? new Date(orderDate.year, orderDate.month - 1, orderDate.day) : null,
+                dueDate: dueDate ? new Date(dueDate.year, dueDate.month - 1, dueDate.day) : null,
             },
         })
 
