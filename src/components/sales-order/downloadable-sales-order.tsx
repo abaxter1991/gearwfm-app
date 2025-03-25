@@ -14,11 +14,11 @@ export function DownloadableSalesOrder({ salesOrder }: Props) {
                         <View style={styles.fieldRow}>
                             <View style={styles.fieldGroup}>
                                 <Text style={styles.fieldLabel}>Order Date</Text>
-                                <Text style={styles.fieldValue}>{new Date(salesOrder.orderDate).toLocaleDateString()}</Text>
+                                <Text style={styles.fieldValue}>{salesOrder.orderDate ? new Date(salesOrder.orderDate).toLocaleDateString() : 'N/A'}</Text>
                             </View>
                             <View style={styles.fieldGroup}>
                                 <Text style={styles.fieldLabel}>Due Date</Text>
-                                <Text style={styles.fieldValue}>{new Date(salesOrder.dueDate).toLocaleDateString()}</Text>
+                                <Text style={styles.fieldValue}>{salesOrder.dueDate ? new Date(salesOrder.dueDate).toLocaleDateString() : 'N/A'}</Text>
                             </View>
                         </View>
                         <View style={styles.fieldRow}>
