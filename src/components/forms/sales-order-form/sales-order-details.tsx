@@ -39,30 +39,30 @@ export function SalesOrderDetails({ form, salesOrder }: Props) {
             <CardBody className="gap-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div className="flex flex-col gap-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <DatePickerField
-                                form={form}
-                                name="orderDate"
-                                label="ORDER DATE"
-                                hideTimeZone={true}
-                                granularity="day"
-                                showMonthAndYearPickers={true}
-                                isRequired={true}
-                                variant="bordered"
-                                size="sm"
-                            />
-                            <DatePickerField
-                                form={form}
-                                name="dueDate"
-                                label="DUE DATE"
-                                hideTimeZone={true}
-                                granularity="day"
-                                showMonthAndYearPickers={true}
-                                isRequired={true}
-                                variant="bordered"
-                                size="sm"
-                            />
-                        </div>
+                        {salesOrder && salesOrder.status !== 'QUOTE' && (
+                            <div className="grid grid-cols-2 gap-4">
+                                <DatePickerField
+                                    form={form}
+                                    name="orderDate"
+                                    label="ORDER DATE"
+                                    hideTimeZone={true}
+                                    granularity="day"
+                                    showMonthAndYearPickers={true}
+                                    variant="bordered"
+                                    size="sm"
+                                />
+                                <DatePickerField
+                                    form={form}
+                                    name="dueDate"
+                                    label="DUE DATE"
+                                    hideTimeZone={true}
+                                    granularity="day"
+                                    showMonthAndYearPickers={true}
+                                    variant="bordered"
+                                    size="sm"
+                                />
+                            </div>
+                        )}
                         <InputField
                             form={form}
                             name="referenceId"

@@ -28,7 +28,7 @@ async function triggerSalesOrderUpdate(salesOrderId: string, data: any, event: s
 export async function changeStatus(salesOrderId: string, status: SalesOrderStatus) {
     const salesOrder = await prisma.salesOrder.findUnique({ where: { id: salesOrderId } })
 
-    if (salesOrder && salesOrder.status === 'QUOTE' && !salesOrder.orderDate) {
+    if (salesOrder && salesOrder.status === 'QUOTE' && (!salesOrder.orderDate || !salesOrder.dueDate)) {
         const orderDate = today
         const dueDate = today.add({ weeks: 3 })
 

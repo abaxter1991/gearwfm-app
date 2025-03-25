@@ -44,8 +44,8 @@ export type SalesOrderAndRelations = SalesOrder & {
 
 export type SalesOrderFormData = {
     id: string
-    orderDate: DateValue
-    dueDate: DateValue
+    orderDate: DateValue | null
+    dueDate: DateValue | null
     salesRepName: string
     salesRepEmailAddress: string
     externalId: string

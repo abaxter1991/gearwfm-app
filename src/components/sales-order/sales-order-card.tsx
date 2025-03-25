@@ -121,11 +121,11 @@ export function SalesOrderCard({ salesOrder }: Props) {
                         <div className="flex min-w-44 max-w-44 flex-col overflow-hidden">
                             <div className="flex flex-nowrap items-center gap-2">
                                 <p className="text-nowrap text-small">Order Date:</p>
-                                <p className="text-lg">{formatDateString(String(displayedSalesOrder.orderDate))}</p>
+                                <p className="text-lg">{displayedSalesOrder.orderDate ? formatDateString(String(displayedSalesOrder.orderDate)) : 'N/A'}</p>
                             </div>
                             <div className="flex flex-nowrap items-center gap-2">
                                 <p className="text-nowrap text-small">Due Date:</p>
-                                <p className="text-xl font-bold">{formatDateString(String(displayedSalesOrder.dueDate))}</p>
+                                <p className="text-xl font-bold">{displayedSalesOrder.dueDate ? formatDateString(String(displayedSalesOrder.dueDate)) : 'N/A'}</p>
                             </div>
                         </div>
                     </div>

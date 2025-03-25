@@ -40,10 +40,10 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
     useEffect(() => {
         if (salesOrder) {
             const { products } = salesOrder
-            const orderDate = new Date(salesOrder.orderDate)
-            const dueDate = new Date(salesOrder.dueDate)
-            const formattedOrderDate = new CalendarDateTime(orderDate.getUTCFullYear(), orderDate.getUTCMonth() + 1, orderDate.getUTCDate())
-            const formattedDueDate = new CalendarDateTime(dueDate.getUTCFullYear(), dueDate.getUTCMonth() + 1, dueDate.getUTCDate())
+            const orderDate = salesOrder.orderDate ? new Date(salesOrder.orderDate) : null
+            const dueDate = salesOrder.dueDate ? new Date(salesOrder.dueDate) : null
+            const formattedOrderDate = orderDate ? new CalendarDateTime(orderDate.getUTCFullYear(), orderDate.getUTCMonth() + 1, orderDate.getUTCDate()) : null
+            const formattedDueDate = dueDate ? new CalendarDateTime(dueDate.getUTCFullYear(), dueDate.getUTCMonth() + 1, dueDate.getUTCDate()) : null
 
             const cleanedProducts = products.map((product) => {
                 const { salesOrderId: _salesOrderId, ...restProduct } = product
