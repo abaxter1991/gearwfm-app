@@ -43,8 +43,6 @@ export default async function SalesOrdersPage(props: Props) {
         partsReceived,
     } = searchParams
 
-    console.log({ status })
-
     const defaultSalesOrderStatus: Prisma.EnumSalesOrderStatusFilter = { notIn: ['QUOTE', 'COMPLETED'] }
     const salesOrderStatus = (!status || status === 'all') ? defaultSalesOrderStatus : status?.toUpperCase() as SalesOrderStatus | Prisma.EnumSalesOrderStatusFilter
     const searchOptions: Prisma.StringFilter<"SalesOrder"> | string = { contains: search ? search : '', mode: 'insensitive' }
