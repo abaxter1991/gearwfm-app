@@ -123,10 +123,8 @@ model SalesOrderAssembledProduct {
 
 enum SalesOrderStatus {
     QUOTE
-    DRAFT
     DESIGN_REVIEW
     PENDING
     IN_PRODUCTION
-    IN_PROGRESS
     COMPLETED
 }
