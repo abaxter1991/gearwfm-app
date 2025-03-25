@@ -1,3 +1,4 @@
+import { useUser } from '@clerk/nextjs'
 import { Button, Chip, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react'
 import { useState } from 'react'
 import { changeStatus } from '~/lib/actions'
@@ -8,15 +9,28 @@ type Props = {
 }
 
 export function AuthorizeStatusModal({ salesOrder }: Props) {
+    const { user } = useUser()
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     const [isLoading, setIsLoading] = useState(false)
     const [statusPressed, setStatusPressed] = useState<string>('')
 
+    const hasQuotePermissions = [
+        'Austin Baxter',
+        'Shawn Baxter',
+        'Cassie Baxter',
+        'Rob Christensen',
+        'Spencer Lambert',
+        'Andrea Smith',
+    ]
+
+    const isAdmin = hasQuotePermissions.includes(String(user?.fullName))
+
     const statuses: SalesOrderStatusOptions[] = [
-        { name: 'Draft', key: 'DRAFT' },
+        { name: 'Quote', key: 'QUOTE' },
+        { name: 'Design', key: 'DESIGN_REVIEW' },
         { name: 'Pending', key: 'PENDING' },
-        { name: 'In Progress', key: 'IN_PROGRESS' },
+        { name: 'In Production', key: 'IN_PRODUCTION' },
         { name: 'Completed', key: 'COMPLETED' },
     ]
 
@@ -69,23 +83,29 @@ export function AuthorizeStatusModal({ salesOrder }: Props) {
                                 >
                                     Cancel
                                 </Button>
-                                {statuses.map((status) => (
-                                    <Button
-                                        key={status.key}
-                                        size="sm"
-                                        isDisabled={status.key === salesOrder.status || isLoading}
-                                        isLoading={status.key === statusPressed && isLoading}
-                                        onPress={async () => {
-                                            setStatusPressed(status.key)
-                                            setIsLoading(true)
-                                            await changeStatus(salesOrder.id, status.key)
-                                            setIsLoading(false)
-                                            onClose()
-                                        }}
-                                    >
-                                        {status.name}
-                                    </Button>
-                                ))}
+                                {statuses.map((status) => {
+                                    if (status.key === 'QUOTE' && !isAdmin) {
+                                        return null
+                                    }
+
+                                    return (
+                                        <Button
+                                            key={status.key}
+                                            size="sm"
+                                            isDisabled={status.key === salesOrder.status || isLoading}
+                                            isLoading={status.key === statusPressed && isLoading}
+                                            onPress={async () => {
+                                                setStatusPressed(status.key)
+                                                setIsLoading(true)
+                                                await changeStatus(salesOrder.id, status.key)
+                                                setIsLoading(false)
+                                                onClose()
+                                            }}
+                                        >
+                                            {status.name}
+                                        </Button>
+                                    )
+                                })}
                             </ModalFooter>
                         </>
                     )}

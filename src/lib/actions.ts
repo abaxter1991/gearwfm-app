@@ -1,9 +1,12 @@
 'use server'
 
+import { getLocalTimeZone, now } from '@internationalized/date'
 import { pusherServer } from '~/lib/pusher'
 import prisma from '~/prisma/client'
 import type { Prisma, SalesOrderStatus } from '@prisma/client'
 import type { ProductReceivedFieldName, PusherTriggerDataForProductReceived } from '~/types'
+
+const today = now(getLocalTimeZone())
 
 async function updateSalesOrder(salesOrderId: string, fieldName: keyof Prisma.SalesOrderUpdateInput, value: boolean | SalesOrderStatus, triggerEvent: boolean = true) {
     const data: Prisma.SalesOrderUpdateInput = {}
@@ -23,31 +26,49 @@ async function triggerSalesOrderUpdate(salesOrderId: string, data: any, event: s
 }
 
 export async function changeStatus(salesOrderId: string, status: SalesOrderStatus) {
-    await updateSalesOrder(salesOrderId, 'status', status);
+    const salesOrder = await prisma.salesOrder.findUnique({ where: { id: salesOrderId } })
+
+    if (salesOrder && salesOrder.status === 'QUOTE' && !salesOrder.orderDate) {
+        const orderDate = today
+        const dueDate = today.add({ weeks: 3 })
+
+        const updatedSalesOrder = await prisma.salesOrder.update({
+            where: { id: salesOrderId },
+            data: {
+                orderDate: new Date(orderDate.year, orderDate.month - 1, orderDate.day),
+                dueDate: new Date(dueDate.year, dueDate.month - 1, dueDate.day),
+                status: status,
+            }
+        })
+
+        await triggerSalesOrderUpdate(salesOrderId, updatedSalesOrder)
+    } else {
+        await updateSalesOrder(salesOrderId, 'status', status)
+    }
 }
 
 export async function toggleApprovedProof(salesOrderId: string, approvedProof: boolean) {
-    await updateSalesOrder(salesOrderId, 'approvedProof', approvedProof);
+    await updateSalesOrder(salesOrderId, 'approvedProof', approvedProof)
 }
 
 export async function togglePartsOrdered(salesOrderId: string, partsOrdered: boolean) {
-    await updateSalesOrder(salesOrderId, 'partsOrdered', partsOrdered);
+    await updateSalesOrder(salesOrderId, 'partsOrdered', partsOrdered)
 }
 
 export async function togglePartsReceived(salesOrderId: string, partsReceived: boolean, triggerEvent = true) {
-    await updateSalesOrder(salesOrderId, 'partsReceived', partsReceived, triggerEvent);
+    await updateSalesOrder(salesOrderId, 'partsReceived', partsReceived, triggerEvent)
 }
 
 export async function toggleProductsCounted(salesOrderId: string, productsCounted: boolean) {
-    await updateSalesOrder(salesOrderId, 'productsCounted', productsCounted);
+    await updateSalesOrder(salesOrderId, 'productsCounted', productsCounted)
 }
 
 export async function toggleProductsShipped(salesOrderId: string, productsShipped: boolean) {
-    await updateSalesOrder(salesOrderId, 'productsShipped', productsShipped);
+    await updateSalesOrder(salesOrderId, 'productsShipped', productsShipped)
 }
 
 export async function toggleIsPaid(salesOrderId: string, isPaid: boolean) {
-    await updateSalesOrder(salesOrderId, 'isPaid', isPaid);
+    await updateSalesOrder(salesOrderId, 'isPaid', isPaid)
 }
 
 export async function toggleAllAssembled(salesOrderId: string, assembledProductId: string, allAssembled: boolean) {

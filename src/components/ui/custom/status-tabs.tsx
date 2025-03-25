@@ -1,13 +1,26 @@
 'use client'
 
+import { useUser } from '@clerk/nextjs'
 import { Tabs, Tab } from '@heroui/react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
 
 export function StatusTabs() {
+    const { user } = useUser()
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
+
+    const hasQuotePermissions = [
+        'Austin Baxter',
+        'Shawn Baxter',
+        'Cassie Baxter',
+        'Rob Christensen',
+        'Spencer Lambert',
+        'Andrea Smith',
+    ]
+
+    const isAdmin = hasQuotePermissions.includes(String(user?.fullName))
 
     const handleTabSelected = useCallback((name: string, value: string) => {
         const params = new URLSearchParams(searchParams.toString())
@@ -34,9 +47,10 @@ export function StatusTabs() {
                 }}
             >
                 <Tab key="all" title="All"/>
-                <Tab key="draft" title="Draft"/>
+                {isAdmin && <Tab key="quote" title="Quote"/>}
+                <Tab key="design_review" title="Design Review"/>
                 <Tab key="pending" title="Pending"/>
-                <Tab key="in_progress" title="In Progress"/>
+                <Tab key="in_production" title="In Production"/>
                 <Tab key="completed" title="Completed"/>
             </Tabs>
         </div>

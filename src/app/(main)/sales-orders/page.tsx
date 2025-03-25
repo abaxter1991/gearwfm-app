@@ -50,6 +50,7 @@ export default async function SalesOrdersPage(props: Props) {
     const sortDateByOption = sortDateBy ? sortDateBy : 'desc'
 
     let dateRangeParams = {}
+    let orderByParams = {}
 
     if (startDate && endDate) {
         const start = new Date(startDate)
@@ -69,9 +70,13 @@ export default async function SalesOrdersPage(props: Props) {
 
         if (searchDateBy == 'orderDate') {
             dateRangeParams = { orderDate: { gte: startUTCDate, lte: endUTCDate } }
+            orderByParams = { orderDate: sortDateByOption }
         } else if (searchDateBy == 'dueDate') {
             dateRangeParams = { dueDate: { gte: startUTCDate, lte: endUTCDate } }
+            orderByParams = { dueDate: sortDateByOption }
         }
+    } else {
+        orderByParams = { createdAt: sortDateByOption }
     }
 
     function stringToBoolean(value: string | undefined): boolean | undefined {
@@ -142,9 +147,7 @@ export default async function SalesOrdersPage(props: Props) {
                 },
             },
         },
-        orderBy: {
-            createdAt: sortDateByOption,
-        },
+        orderBy: orderByParams,
     })
 
     const totalSalesOrders = await prisma.salesOrder.count({ where: whereInput })
