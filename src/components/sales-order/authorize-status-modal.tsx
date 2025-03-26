@@ -19,7 +19,7 @@ export function AuthorizeStatusModal({ salesOrder }: Props) {
         'Austin Baxter',
         'Shawn Baxter',
         'Cassie Baxter',
-        'Leisel Baxter',
+        'Leisel Utter',
         'Rob Christensen',
         'Spencer Lambert',
         'Andrea Smith',

@@ -15,7 +15,7 @@ export function StatusTabs() {
         'Austin Baxter',
         'Shawn Baxter',
         'Cassie Baxter',
-        'Leisel Baxter',
+        'Leisel Utter',
         'Rob Christensen',
         'Spencer Lambert',
         'Andrea Smith',
