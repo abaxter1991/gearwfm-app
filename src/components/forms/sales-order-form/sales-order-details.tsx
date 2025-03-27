@@ -12,6 +12,8 @@ type Props = {
 }
 
 export function SalesOrderDetails({ form, salesOrder }: Props) {
+    const status = form.getValues('status')
+
     return (
         <Card className="shrink-0">
             <CardHeader className="w-full justify-between bg-gradient-to-br from-brand-primary to-cyan-400 text-black shadow-md">
@@ -39,7 +41,7 @@ export function SalesOrderDetails({ form, salesOrder }: Props) {
             <CardBody className="gap-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div className="flex flex-col gap-4">
-                        {salesOrder && salesOrder.status !== 'QUOTE' && (
+                        {(salesOrder && salesOrder.status !== 'QUOTE') || status !== 'QUOTE' && (
                             <div className="grid grid-cols-2 gap-4">
                                 <DatePickerField
                                     form={form}

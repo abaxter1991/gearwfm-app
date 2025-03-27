@@ -46,6 +46,7 @@ export type SalesOrderFormData = {
     id: string
     orderDate: DateValue | null
     dueDate: DateValue | null
+    status: SalesOrderStatus
     salesRepName: string
     salesRepEmailAddress: string
     externalId: string

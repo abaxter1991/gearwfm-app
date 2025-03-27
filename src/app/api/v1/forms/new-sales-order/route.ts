@@ -29,7 +29,6 @@ export async function POST(request: Request) {
                 isNewCustomer: Boolean(isNewCustomer),
                 orderDate: orderDate ? new Date(orderDate.year, orderDate.month - 1, orderDate.day) : null,
                 dueDate: dueDate ? new Date(dueDate.year, dueDate.month - 1, dueDate.day) : null,
-                status: 'QUOTE',
                 isDraft: true,
                 approvedProof: false,
                 partsOrdered: false,

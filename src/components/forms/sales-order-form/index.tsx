@@ -1,7 +1,10 @@
-import { CalendarDate, CalendarDateTime, ZonedDateTime } from '@internationalized/date'
+import { CalendarDate, CalendarDateTime, ZonedDateTime, getLocalTimeZone, now } from '@internationalized/date'
+import { SalesOrderStatus } from '@prisma/client'
 import { z } from 'zod'
 import { SalesOrderForm } from './sales-order-form'
 import type { SalesOrderFormData, SalesOrderProductFormData } from '~/types'
+
+const today = now(getLocalTimeZone())
 
 const isDateValid = (value: any) => [CalendarDate, CalendarDateTime, ZonedDateTime].some(type => value instanceof type)
 const isDateValidOrEmpty = (value: any) => value === '' || isDateValid(value)
@@ -12,6 +15,7 @@ export const salesOrderFormSchema = z.object({
     id: z.string(),
     orderDate: z.any().refine(isDateValidOrEmpty, '').nullable(),
     dueDate: z.any().refine(isDateValidOrEmpty, '').nullable(),
+    status: z.nativeEnum(SalesOrderStatus),
     salesRepName: z.string().trim().min(1, ''),
     salesRepEmailAddress: z.string().trim().email('').or(z.literal('')),
     externalId: z.string().trim(),
@@ -87,8 +91,9 @@ export type SalesOrderFormSchema = z.infer<typeof salesOrderFormSchema>
 
 export const mitchellsSalesOrder: SalesOrderFormData = {
     id: '',
-    orderDate: null,
-    dueDate: null,
+    orderDate: today,
+    dueDate: today.add({ weeks: 3 }),
+    status: SalesOrderStatus.DESIGN_REVIEW,
     salesRepName: 'Shawn Baxter',
     salesRepEmailAddress: 'shawn@baxbo.com',
     externalId: '',
@@ -98,7 +103,7 @@ export const mitchellsSalesOrder: SalesOrderFormData = {
     contactName: 'Mitchell Kay',
     phoneNumber: '',
     emailAddress: 'mitchelldkay@gmail.com',
-    shippingAddress: '2548 W Townhouse Dr.  Mapleton, UT 84664',
+    shippingAddress: '2548 W Townhouse Dr. Mapleton, UT 84664',
     billingAddress: '',
     notes: '',
     trackingNumber: '',
@@ -113,6 +118,7 @@ export const defaultSalesOrder: SalesOrderFormData = {
     id: '',
     orderDate: null,
     dueDate: null,
+    status: SalesOrderStatus.QUOTE,
     salesRepName: '',
     salesRepEmailAddress: '',
     externalId: '',

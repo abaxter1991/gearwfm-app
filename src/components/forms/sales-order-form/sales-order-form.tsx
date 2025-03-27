@@ -24,7 +24,7 @@ type Props = {
 }
 
 export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props) {
-    const { data: salesOrder, mutate } = useSalesOrder(salesOrderId)
+    const { data: salesOrder, mutate, isLoading } = useSalesOrder(salesOrderId)
 
     const router = useRouter()
 
@@ -53,6 +53,7 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
             form.setValue('id', salesOrder.id)
             form.setValue('orderDate', formattedOrderDate)
             form.setValue('dueDate', formattedDueDate)
+            form.setValue('status', salesOrder.status)
             form.setValue('salesRepName', salesOrder.salesRepName)
             form.setValue('salesRepEmailAddress', salesOrder.salesRepEmailAddress)
             form.setValue('externalId', salesOrder.externalId)
@@ -198,30 +199,36 @@ export function SalesOrderForm({ salesOrderId, showImportButton = false }: Props
     }, [form.watch])
 
     return (
-        <Form {...form}>
-            <form>
-                <div className="flex size-full flex-col gap-4">
-                    <SalesOrderDetails
-                        form={form}
-                        salesOrder={salesOrder}
-                    />
-                    <ProductList
-                        form={form}
-                        salesOrder={salesOrder}
-                        showImportButton={showImportButton}
-                    />
-                    <SalesOrderSummary
-                        form={form}
-                        actionButtons={<ActionButtons
-                            submitButtonLabel={salesOrder ? 'Save' : 'Submit'}
-                            showCancelButton={!!salesOrder}
-                            isDisabled={isSubmitting}
-                            onCancel={handleFormResetAndClose}
-                            onSave={onSubmit}
-                        />}
-                    />
-                </div>
-            </form>
-        </Form>
+        isLoading ? (
+            <div className="flex h-screen w-full items-center justify-center">
+                Loading...
+            </div>
+        ) : (
+            <Form {...form}>
+                <form>
+                    <div className="flex size-full flex-col gap-4">
+                        <SalesOrderDetails
+                            form={form}
+                            salesOrder={salesOrder}
+                        />
+                        <ProductList
+                            form={form}
+                            salesOrder={salesOrder}
+                            showImportButton={showImportButton}
+                        />
+                        <SalesOrderSummary
+                            form={form}
+                            actionButtons={<ActionButtons
+                                submitButtonLabel={salesOrder ? 'Save' : 'Submit'}
+                                showCancelButton={!!salesOrder}
+                                isDisabled={isSubmitting}
+                                onCancel={handleFormResetAndClose}
+                                onSave={onSubmit}
+                            />}
+                        />
+                    </div>
+                </form>
+            </Form>
+        )
     )
 }
