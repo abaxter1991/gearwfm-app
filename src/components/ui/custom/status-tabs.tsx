@@ -4,22 +4,13 @@ import { useUser } from '@clerk/nextjs'
 import { Tabs, Tab } from '@heroui/react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
+import { hasQuotePermissions } from '~/lib/permissions'
 
 export function StatusTabs() {
     const { user } = useUser()
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
-
-    const hasQuotePermissions = [
-        'Austin Baxter',
-        'Shawn Baxter',
-        'Cassie Baxter',
-        'Leisel Utter',
-        'Rob Christensen',
-        'Spencer Lambert',
-        'Andrea Smith',
-    ]
 
     const isAdmin = hasQuotePermissions.includes(String(user?.fullName))
 

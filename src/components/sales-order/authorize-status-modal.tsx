@@ -2,6 +2,7 @@ import { useUser } from '@clerk/nextjs'
 import { Button, Chip, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react'
 import { useState } from 'react'
 import { changeStatus } from '~/lib/actions'
+import { hasQuotePermissions } from '~/lib/permissions'
 import type { SalesOrderAndRelations, SalesOrderStatusOptions } from '~/types'
 
 type Props = {
@@ -14,16 +15,6 @@ export function AuthorizeStatusModal({ salesOrder }: Props) {
 
     const [isLoading, setIsLoading] = useState(false)
     const [statusPressed, setStatusPressed] = useState<string>('')
-
-    const hasQuotePermissions = [
-        'Austin Baxter',
-        'Shawn Baxter',
-        'Cassie Baxter',
-        'Leisel Utter',
-        'Rob Christensen',
-        'Spencer Lambert',
-        'Andrea Smith',
-    ]
 
     const isAdmin = hasQuotePermissions.includes(String(user?.fullName))
 
