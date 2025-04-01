@@ -41,7 +41,7 @@ export function SalesOrderDetails({ form, salesOrder }: Props) {
             <CardBody className="gap-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div className="flex flex-col gap-4">
-                        {(salesOrder && salesOrder.status !== 'QUOTE') || status !== 'QUOTE' && (
+                        {status !== 'QUOTE' && (
                             <div className="grid grid-cols-2 gap-4">
                                 <DatePickerField
                                     form={form}
