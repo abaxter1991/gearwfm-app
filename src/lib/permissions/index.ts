@@ -12,4 +12,5 @@ export const hasQuotePermissions = [
     'Kelvin Urbina',
     'Hanah Carter',
     'Kiera Whiting',
+    'Brittnee Johnson',
 ]
