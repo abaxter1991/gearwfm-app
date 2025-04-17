@@ -76,7 +76,11 @@ export default async function SalesOrdersPage(props: Props) {
             orderByParams = { dueDate: sortDateByOption }
         }
     } else {
-        orderByParams = { createdAt: sortDateByOption }
+        orderByParams = { orderDate: sortDateByOption }
+
+        if (status === 'quote') {
+            orderByParams = { createdAt: sortDateByOption }
+        }
     }
 
     function stringToBoolean(value: string | undefined): boolean | undefined {
